@@ -1,2 +1,2 @@
-# persfash-application-be
+# PersFash Application
 PersFash là 1 website về dịch vụ tư vấn thời trang kết hợp với công nghệ AI. Không chỉ tư vấn về việc lựa chọn trang phục phù hợp với màu sắc và lối sống mà còn giúp định hình phong cách cá nhân cho khách hàng. Hiện tại dự án đang trong giai đoạn khởi động và nghiên cứu để có thể mang đến cho khách hàng những trải nghiệm tốt nhất. Vì vậy, mọi đóng góp của bạn đều có giá trị rất lớn đối với dự án.
