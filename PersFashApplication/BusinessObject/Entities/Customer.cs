@@ -1,0 +1,41 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace BusinessObject.Entities;
+
+public partial class Customer
+{
+    public int CustomerId { get; set; }
+
+    public string Username { get; set; } = null!;
+
+    public string Email { get; set; } = null!;
+
+    public string Password { get; set; } = null!;
+
+    public string? FullName { get; set; }
+
+    public string? Gender { get; set; }
+
+    public DateOnly? DateOfBirth { get; set; }
+
+    public string? ProfilePicture { get; set; }
+
+    public DateTime? DateJoined { get; set; }
+
+    public string? Status { get; set; }
+
+    public virtual ICollection<CustomerCourse> CustomerCourses { get; set; } = new List<CustomerCourse>();
+
+    public virtual ICollection<CustomerProfile> CustomerProfiles { get; set; } = new List<CustomerProfile>();
+
+    public virtual ICollection<CustomerSubscription> CustomerSubscriptions { get; set; } = new List<CustomerSubscription>();
+
+    public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
+
+    public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
+
+    public virtual ICollection<Recommendation> Recommendations { get; set; } = new List<Recommendation>();
+
+    public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+}

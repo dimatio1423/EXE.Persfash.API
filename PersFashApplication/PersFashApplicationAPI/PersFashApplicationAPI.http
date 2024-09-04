@@ -1,0 +1,6 @@
+@PersFashApplicationAPI_HostAddress = http://localhost:5198
+
+GET {{PersFashApplicationAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
