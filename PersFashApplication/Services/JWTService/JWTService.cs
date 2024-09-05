@@ -44,18 +44,21 @@ namespace Services.JWTService
                 claims.Add(new Claim(ClaimsIdentity.DefaultRoleClaimType, RoleEnums.Customer.ToString()));
                 claims.Add(new Claim("userid", customer.CustomerId.ToString()));
                 claims.Add(new Claim("email", customer.Email));
+                claims.Add(new Claim("username", customer.Username));
             }
             else if (entity is Partner partner)
             {
                 claims.Add(new Claim(ClaimsIdentity.DefaultRoleClaimType, RoleEnums.Partner.ToString()));
                 claims.Add(new Claim("userid", partner.PartnerId.ToString()));
                 claims.Add(new Claim("email", partner.Email));
+                claims.Add(new Claim("username", partner.Username));
             }
             else if (entity is FashionInfluencer influencer)
             {
                 claims.Add(new Claim(ClaimsIdentity.DefaultRoleClaimType, RoleEnums.FashionInfluencer.ToString()));
                 claims.Add(new Claim("userid", influencer.InfluencerId.ToString()));
                 claims.Add(new Claim("email", influencer.Email));
+                claims.Add(new Claim("username", influencer.Username));
             }
             else
             {

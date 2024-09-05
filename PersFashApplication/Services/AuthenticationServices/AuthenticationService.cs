@@ -9,6 +9,7 @@ using Repositories.PartnerRepos;
 using Repositories.RefreshTokenRepos;
 using Repositories.UserRepos;
 using Services.Helper.CustomExceptions;
+using Services.Helpers.Handler.DecodeTokenHandler;
 using Services.JWTService;
 using Services.Security;
 using System;
@@ -29,26 +30,78 @@ namespace Services.AuthenticationServices
         private readonly IPartnerRepository _partnerRepository;
         private readonly IFashionInfluencerRepository _fashionInfluencerRepository;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
+        private readonly IDecodeTokenHandler _decodeToken;
         private readonly IJWTService _jWTService;
 
         public AuthenticationService(ICustomerRepository customerRepository, 
             IPartnerRepository partnerRepository, 
             IFashionInfluencerRepository fashionInfluencerRepository,
             IRefreshTokenRepository refreshTokenRepository,
+            IDecodeTokenHandler decodeToken,
             IJWTService jWTService)
         {
             _customerRepository = customerRepository;
             _partnerRepository = partnerRepository;
             _fashionInfluencerRepository = fashionInfluencerRepository;
             _refreshTokenRepository = refreshTokenRepository;
+            _decodeToken = decodeToken;
             _jWTService = jWTService;
+        }
+
+        public async Task<UserInformationModel> GetUserInfor(string token)
+        {
+            var decode = _decodeToken.decode(token);
+
+            var currCustomer = await _customerRepository.GetCustomerByUsername(decode.username);
+
+            var currPartner = await _partnerRepository.GetPartnerByUsername(decode.username);
+
+            var currInfluencer = await _fashionInfluencerRepository.GetFashionInfluencerByUsername(decode.username);
+
+            if (currCustomer != null)
+            {
+                UserInformationModel userInformation = new UserInformationModel
+                {
+                    UserId = currCustomer.CustomerId,
+                    Username = currCustomer.Username,
+                    Email = currCustomer.Email,
+                    Role = RoleEnums.Customer.ToString(),
+                };
+
+                return userInformation;
+            }else if (currPartner != null)
+            {
+                UserInformationModel userInformation = new UserInformationModel
+                {
+                    UserId = currPartner.PartnerId,
+                    Username = currPartner.Username,
+                    Email = currPartner.Email,
+                    Role = RoleEnums.Partner.ToString(),
+                };
+
+                return userInformation;
+            }else if (currInfluencer != null)
+            {
+                UserInformationModel userInformation = new UserInformationModel
+                {
+                    UserId = currInfluencer.InfluencerId,
+                    Username = currInfluencer.Username,
+                    Email = currInfluencer.Email,
+                    Role = RoleEnums.FashionInfluencer.ToString(),
+                };
+
+                return userInformation;
+            }else
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "User not found");
+            }
         }
 
         public async Task<UserLoginResModel> Login(UserLoginReqModel userLoginReqModel)
         {
-            var currentCustomer = await _customerRepository.GetCustomerByEmail(userLoginReqModel.Email);
-            var currentPartner = await _partnerRepository.GetPartnerByEmail(userLoginReqModel.Email);
-            var currentInfluencer = await _fashionInfluencerRepository.GetFashionInfluencerByEmail(userLoginReqModel.Email);
+            var currentCustomer = await _customerRepository.GetCustomerByUsername(userLoginReqModel.Username);
+            var currentPartner = await _partnerRepository.GetPartnerByUsername(userLoginReqModel.Username);
+            var currentInfluencer = await _fashionInfluencerRepository.GetFashionInfluencerByUsername(userLoginReqModel.Username);
 
             if (currentCustomer != null)
             {
@@ -157,6 +210,11 @@ namespace Services.AuthenticationServices
             {
                 throw new ApiException(HttpStatusCode.NotFound, "User does not exist");
             }
+        }
+
+        public Task RegisterCustomer(UserLoginReqModel userLoginReqModel)
+        {
+            throw new NotImplementedException();
         }
     }
 }

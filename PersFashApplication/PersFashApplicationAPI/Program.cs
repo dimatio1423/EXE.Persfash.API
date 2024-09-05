@@ -35,6 +35,7 @@ using Services.FashionItemsServices;
 using Services.FeedbackServices;
 using Services.FileServices;
 using Services.Helper.MapperProfiles;
+using Services.Helpers.Handler.DecodeTokenHandler;
 using Services.JWTService;
 using Services.PartnerServices;
 using Services.PaymentServices;
@@ -104,6 +105,7 @@ builder.Services.AddScoped<ICustomerCourseService, CustomerCourseService>();
 builder.Services.AddScoped<ICustomerProfileService, CustomerProfileService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICustomerSubscriptionService, CustomerSubscriptionService>();
+builder.Services.AddScoped<IDecodeTokenHandler, DecodeTokenHandler>();
 
 builder.Services.AddDbContext<PersfashApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

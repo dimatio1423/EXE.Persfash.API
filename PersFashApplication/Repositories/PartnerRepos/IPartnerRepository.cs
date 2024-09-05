@@ -10,7 +10,7 @@ namespace Repositories.PartnerRepos
 {
     public interface IPartnerRepository : IGenericRepository<Partner>
     {
-        Task<Partner> GetPartnerByEmail(string username);
+        Task<Partner> GetPartnerByUsername(string username);
 
     }
 }

@@ -18,11 +18,11 @@ namespace Repositories.PartnerRepos
             _context = context;
         }
 
-        public async Task<Partner> GetPartnerByEmail(string email)
+        public async Task<Partner> GetPartnerByUsername(string username)
         {
             try
             {
-                return await _context.Partners.FirstOrDefaultAsync(x => x.Email.Equals(email));
+                return await _context.Partners.FirstOrDefaultAsync(x => x.Username.Equals(username));
             }
             catch (Exception ex)
             {

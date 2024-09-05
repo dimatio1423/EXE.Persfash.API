@@ -10,6 +10,6 @@ namespace Repositories.UserRepos
 {
     public interface ICustomerRepository : IGenericRepository<Customer>
     {
-        Task<Customer> GetCustomerByEmail(string email);
+        Task<Customer> GetCustomerByUsername(string username);
     }
 }

@@ -18,11 +18,11 @@ namespace Repositories.FashionInfluencerRepos
             _context = context;
         }
 
-        public async Task<FashionInfluencer> GetFashionInfluencerByEmail(string email)
+        public async Task<FashionInfluencer> GetFashionInfluencerByUsername(string username)
         {
             try
             {
-                return await _context.FashionInfluencers.FirstOrDefaultAsync(x => x.Email.Equals(email));
+                return await _context.FashionInfluencers.FirstOrDefaultAsync(x => x.Username.Equals(username));
             }
             catch (Exception ex)
             {

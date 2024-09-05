@@ -14,11 +14,14 @@ namespace BusinessObject.Models.TokenModels
 
         public string email { get; set; }
 
-        public TokenModel(string userid, string roleName, string email)
+        public string username { get; set; }
+
+        public TokenModel(string userid, string roleName, string email, string username)
         {
             this.userid = userid;
             this.roleName = roleName;
             this.email = email;
+            this.username = username;
         }
     }
 }

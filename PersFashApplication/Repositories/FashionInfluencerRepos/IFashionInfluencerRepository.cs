@@ -10,7 +10,7 @@ namespace Repositories.FashionInfluencerRepos
 {
     public interface IFashionInfluencerRepository : IGenericRepository<FashionInfluencer>
     {
-        Task<FashionInfluencer> GetFashionInfluencerByEmail(string email);
+        Task<FashionInfluencer> GetFashionInfluencerByUsername(string username);
 
     }
 }

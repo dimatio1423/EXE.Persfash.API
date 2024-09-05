@@ -12,5 +12,7 @@ namespace Services.AuthenticationServices
     public interface IAuthenticationService
     {
         Task<UserLoginResModel> Login(UserLoginReqModel userLoginReqModel);
+        Task<UserInformationModel> GetUserInfor(string token);
+        Task RegisterCustomer(UserLoginReqModel userLoginReqModel);
     }
 }
