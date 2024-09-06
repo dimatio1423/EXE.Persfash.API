@@ -39,6 +39,7 @@ namespace Services.RefreshTokenServices
             var currCustomer = currRefreshToken.Customer;
             var currPartner = currRefreshToken.Partner;
             var currInfluencer = currRefreshToken.Influencer;
+            var currAdmin = currRefreshToken.Admin;
 
             if (currCustomer != null)
             {
@@ -85,7 +86,24 @@ namespace Services.RefreshTokenServices
                     AccessToken = token,
                     RefreshToken = newRefreshToken
                 };
-            }else
+            }else if (currAdmin != null)
+            {
+                var token = _jWTService.GenerateJWT(currAdmin);
+
+                var newRefreshToken = _jWTService.GenerateRefreshToken();
+
+                currRefreshToken.Token = newRefreshToken;
+                currRefreshToken.ExpiredAt = DateTime.Now.AddDays(1);
+                await _refreshTokenRepository.Update(currRefreshToken);
+
+                return new RefreshTokenResModel
+                {
+                    AccessToken = token,
+                    RefreshToken = newRefreshToken
+                };
+            }
+            
+            else
             {
                 throw new ApiException(HttpStatusCode.NotFound, "User does not exist");
             }

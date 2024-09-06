@@ -21,6 +21,8 @@ public partial class Partner
 
     public string Password { get; set; } = null!;
 
+    public string? Status { get; set; }
+
     public virtual ICollection<FashionItem> FashionItems { get; set; } = new List<FashionItem>();
 
     public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();

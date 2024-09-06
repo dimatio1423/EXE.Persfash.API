@@ -15,6 +15,8 @@ public partial class Course
 
     public int? InstructorId { get; set; }
 
+    public string? Status { get; set; }
+
     public virtual ICollection<CourseContent> CourseContents { get; set; } = new List<CourseContent>();
 
     public virtual ICollection<CustomerCourse> CustomerCourses { get; set; } = new List<CustomerCourse>();

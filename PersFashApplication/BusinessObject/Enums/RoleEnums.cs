@@ -10,6 +10,7 @@ namespace BusinessObject.Enums
     {
         Customer,
         Partner,
-        FashionInfluencer
+        FashionInfluencer,
+        Admin
     }
 }

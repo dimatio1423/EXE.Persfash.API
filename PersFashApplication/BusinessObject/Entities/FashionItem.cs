@@ -31,9 +31,13 @@ public partial class FashionItem
 
     public DateTime? DateAdded { get; set; }
 
+    public string? Status { get; set; }
+
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
 
     public virtual Partner? Partner { get; set; }
 
     public virtual ICollection<Recommendation> Recommendations { get; set; } = new List<Recommendation>();
+
+    public virtual ICollection<WardrobeItem> WardrobeItems { get; set; } = new List<WardrobeItem>();
 }

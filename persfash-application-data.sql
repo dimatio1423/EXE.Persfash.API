@@ -14,16 +14,16 @@ VALUES
 (4, 'Pear', 'Bohemian', 'Purple, Yellow', 'Linen, Cotton', 'Vacation, Wedding', 'Art enthusiast, Yoga practitioner', 'http://facebook.com/emilyjohnson', 1);
 
 
-INSERT INTO Partners (PartnerName, WebsiteURL, ContactEmail, ContactPhone, Email, Password, Username)
+INSERT INTO Partners (PartnerName, WebsiteURL, ContactEmail, ContactPhone, Email, Password, Username, Status)
 VALUES
-('FashionWorld', 'http://fashionworld.com', 'contact@fashionworld.com', '123-456-7890', 'partner1@fashionworld.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'partner1'),
-('StyleHub', 'http://stylehub.com', 'support@stylehub.com', '098-765-4321', 'partner2@stylehub.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'partner2');
+('FashionWorld', 'http://fashionworld.com', 'contact@fashionworld.com', '123-456-7890', 'partner1@fashionworld.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'partner1', 'Active'),
+('StyleHub', 'http://stylehub.com', 'support@stylehub.com', '098-765-4321', 'partner2@stylehub.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'partner2', 'Active');
 
 
-INSERT INTO FashionItems (ItemName, Category, Brand, Price, Size, Color, Material, Occasion, ImageURL, ProductURL, PartnerID)
+INSERT INTO FashionItems (ItemName, Category, Brand, Price, Size, Color, Material, Occasion, ImageURL, ProductURL, PartnerID, Status)
 VALUES
-('Slim Fit Blazer', 'Jacket', 'Zara', 150.00, 'M', 'Gray', 'Wool', 'Business', 'slimfitblazer.jpg', 'www.fashionco.com/slimfitblazer', 1),
-('Summer Dress', 'Dress', 'H&M', 75.00, 'S', 'Red', 'Cotton', 'Casual', 'summerdress.jpg', 'www.styleworld.com/summerdress', 2);
+('Slim Fit Blazer', 'Jacket', 'Zara', 150.00, 'M', 'Gray', 'Wool', 'Business', 'slimfitblazer.jpg', 'www.fashionco.com/slimfitblazer', 1, 'Available'),
+('Summer Dress', 'Dress', 'H&M', 75.00, 'S', 'Red', 'Cotton', 'Casual', 'summerdress.jpg', 'www.styleworld.com/summerdress', 2, 'Available');
 
 
 INSERT INTO Recommendations (CustomerID, ItemID, RecommendationType)
@@ -32,15 +32,15 @@ VALUES
 (2, 2, 'Trending');
 
 
-INSERT INTO FashionInfluencers (FullName, Username, Email, Password, Specialty, ProfilePicture, SocialMediaLinks)
+INSERT INTO FashionInfluencers (FullName, Username, Email, Password, Specialty, ProfilePicture, SocialMediaLinks, Status)
 VALUES
-('Sophia Lee', 'sophialee', 'sophia@example.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Chic & Minimalist Fashion', 'sophia.jpg', 'http://instagram.com/sophialee'),
-('James Kim', 'jameskim', 'james@example.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Streetwear & Casual Fashion', 'james.jpg', 'http://twitter.com/jameskim');
+('Sophia Lee', 'sophialee', 'sophia@example.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Chic & Minimalist Fashion', 'sophia.jpg', 'http://instagram.com/sophialee', 'Active'),
+('James Kim', 'jameskim', 'james@example.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Streetwear & Casual Fashion', 'james.jpg', 'http://twitter.com/jameskim', 'Active');
 
-INSERT INTO Courses (CourseName, Description, Price, InstructorID)
+INSERT INTO Courses (CourseName, Description, Price, InstructorID, Status)
 VALUES
-('Mastering Streetwear', 'A comprehensive course on streetwear fashion.', 49.99, 2),
-('Chic Fashion Basics', 'Learn the basics of chic fashion style.', 39.99, 1);
+('Mastering Streetwear', 'A comprehensive course on streetwear fashion.', 49.99, 2, 'Available'),
+('Chic Fashion Basics', 'Learn the basics of chic fashion style.', 39.99, 1, 'Available');
 
 INSERT INTO CourseContent (Content, Duration, CourseID)
 VALUES
@@ -65,13 +65,25 @@ INSERT INTO Feedback (CustomerID, ItemID, CourseID, InfluencerID, Rating, Commen
 VALUES
 (1, 1, NULL, NULL, 4, 'Great quality denim jacket!'),
 (2, NULL, 2, 1, 5, 'Very informative and well-structured course!'),
-(3, 3, NULL, NULL, 3, 'Comfortable but slightly overpriced.'),
 (4, NULL, 1, 2, 5, 'Loved the streetwear course, learned a lot!');
 
-INSERT INTO Subscriptions (SubscriptionTitle, Price, DurationInDays, Description)
+INSERT INTO Subscriptions (SubscriptionTitle, Price, DurationInDays, Description, Status)
 VALUES
-('Free', 9.99, 30, 'Access to basic features and limited courses.'),
-('Premium', 19.99, 60, 'Access to all features and unlimited courses.'),
-('Courses', 29.99, 90, 'All-access pass including exclusive content and perks.');
+('Free', 9.99, 30, 'Access to basic features and limited courses.', 'Available'),
+('Premium', 19.99, 60, 'Access to all features and unlimited courses.', 'Available'),
+('Courses', 29.99, 90, 'All-access pass including exclusive content and perks.', 'Available');
 
-SELECT * FROM RefreshToken
+INSERT INTO SystemAdmin (Username, Password, Status)
+VALUES
+('admin', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Active');
+
+INSERT INTO Wardrobe (CustomerID, Notes)
+VALUES
+(1, 'My summer wardrobe collection'),
+(2, 'Formal wear wardrobe');
+
+-- Sample data for WardrobeItems table
+INSERT INTO WardrobeItems (WardrobeID, ItemID)
+VALUES 
+(1, 1),
+(2, 2);

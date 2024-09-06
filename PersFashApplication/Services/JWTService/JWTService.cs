@@ -60,6 +60,12 @@ namespace Services.JWTService
                 claims.Add(new Claim("email", influencer.Email));
                 claims.Add(new Claim("username", influencer.Username));
             }
+            else if (entity is SystemAdmin admin)
+            {
+                claims.Add(new Claim(ClaimsIdentity.DefaultRoleClaimType, RoleEnums.Admin.ToString()));
+                claims.Add(new Claim("userid", admin.AdminId.ToString()));
+                claims.Add(new Claim("username", admin.Username));
+            }
             else
             {
                 throw new ArgumentException("Unsupported entity type");

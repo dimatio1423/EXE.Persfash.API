@@ -15,6 +15,8 @@ public partial class Subscription
 
     public string? Description { get; set; }
 
+    public string? Status { get; set; }
+
     public virtual ICollection<CustomerSubscription> CustomerSubscriptions { get; set; } = new List<CustomerSubscription>();
 
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();

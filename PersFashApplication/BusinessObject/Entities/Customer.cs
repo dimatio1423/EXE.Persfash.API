@@ -38,4 +38,6 @@ public partial class Customer
     public virtual ICollection<Recommendation> Recommendations { get; set; } = new List<Recommendation>();
 
     public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+
+    public virtual ICollection<Wardrobe> Wardrobes { get; set; } = new List<Wardrobe>();
 }

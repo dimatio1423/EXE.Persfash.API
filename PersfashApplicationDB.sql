@@ -1,3 +1,4 @@
+
 CREATE DATABASE PersfashApplicationDB;
 GO
 USE PersfashApplicationDB;
@@ -38,7 +39,8 @@ CREATE TABLE Partners (
     ContactPhone VARCHAR(255),
 	Username VARCHAR(255) UNIQUE,
     Email VARCHAR(255),
-	Password VARCHAR(255) NOT NULL
+	Password VARCHAR(255) NOT NULL,
+	Status VARCHAR(50)
 );
 
 CREATE TABLE FashionItems (
@@ -55,6 +57,7 @@ CREATE TABLE FashionItems (
     ProductURL VARCHAR(255),
 	PartnerID INT,
     DateAdded DATETIME DEFAULT GETDATE(),
+	Status VARCHAR(50),
 	FOREIGN KEY (PartnerID) REFERENCES Partners(PartnerID)
 );
 
@@ -77,6 +80,7 @@ CREATE TABLE FashionInfluencers (
     Specialty VARCHAR(MAX),
     ProfilePicture VARCHAR(255),
     SocialMediaLinks NVARCHAR(MAX),
+	Status VARCHAR(50),
     DateJoined DATETIME DEFAULT GETDATE()
 );
 
@@ -86,6 +90,7 @@ CREATE TABLE Courses (
     Description TEXT,
     Price DECIMAL(10, 2),
     InstructorID INT,
+	Status VARCHAR(50),
     FOREIGN KEY (InstructorID) REFERENCES FashionInfluencers(InfluencerID)
 );
 
@@ -131,6 +136,28 @@ CREATE TABLE Feedback (
     FOREIGN KEY (InfluencerID) REFERENCES FashionInfluencers(InfluencerID)
 );
 
+CREATE TABLE SystemAdmin (
+  AdminID INT PRIMARY KEY IDENTITY(1,1),
+  Username VARCHAR(255) UNIQUE,
+  Password VARCHAR(255) NOT NULL,
+  Status VARCHAR(50)
+)
+
+CREATE TABLE Wardrobe (
+    WardrobeID INT PRIMARY KEY IDENTITY(1,1),
+    CustomerID INT,
+    DateAdded DATETIME DEFAULT GETDATE(),
+    Notes TEXT,
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
+
+CREATE TABLE WardrobeItems (
+    WardrobeItemID INT PRIMARY KEY IDENTITY(1,1),
+    WardrobeID INT,
+    ItemID INT,
+    FOREIGN KEY (WardrobeID) REFERENCES Wardrobe(WardrobeID),
+    FOREIGN KEY (ItemID) REFERENCES FashionItems(ItemID)
+);
 
 CREATE TABLE RefreshToken (
    RefreshTokenID INT PRIMARY KEY IDENTITY(1,1),
@@ -139,9 +166,11 @@ CREATE TABLE RefreshToken (
    CustomerID INT,
    InfluencerID INT,
    PartnerID INT,
+   AdminID INT,
    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
    FOREIGN KEY (PartnerID) REFERENCES Partners(PartnerID),
    FOREIGN KEY (InfluencerID) REFERENCES FashionInfluencers(InfluencerID),
+   FOREIGN KEY (AdminID) REFERENCES SystemAdmin(AdminID)
 );
 
 CREATE TABLE Subscriptions(
@@ -149,7 +178,8 @@ CREATE TABLE Subscriptions(
 	SubscriptionTitle NVARCHAR(MAX) NOT NULL,
 	Price DECIMAL(18, 2) NOT NULL,
 	DurationInDays INT NOT NULL,
-	Description NVARCHAR(255) NULL 
+	Description NVARCHAR(255) NULL,
+	Status VARCHAR(50)
 )
 
 CREATE TABLE CustomerSubscriptions(

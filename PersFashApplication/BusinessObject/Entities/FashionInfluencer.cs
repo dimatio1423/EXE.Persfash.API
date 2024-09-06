@@ -21,6 +21,8 @@ public partial class FashionInfluencer
 
     public string? SocialMediaLinks { get; set; }
 
+    public string? Status { get; set; }
+
     public DateTime? DateJoined { get; set; }
 
     public virtual ICollection<Course> Courses { get; set; } = new List<Course>();

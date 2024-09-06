@@ -17,6 +17,7 @@ namespace PersFashApplicationAPI.Controllers
         }
 
         [HttpPost]
+        [Route("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginReqModel userLoginReqModel)
         {
             var result = await _authenticationService.Login(userLoginReqModel);

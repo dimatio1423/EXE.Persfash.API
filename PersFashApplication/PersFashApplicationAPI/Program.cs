@@ -18,10 +18,13 @@ using Repositories.PaymentRepos;
 using Repositories.RecommendationRepos;
 using Repositories.RefreshTokenRepos;
 using Repositories.SubscriptionRepos;
+using Repositories.SystemAdminRepos;
 using Repositories.UserCourseRepos;
 using Repositories.UserProfilesRepos;
 using Repositories.UserRepos;
 using Repositories.UserSubscriptionRepos;
+using Repositories.WardrobeItemRepos;
+using Repositories.WardrobeRepos;
 using Services.AuthenticationServices;
 using Services.AWSService;
 using Services.AWSServices;
@@ -81,6 +84,9 @@ builder.Services.AddScoped<ICustomerProfileRepository, CustomerProfileRepository
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<ICustomerSubscriptionRepository, CustomerSubscriptionRepository>();
 builder.Services.AddScoped<ICustomerCourseRepository, CustomerCourseRepository>();
+builder.Services.AddScoped<ISystemAdminRepository, SystemAdminRepository>();
+builder.Services.AddScoped<IWardrobeRepository, WardrobeRepository>();
+builder.Services.AddScoped<IWardrobeItemRepository, WardrobeItemRepository>();
 
 //-----------------------------------------SERVICES-----------------------------------------
 

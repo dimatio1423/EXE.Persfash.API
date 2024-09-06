@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Repositories.FashionInfluencerRepos;
 using Repositories.PartnerRepos;
 using Repositories.RefreshTokenRepos;
+using Repositories.SystemAdminRepos;
 using Repositories.UserRepos;
 using Services.Helper.CustomExceptions;
 using Services.Helpers.Handler.DecodeTokenHandler;
@@ -29,6 +30,7 @@ namespace Services.AuthenticationServices
         private readonly ICustomerRepository _customerRepository;
         private readonly IPartnerRepository _partnerRepository;
         private readonly IFashionInfluencerRepository _fashionInfluencerRepository;
+        private readonly ISystemAdminRepository _adminRepository;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
         private readonly IDecodeTokenHandler _decodeToken;
         private readonly IJWTService _jWTService;
@@ -37,12 +39,14 @@ namespace Services.AuthenticationServices
             IPartnerRepository partnerRepository, 
             IFashionInfluencerRepository fashionInfluencerRepository,
             IRefreshTokenRepository refreshTokenRepository,
+            ISystemAdminRepository adminRepository,
             IDecodeTokenHandler decodeToken,
             IJWTService jWTService)
         {
             _customerRepository = customerRepository;
             _partnerRepository = partnerRepository;
             _fashionInfluencerRepository = fashionInfluencerRepository;
+            _adminRepository = adminRepository;
             _refreshTokenRepository = refreshTokenRepository;
             _decodeToken = decodeToken;
             _jWTService = jWTService;
@@ -57,6 +61,8 @@ namespace Services.AuthenticationServices
             var currPartner = await _partnerRepository.GetPartnerByUsername(decode.username);
 
             var currInfluencer = await _fashionInfluencerRepository.GetFashionInfluencerByUsername(decode.username);
+
+            var currAdmin = await _adminRepository.GetAdminByUsername(decode.username);
 
             if (currCustomer != null)
             {
@@ -91,7 +97,18 @@ namespace Services.AuthenticationServices
                 };
 
                 return userInformation;
-            }else
+            }else if (currAdmin != null)
+            {
+                UserInformationModel userInformation = new UserInformationModel
+                {
+                    UserId = currAdmin.AdminId,
+                    Username = currAdmin.Username,
+                    Role = RoleEnums.Admin.ToString(),
+                };
+
+                return userInformation;
+            }
+            else
             {
                 throw new ApiException(HttpStatusCode.NotFound, "User not found");
             }
@@ -102,6 +119,7 @@ namespace Services.AuthenticationServices
             var currentCustomer = await _customerRepository.GetCustomerByUsername(userLoginReqModel.Username);
             var currentPartner = await _partnerRepository.GetPartnerByUsername(userLoginReqModel.Username);
             var currentInfluencer = await _fashionInfluencerRepository.GetFashionInfluencerByUsername(userLoginReqModel.Username);
+            var currAdmin = await _adminRepository.GetAdminByUsername(userLoginReqModel.Username);
 
             if (currentCustomer != null)
             {
@@ -194,6 +212,39 @@ namespace Services.AuthenticationServices
                         Username = currentInfluencer.Username,
                         Email = currentInfluencer.Email,
                         Role = RoleEnums.FashionInfluencer.ToString(),
+                        Token = token,
+                        RefreshToken = refreshToken
+                    };
+
+                    return userLoginRes;
+                }
+                else
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, "Incorrect password");
+
+                }
+            }else if (currAdmin != null)
+            {
+                if (PasswordHasher.VerifyPassword(userLoginReqModel.Password, currAdmin.Password))
+                {
+                    var token = _jWTService.GenerateJWT(currAdmin);
+
+                    var refreshToken = _jWTService.GenerateRefreshToken();
+
+                    var newRefreshToken = new RefreshToken
+                    {
+                        Token = refreshToken,
+                        ExpiredAt = DateTime.Now.AddDays(1),
+                        AdminId = currAdmin.AdminId
+                    };
+
+                    await _refreshTokenRepository.Add(newRefreshToken);
+
+                    var userLoginRes = new UserLoginResModel
+                    {
+                        UserId = currAdmin.AdminId,
+                        Username = currAdmin.Username,
+                        Role = RoleEnums.Admin.ToString(),
                         Token = token,
                         RefreshToken = refreshToken
                     };
