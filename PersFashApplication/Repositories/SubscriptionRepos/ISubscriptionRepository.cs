@@ -10,5 +10,6 @@ namespace Repositories.SubscriptionRepos
 {
     public interface ISubscriptionRepository : IGenericRepository<Subscription>
     {
+        Task<List<Subscription>> GetSubscriptionsByIds(List<int> subscriptionIds);
     }
 }

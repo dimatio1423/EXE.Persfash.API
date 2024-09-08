@@ -10,5 +10,8 @@ namespace Repositories.UserSubscriptionRepos
 {
     public interface ICustomerSubscriptionRepository : IGenericRepository<CustomerSubscription>
     {
+        Task<List<CustomerSubscription>> GetCustomerSubscriptionBySubscriptionId(int subscriptionId);
+        Task<List<CustomerSubscription>> GetCustomerSubscriptionByCustomerId(int customerId);
+        Task<CustomerSubscription> GetCustomerSubscription(int customerSubscriptionId);
     }
 }

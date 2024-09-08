@@ -18,6 +18,18 @@ namespace Repositories.UserRepos
             _context = context;
         }
 
+        public async Task<Customer> GetCustomerByEmail(string email)
+        {
+            try
+            {
+                return await _context.Customers.FirstOrDefaultAsync(x => x.Email.Equals(email));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<Customer> GetCustomerByUsername(string username)
         {
             try

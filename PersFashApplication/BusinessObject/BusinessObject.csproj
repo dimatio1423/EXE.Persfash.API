@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <Folder Include="Models\CustomerModels\Response\" />
+    <Folder Include="Models\CustomerSubscriptionModel\Request\" />
   </ItemGroup>
 
 </Project>

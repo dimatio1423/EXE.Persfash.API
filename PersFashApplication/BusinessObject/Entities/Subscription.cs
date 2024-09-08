@@ -9,9 +9,9 @@ public partial class Subscription
 
     public string SubscriptionTitle { get; set; } = null!;
 
-    public decimal Price { get; set; }
+    public decimal? Price { get; set; }
 
-    public int DurationInDays { get; set; }
+    public int? DurationInDays { get; set; }
 
     public string? Description { get; set; }
 

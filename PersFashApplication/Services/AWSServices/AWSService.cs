@@ -27,6 +27,12 @@ namespace Services.AWSServices
             await _amazonS3.DeleteObjectAsync(bucketName, key);
         }
 
+        public string ExtractS3Key(string url)
+        {
+            var parts = url.Split(new[] { ".com/" }, StringSplitOptions.None);
+            return parts.Length > 1 ? parts[1] : string.Empty;
+        }
+
         public async Task<string> UploadFile(IFormFile file, string bucketName, string? prefix)
         {
 
@@ -63,6 +69,42 @@ namespace Services.AWSServices
             string url = $"https://{bucketName}.s3.ap-southeast-2.amazonaws.com/{request.Key}";
 
             return url;
+        }
+
+        public async Task<List<string>> UploadFiles(List<IFormFile> files, string bucketName, string? prefix)
+        {
+            List<string> imageURLs = [];
+
+            var bucketExist = await AmazonS3Util.DoesS3BucketExistV2Async(_amazonS3, bucketName);
+            if (!bucketExist) throw new Exception("Bucket does not exist");
+
+            foreach (var file in files)
+            {
+                var request = new PutObjectRequest
+                {
+                    BucketName = bucketName,
+                    Key = string.IsNullOrEmpty(prefix) ? file.FileName : $"{prefix?.Trim('/')}/{file.Name}",
+                    InputStream = file.OpenReadStream()
+                };
+
+                request.Metadata.Add("Content-Type", file.ContentType);
+                var uploadResult = await _amazonS3.PutObjectAsync(request);
+
+
+                var metadata = await _amazonS3.GetObjectMetadataAsync(new GetObjectMetadataRequest
+                {
+                    BucketName = bucketName,
+                    Key = request.Key
+                });
+
+                if (metadata == null) throw new Exception("Object metadata does not exist");
+
+                string url = $"https://{bucketName}.s3.ap-southeast-2.amazonaws.com/{request.Key}";
+
+                imageURLs.Add(url);
+            }
+
+            return imageURLs;
         }
     }
 }

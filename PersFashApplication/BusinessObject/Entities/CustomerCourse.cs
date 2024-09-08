@@ -5,7 +5,7 @@ namespace BusinessObject.Entities;
 
 public partial class CustomerCourse
 {
-    public int UserCourseId { get; set; }
+    public int CustomerCourseId { get; set; }
 
     public int? CustomerId { get; set; }
 

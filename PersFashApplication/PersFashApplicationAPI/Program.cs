@@ -10,6 +10,7 @@ using Repositories.CourseContentRepos;
 using Repositories.CourseMaterialRepos;
 using Repositories.CourseRepos;
 using Repositories.FashionInfluencerRepos;
+using Repositories.FashionItemImageRepos;
 using Repositories.FashionItemsRepos;
 using Repositories.FeedbackRepos;
 using Repositories.GenericRepos;
@@ -38,6 +39,7 @@ using Services.FashionItemsServices;
 using Services.FeedbackServices;
 using Services.FileServices;
 using Services.Helper.MapperProfiles;
+using Services.Helper.VerifyCode;
 using Services.Helpers.Handler.DecodeTokenHandler;
 using Services.JWTService;
 using Services.PartnerServices;
@@ -59,6 +61,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//-----------------------------------------AWS-----------------------------------------
+builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
+builder.Services.AddAWSService<IAmazonS3>();
 
 //-----------------------------------------AUTOMAPPER-----------------------------------------
 
@@ -87,6 +93,7 @@ builder.Services.AddScoped<ICustomerCourseRepository, CustomerCourseRepository>(
 builder.Services.AddScoped<ISystemAdminRepository, SystemAdminRepository>();
 builder.Services.AddScoped<IWardrobeRepository, WardrobeRepository>();
 builder.Services.AddScoped<IWardrobeItemRepository, WardrobeItemRepository>();
+builder.Services.AddScoped<IFashionItemImageRepository, FashionItemImageRepository>();
 
 //-----------------------------------------SERVICES-----------------------------------------
 
@@ -112,6 +119,8 @@ builder.Services.AddScoped<ICustomerProfileService, CustomerProfileService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICustomerSubscriptionService, CustomerSubscriptionService>();
 builder.Services.AddScoped<IDecodeTokenHandler, DecodeTokenHandler>();
+
+builder.Services.AddSingleton<VerificationCodeCache>();
 
 builder.Services.AddDbContext<PersfashApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

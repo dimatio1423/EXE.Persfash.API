@@ -27,7 +27,7 @@ public partial class Customer
 
     public virtual ICollection<CustomerCourse> CustomerCourses { get; set; } = new List<CustomerCourse>();
 
-    public virtual ICollection<CustomerProfile> CustomerProfiles { get; set; } = new List<CustomerProfile>();
+    public virtual CustomerProfile? CustomerProfile { get; set; }
 
     public virtual ICollection<CustomerSubscription> CustomerSubscriptions { get; set; } = new List<CustomerSubscription>();
 

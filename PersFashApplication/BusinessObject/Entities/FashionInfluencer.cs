@@ -19,7 +19,11 @@ public partial class FashionInfluencer
 
     public string? ProfilePicture { get; set; }
 
-    public string? SocialMediaLinks { get; set; }
+    public string? FacebookLink { get; set; }
+
+    public string? InstagramLink { get; set; }
+
+    public string? TikTokLink { get; set; }
 
     public string? Status { get; set; }
 

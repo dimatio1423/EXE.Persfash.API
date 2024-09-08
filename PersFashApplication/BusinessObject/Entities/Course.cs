@@ -19,9 +19,13 @@ public partial class Course
 
     public virtual ICollection<CourseContent> CourseContents { get; set; } = new List<CourseContent>();
 
+    public virtual ICollection<CourseImage> CourseImages { get; set; } = new List<CourseImage>();
+
     public virtual ICollection<CustomerCourse> CustomerCourses { get; set; } = new List<CustomerCourse>();
 
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
 
     public virtual FashionInfluencer? Instructor { get; set; }
+
+    public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 }

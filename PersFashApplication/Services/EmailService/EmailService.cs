@@ -55,7 +55,7 @@ namespace Services.EmailService
             var email = new MimeMessage();
             email.From.Add(MailboxAddress.Parse(_config.GetSection("SmtpSettings:Username").Value));
             email.To.Add(MailboxAddress.Parse(userEmail));
-            email.Subject = "[Music Streaming App] - Password Reset Request";
+            email.Subject = "[PersFash Application] - Password Reset Request";
 
             // Construct the email body
             email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
