@@ -1,3 +1,4 @@
+Drop database PersfashApplicationDB
 CREATE DATABASE PersfashApplicationDB;
 GO
 USE PersfashApplicationDB;
@@ -105,6 +106,7 @@ CREATE TABLE Courses (
     Description TEXT,
     Price DECIMAL(10, 2),
     InstructorID INT,
+	ThumbnailURL VARCHAR(255),
 	Status VARCHAR(50),
     FOREIGN KEY (InstructorID) REFERENCES FashionInfluencers(InfluencerID)
 );
@@ -138,7 +140,6 @@ CREATE TABLE CustomerCourses (
     CustomerID INT,
     CourseID INT,
     EnrollmentDate DATETIME DEFAULT GETDATE(),
-    CompletionStatus VARCHAR(50),
     FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
     FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
 );

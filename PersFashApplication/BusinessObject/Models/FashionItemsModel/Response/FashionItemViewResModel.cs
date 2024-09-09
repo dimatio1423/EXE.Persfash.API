@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessObject.Models.PartnerModel.Response;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,6 +29,10 @@ namespace BusinessObject.Models.FashionItemsModel.Response
 
         public string ProductUrl { get; set; }
 
+        public string ThumbnailURL { get; set; }
+
         public List<string> ItemImages { get; set; }
+
+        public PartnerViewModel Partner { get; set; }
     }
 }

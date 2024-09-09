@@ -1,5 +1,4 @@
-﻿using BusinessObject.Models.CourseContentModel.Request;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace BusinessObject.Models.CourseModel.Request
 {
-    public class CourseCreateReqModel
+    public class CourseUpdateReqModel
     {
-        [Required(ErrorMessage = "Course name is required")]
+        [Required (ErrorMessage ="CourseId is required")]
+        public int CourseId { get; set; }
+
         [StringLength(100, MinimumLength = 3, ErrorMessage = "Course name must be between 3 and 100 characters")]
         public string? CourseName { get; set; }
 
@@ -20,14 +21,8 @@ namespace BusinessObject.Models.CourseModel.Request
         [Range(0, double.MaxValue, ErrorMessage = "Price must be a positive number")]
         public decimal? Price { get; set; }
 
-        [MinLength(1, ErrorMessage = "There must be at least one course content")]
-        public List<CourseContentCreateReqModel> CourseContents { get; set; }
+        public string? Thumbnail { get; set; }
 
-        [Required(ErrorMessage = "Thumbnail URL is required.")]
-        public string Thumbnail { get; set; }
-
-        [Required(ErrorMessage = "At least one image is required.")]
-        [MinLength(1, ErrorMessage = "At least one image is required.")]
-        public List<string> CourseImages { get; set; }
+        public List<string>? CourseImages { get; set; }
     }
 }

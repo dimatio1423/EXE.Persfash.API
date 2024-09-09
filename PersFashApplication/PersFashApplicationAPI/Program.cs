@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using MusicStreamingAPI.MiddleWare;
 using Repositories;
 using Repositories.CourseContentRepos;
+using Repositories.CourseImagesRepos;
 using Repositories.CourseMaterialRepos;
 using Repositories.CourseRepos;
 using Repositories.FashionInfluencerRepos;
@@ -94,6 +95,7 @@ builder.Services.AddScoped<ISystemAdminRepository, SystemAdminRepository>();
 builder.Services.AddScoped<IWardrobeRepository, WardrobeRepository>();
 builder.Services.AddScoped<IWardrobeItemRepository, WardrobeItemRepository>();
 builder.Services.AddScoped<IFashionItemImageRepository, FashionItemImageRepository>();
+builder.Services.AddScoped<ICourseImageRepository, CourseImageRepository>();
 
 //-----------------------------------------SERVICES-----------------------------------------
 

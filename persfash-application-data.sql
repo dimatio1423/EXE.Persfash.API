@@ -37,10 +37,10 @@ VALUES
 ('Sophia Lee', 'sophialee', 'sophia@example.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Chic & Minimalist Fashion', 'sophia.jpg', 'http://instagram.com/sophialee', 'Active'),
 ('James Kim', 'jameskim', 'james@example.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Streetwear & Casual Fashion', 'james.jpg', 'http://twitter.com/jameskim', 'Active');
 
-INSERT INTO Courses (CourseName, Description, Price, InstructorID, Status)
+INSERT INTO Courses (CourseName, Description, Price, InstructorID, ThumbnailURL, Status)
 VALUES
-('Mastering Streetwear', 'A comprehensive course on streetwear fashion.', 49.99, 2, 'Available'),
-('Chic Fashion Basics', 'Learn the basics of chic fashion style.', 39.99, 1, 'Available');
+('Mastering Streetwear', 'A comprehensive course on streetwear fashion.', 49.99, 2,'thumbnail.jpg', 'Available'),
+('Chic Fashion Basics', 'Learn the basics of chic fashion style.', 39.99, 1, 'thumbnail.jpg', 'Available');
 
 INSERT INTO CourseContent (Content, Duration, CourseID)
 VALUES
@@ -54,12 +54,12 @@ VALUES
 ('Streetwear Lookbook', 'http://fashionworld.com/lookbook.pdf', 1),
 ('Chic Wardrobe Guide', 'http://stylehub.com/wardrobe_guide.pdf', 3);
 
-INSERT INTO CustomerCourses (CustomerID, CourseID, EnrollmentDate, CompletionStatus)
+INSERT INTO CustomerCourses (CustomerID, CourseID, EnrollmentDate)
 VALUES
-(1, 1, '2024-08-01', 'Completed'),
-(2, 2, '2024-07-15', 'In Progress'),
-(3, 1, '2024-08-20', 'Not Started'),
-(4, 2, '2024-08-05', 'Completed');
+(1, 1, '2024-08-01'),
+(2, 2, '2024-07-15'),
+(3, 1, '2024-08-20'),
+(4, 2, '2024-08-05');
 
 INSERT INTO Feedback (CustomerID, ItemID, CourseID, InfluencerID, Rating, Comment)
 VALUES

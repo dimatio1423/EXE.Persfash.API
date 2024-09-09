@@ -57,7 +57,7 @@ namespace PersFashApplicationAPI.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Partner")]
-        public async Task<IActionResult> CreateNewFashionItem([FromForm] FashionItemCreateReqModel fashionItemCreateReqModel)
+        public async Task<IActionResult> CreateNewFashionItem([FromBody] FashionItemCreateReqModel fashionItemCreateReqModel)
         {
             var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
 
@@ -75,7 +75,7 @@ namespace PersFashApplicationAPI.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Partner")]
-        public async Task<IActionResult> UpdateFashionItem([FromForm] FashionItemUpdateReqModel fashionItemUpdateReqModel)
+        public async Task<IActionResult> UpdateFashionItem([FromBody] FashionItemUpdateReqModel fashionItemUpdateReqModel)
         {
             var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
 
@@ -123,7 +123,26 @@ namespace PersFashApplicationAPI.Controllers
             {
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.OK,
-                Message = "View fashion items of partner successfully",
+                Message = "View fashion items of current partner successfully",
+                Data = result
+            };
+
+            return StatusCode(response.Code, response);
+        }
+
+        [HttpGet]
+        [Route("partner/{partnerId}")]
+        public async Task<IActionResult> ViewFashionItemsByPartner([FromRoute] int partnerId, int? page = 1, int? size = 10)
+        {
+            //var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+            var result = await _fashionItemService.ViewFashionItemsByPartnerId(partnerId, page, size);
+
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "View fashion items by partner successfully",
                 Data = result
             };
 

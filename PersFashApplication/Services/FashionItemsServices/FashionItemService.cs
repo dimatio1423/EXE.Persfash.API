@@ -3,6 +3,7 @@ using BusinessObject.Entities;
 using BusinessObject.Enums;
 using BusinessObject.Models.FashionItemsModel.Request;
 using BusinessObject.Models.FashionItemsModel.Response;
+using Newtonsoft.Json.Linq;
 using Repositories.FashionItemImageRepos;
 using Repositories.FashionItemsRepos;
 using Repositories.PartnerRepos;
@@ -64,12 +65,12 @@ namespace Services.FashionItemsServices
 
             }
 
-            _fileService.CheckImageFile(fashionItemCreateReqModel.Thumbnail);
+            //_fileService.CheckImageFile(fashionItemCreateReqModel.Thumbnail);
 
-            foreach (var item in fashionItemCreateReqModel.ItemImages)
-            {
-                _fileService.CheckImageFile(item);
-            }
+            //foreach (var item in fashionItemCreateReqModel.ItemImages)
+            //{
+            //    _fileService.CheckImageFile(item);
+            //}
 
             if (!Enum.IsDefined(typeof(FitTypeEnums), fashionItemCreateReqModel.FitType))
             {
@@ -82,7 +83,7 @@ namespace Services.FashionItemsServices
             }
 
 
-            var thumbnailLink = await _aWSService.UploadFile(fashionItemCreateReqModel.Thumbnail, "persfash-application", null);
+            //var thumbnailLink = await _aWSService.UploadFile(fashionItemCreateReqModel.Thumbnail, "persfash-application", null);
 
             FashionItem fashionItem = new FashionItem
             {
@@ -97,7 +98,7 @@ namespace Services.FashionItemsServices
                 Color = string.Join(", ", fashionItemCreateReqModel.Color),
                 Material = string.Join(", ", fashionItemCreateReqModel.Material),
                 Occasion = string.Join(", ", fashionItemCreateReqModel.Occasion),
-                ThumbnailUrl = thumbnailLink,
+                ThumbnailUrl = fashionItemCreateReqModel.Thumbnail,
                 ProductUrl = fashionItemCreateReqModel.ProductUrl,
                 PartnerId = currPartner.PartnerId,
                 DateAdded = DateTime.Now,
@@ -108,12 +109,12 @@ namespace Services.FashionItemsServices
 
             foreach (var item in fashionItemCreateReqModel.ItemImages)
             {
-                var itemLink = await _aWSService.UploadFile(item, "persfash-application", null);
+                //var itemLink = await _aWSService.UploadFile(item, "persfash-application", null);
 
                 FashionItemImage fashionItemImage = new FashionItemImage
                 {
                     ItemId = itemId,
-                    ImageUrl = itemLink,
+                    ImageUrl = item,
                 };
 
                 await _fashionItemImageRepository.Add(fashionItemImage);
@@ -184,19 +185,19 @@ namespace Services.FashionItemsServices
 
             }
 
-            if (fashionItemUpdateReqModel.Thumbnail != null)
-            {
-                _fileService.CheckImageFile(fashionItemUpdateReqModel.Thumbnail);
-            }
+            //if (fashionItemUpdateReqModel.Thumbnail != null)
+            //{
+            //    _fileService.CheckImageFile(fashionItemUpdateReqModel.Thumbnail);
+            //}
 
 
-            if (fashionItemUpdateReqModel.ItemImages != null && fashionItemUpdateReqModel.ItemImages.Count > 0)
-            {
-                foreach (var item in fashionItemUpdateReqModel.ItemImages)
-                {
-                    _fileService.CheckImageFile(item);
-                }
-            }
+            //if (fashionItemUpdateReqModel.ItemImages != null && fashionItemUpdateReqModel.ItemImages.Count > 0)
+            //{
+            //    foreach (var item in fashionItemUpdateReqModel.ItemImages)
+            //    {
+            //        _fileService.CheckImageFile(item);
+            //    }
+            //}
 
             if (!string.IsNullOrEmpty(fashionItemUpdateReqModel.FitType))
             {
@@ -214,7 +215,7 @@ namespace Services.FashionItemsServices
                 }
             }
 
-            var thumbnailLink = fashionItemUpdateReqModel.Thumbnail != null ? await _aWSService.UploadFile(fashionItemUpdateReqModel.Thumbnail, "persfash-application", null) : null;
+            //var thumbnailLink = fashionItemUpdateReqModel.Thumbnail != null ? await _aWSService.UploadFile(fashionItemUpdateReqModel.Thumbnail, "persfash-application", null) : null;
 
             currItem.ItemName = !string.IsNullOrEmpty(fashionItemUpdateReqModel.ItemName) ? fashionItemUpdateReqModel.ItemName : currItem.ItemName;
             currItem.Category = fashionItemUpdateReqModel.Category;
@@ -226,7 +227,7 @@ namespace Services.FashionItemsServices
             currItem.Color = (fashionItemUpdateReqModel.Color != null && fashionItemUpdateReqModel.Color.Count > 0) ? string.Join(", ", fashionItemUpdateReqModel.Color) : currItem.Color;
             currItem.Material = (fashionItemUpdateReqModel.Material != null && fashionItemUpdateReqModel.Material.Count > 0) ? string.Join(", ", fashionItemUpdateReqModel.Material) : currItem.Material;
             currItem.Occasion = (fashionItemUpdateReqModel.Occasion != null && fashionItemUpdateReqModel.Occasion.Count > 0) ? string.Join(", ", fashionItemUpdateReqModel.Occasion) : currItem.Occasion;
-            currItem.ThumbnailUrl = thumbnailLink != null ? thumbnailLink : currItem.ThumbnailUrl;
+            currItem.ThumbnailUrl = !string.IsNullOrEmpty(fashionItemUpdateReqModel.Thumbnail) ? fashionItemUpdateReqModel.Thumbnail : currItem.ThumbnailUrl;
             currItem.ProductUrl = !string.IsNullOrEmpty(fashionItemUpdateReqModel.ProductUrl) ? fashionItemUpdateReqModel.ProductUrl : currItem.ProductUrl;
 
             await _fashionItemRepository.Update(currItem);
@@ -244,12 +245,12 @@ namespace Services.FashionItemsServices
 
                 foreach (var item in fashionItemUpdateReqModel.ItemImages)
                 {
-                    var itemLink = await _aWSService.UploadFile(item, "persfash-application", null);
+                    //var itemLink = await _aWSService.UploadFile(item, "persfash-application", null);
 
                     FashionItemImage fashionItemImage = new FashionItemImage
                     {
                         ItemId = currItem.ItemId,
-                        ImageUrl = itemLink,
+                        ImageUrl = item,
                     };
 
                     await _fashionItemImageRepository.Add(fashionItemImage);
@@ -259,7 +260,7 @@ namespace Services.FashionItemsServices
 
         public async Task<FashionItemViewResModel> ViewDetailsFashionItem(int fashionItemId)
         {
-            var fashionItem = await _fashionItemRepository.Get(fashionItemId);
+            var fashionItem = await _fashionItemRepository.GetFashionItemsById(fashionItemId);
 
             if (fashionItem == null)
             {
@@ -279,9 +280,24 @@ namespace Services.FashionItemsServices
 
         public async Task<List<FashionItemViewListRes>> ViewFashionItems(int? page, int? size)
         {
-            var fashionItems = await _fashionItemRepository.GetAll(page, size);
+            var fashionItems = await _fashionItemRepository.GetFashionItems(page, size);
 
             return _mapper.Map<List<FashionItemViewListRes>>(fashionItems);
+        }
+
+        public async Task<List<FashionItemViewListRes>> ViewFashionItemsByPartnerId(int partnerId, int? page, int? size)
+        {
+            var currPartner = await _partnerRepository.Get(partnerId);
+
+            if (currPartner == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Partner does not exist");
+
+            }
+
+            var fashionItems = await _fashionItemRepository.GetFashionItemsByPartner(currPartner.PartnerId, page, size);
+
+            return _mapper.Map<List<FashionItemViewListRes>>(fashionItems.Where(x => x.Status.Equals(StatusEnums.Available.ToString())).ToList());
         }
 
         public async Task<List<FashionItemViewListRes>> ViewFashionItemsOfCurrentPartner(string token, int? page, int? size)

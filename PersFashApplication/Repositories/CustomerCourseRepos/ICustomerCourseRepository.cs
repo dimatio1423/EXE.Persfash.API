@@ -10,5 +10,7 @@ namespace Repositories.UserCourseRepos
 {
     public interface ICustomerCourseRepository : IGenericRepository<CustomerCourse>
     {
+        Task<CustomerCourse> CheckCustomerCourse(int customerId, int courseId);
+        Task<List<CustomerCourse>> GetCustomerCoursesByCustomerId(int customerId);
     }
 }

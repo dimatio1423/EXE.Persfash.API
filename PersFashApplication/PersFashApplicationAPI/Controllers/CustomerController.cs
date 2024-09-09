@@ -3,6 +3,7 @@ using BusinessObject.Models.ResultModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Services.CourseServices;
 using Services.SubscriptionServices;
 using Services.UserServices;
 using System.Net;
@@ -15,11 +16,15 @@ namespace PersFashApplicationAPI.Controllers
     {
         private readonly ICustomerService _customerService;
         private readonly ISubscriptionService _subscriptionService;
+        private readonly ICourseService _courseService;
 
-        public CustomerController(ICustomerService customerService, ISubscriptionService subscriptionService)
+        public CustomerController(ICustomerService customerService, 
+            ISubscriptionService subscriptionService,
+            ICourseService courseService)
         {
             _customerService = customerService;
             _subscriptionService = subscriptionService;
+            _courseService = courseService;
         }
 
         [HttpGet]
@@ -75,6 +80,26 @@ namespace PersFashApplicationAPI.Controllers
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.OK,
                 Message = "View details customer subscription successfully",
+                Data = result
+            };
+
+            return StatusCode(response.Code, response);
+        }
+
+        [HttpGet]
+        [Route("current-course")]
+        [Authorize]
+        public async Task<IActionResult> GetCourseOfCustomer()
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+            var result = await _courseService.GetCourseOfCustomer(token);
+
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "View current customer course successfully",
                 Data = result
             };
 

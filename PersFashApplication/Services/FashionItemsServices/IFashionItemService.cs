@@ -12,6 +12,7 @@ namespace Services.FashionItemsServices
     {
         Task<List<FashionItemViewListRes>> ViewFashionItems(int? page, int? size);
         Task<List<FashionItemViewListRes>> ViewFashionItemsOfCurrentPartner(string token, int? page, int? size);
+        Task<List<FashionItemViewListRes>> ViewFashionItemsByPartnerId(int partnerId, int? page, int? size);
         Task<FashionItemViewResModel> ViewDetailsFashionItem(int fashionItemId);
         Task CreateNewFashionItem(string token, FashionItemCreateReqModel fashionItemCreateReqModel);
         Task UpdateFashionItem(string token, FashionItemUpdateReqModel fashionItemUpdateReqModel);

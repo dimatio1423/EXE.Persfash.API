@@ -13,8 +13,6 @@ public partial class CustomerCourse
 
     public DateTime? EnrollmentDate { get; set; }
 
-    public string? CompletionStatus { get; set; }
-
     public virtual Course? Course { get; set; }
 
     public virtual Customer? Customer { get; set; }

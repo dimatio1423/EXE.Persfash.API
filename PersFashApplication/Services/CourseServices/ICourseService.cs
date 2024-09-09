@@ -1,5 +1,6 @@
 ﻿using BusinessObject.Models.CourseModel.Request;
 using BusinessObject.Models.CourseModel.Response;
+using BusinessObject.Models.CustomerCourseModel.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,14 @@ namespace Services.CourseServices
 {
     public interface ICourseService
     {
-        Task<CourseViewListResModel> GetCourses(int? page, int? size);
+        Task<List<CourseViewListResModel>> GetCourses(int? page, int? size);
+        Task<List<CourseViewListResModel>> GetCoursesByInfluencerId(int influencerId, int? page, int? size);
+        Task<List<CourseViewListResModel>> GetCoursesOfCurrentInfluencerId(string token, int? page, int? size);
         Task CreateNewCourse(string token, CourseCreateReqModel courseCreateReqModel);
+        Task UpdateCourse(string token, CourseUpdateReqModel courseCreateReqModel);
+        Task<bool> ActivateDeactivateCourse(string token, int courseId);
+        Task<bool> CheckCustomerCourse(string token, int courseId);
+        Task<CourseViewDetailsModel> GetCourseDetails(int courseId);
+        Task<List<CourseViewListResModel>> GetCourseOfCustomer(string token);
     }
 }

@@ -10,5 +10,7 @@ namespace Repositories.CourseMaterialRepos
 {
     public interface ICourseMaterialRepository : IGenericRepository<CourseMaterial>
     {
+        Task<List<CourseMaterial>> GetCourseMaterialByCourseContentId(int courseContenId, int? page, int? size);
+        Task<List<CourseMaterial>> GetCourseMaterialByCourseContentId(int courseContenId);
     }
 }

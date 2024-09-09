@@ -147,7 +147,7 @@ namespace Services.SubscriptionServices
 
             var currCustomerSubsription = await _customerSubscriptionRepository.GetCustomerSubscriptionByCustomerId(currCustomer.CustomerId);
 
-            return _mapper.Map<List<CustomerSubscriptionViewResModel>>(currCustomerSubsription.Select(x => x.IsActive == true).ToList());
+            return _mapper.Map<List<CustomerSubscriptionViewResModel>>(currCustomerSubsription.Where(x => x.IsActive == true).ToList());
         }
 
         public async Task<CustomerSubscriptionViewResModel> ViewDetailsSubscriptionOfCustomer(string token, int customerSubscriptionId)

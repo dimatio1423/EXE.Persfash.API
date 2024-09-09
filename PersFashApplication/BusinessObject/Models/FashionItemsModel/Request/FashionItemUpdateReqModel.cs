@@ -38,8 +38,8 @@ namespace BusinessObject.Models.FashionItemsModel.Request
 
         public string? ProductUrl { get; set; }
 
-        public IFormFile? Thumbnail { get; set; }
+        public string? Thumbnail { get; set; }
 
-        public List<IFormFile>? ItemImages { get; set; }
+        public List<string>? ItemImages { get; set; }
     }
 }

@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace BusinessObject.Models.CourseContentModel.Response
 {
-    internal class CourseContentViewListResModel
+    public class CourseContentViewListResModel
     {
+        public int CourseContentId { get; set; }
+
+        public string? Content { get; set; }
+
+        public int? Duration { get; set; }
+
+        public int? CourseId { get; set; }
     }
 }

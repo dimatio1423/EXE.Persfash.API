@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessObject.Models.InfluencerModel.Response;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,7 @@ namespace BusinessObject.Models.CourseModel.Response
 
         public decimal? Price { get; set; }
 
-        public int? InstructorId { get; set; }
+        public FashionInfluencerViewResModel Instructor { get; set; }
 
         public string? Status { get; set; }
     }

@@ -15,6 +15,8 @@ public partial class Course
 
     public int? InstructorId { get; set; }
 
+    public string? ThumbnailUrl { get; set; }
+
     public string? Status { get; set; }
 
     public virtual ICollection<CourseContent> CourseContents { get; set; } = new List<CourseContent>();

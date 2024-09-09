@@ -49,13 +49,13 @@ namespace BusinessObject.Models.FashionItemsModel.Request
         public List<string> Occasion { get; set; }
 
         [Required(ErrorMessage = "Thumbnail URL is required.")]
-        public IFormFile Thumbnail { get; set; }
+        public string Thumbnail { get; set; }
 
         [Required(ErrorMessage = "Product URL is required.")]
         public string ProductUrl { get; set; }
 
         [Required(ErrorMessage = "At least one image is required.")]
         [MinLength(1, ErrorMessage = "At least one image is required.")]
-        public List<IFormFile> ItemImages { get; set; }
+        public List<string> ItemImages { get; set; }
     }
 }
