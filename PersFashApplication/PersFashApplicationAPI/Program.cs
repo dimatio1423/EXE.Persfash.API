@@ -52,6 +52,7 @@ using Services.UserCourseServices;
 using Services.UserProfilesServices;
 using Services.UserServices;
 using Services.UserSubscriptionServices;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -122,7 +123,11 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICustomerSubscriptionService, CustomerSubscriptionService>();
 builder.Services.AddScoped<IDecodeTokenHandler, DecodeTokenHandler>();
 
+//-----------------------------------------VerificationCodeCache-----------------------------------------
+
 builder.Services.AddSingleton<VerificationCodeCache>();
+
+//-----------------------------------------DB-----------------------------------------
 
 builder.Services.AddDbContext<PersfashApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -199,6 +204,10 @@ builder.Services.AddSwaggerGen(options =>
             new string[] {}
          }
      });
+
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    options.IncludeXmlComments(xmlPath);
 });
 
 var app = builder.Build();

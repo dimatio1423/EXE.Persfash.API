@@ -27,6 +27,9 @@ namespace PersFashApplicationAPI.Controllers
             _courseService = courseService;
         }
 
+        /// <summary>
+        /// View current subscriptions of customer
+        /// </summary>
         [HttpGet]
         [Authorize(Roles ="Customer")]
         [Route("current-subscription")]
@@ -47,6 +50,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// View subscriptions history of customer
+        /// </summary>
         [HttpGet]
         [Authorize(Roles = "Customer")]
         [Route("history-subscription")]
@@ -67,6 +73,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// View details subscriptions of customer
+        /// </summary>
         [HttpGet]
         [Route("subscription/{customerSubscriptionId}")]
         public async Task<IActionResult> ViewDetailCustomerSubscription([FromRoute] int customerSubscriptionId)
@@ -86,6 +95,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// View current courses of customer
+        /// </summary>
         [HttpGet]
         [Route("current-course")]
         [Authorize]

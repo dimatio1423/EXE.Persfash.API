@@ -73,7 +73,7 @@ public partial class PersfashApplicationDbContext : DbContext
     {
         modelBuilder.Entity<Course>(entity =>
         {
-            entity.HasKey(e => e.CourseId).HasName("PK__Courses__C92D7187B7FEECB7");
+            entity.HasKey(e => e.CourseId).HasName("PK__Courses__C92D7187D7ED71BB");
 
             entity.Property(e => e.CourseId).HasColumnName("CourseID");
             entity.Property(e => e.CourseName).HasMaxLength(255);
@@ -95,7 +95,7 @@ public partial class PersfashApplicationDbContext : DbContext
 
         modelBuilder.Entity<CourseContent>(entity =>
         {
-            entity.HasKey(e => e.CourseContentId).HasName("PK__CourseCo__91F86B5046F0E3A2");
+            entity.HasKey(e => e.CourseContentId).HasName("PK__CourseCo__91F86B5082C1F583");
 
             entity.ToTable("CourseContent");
 
@@ -109,7 +109,7 @@ public partial class PersfashApplicationDbContext : DbContext
 
         modelBuilder.Entity<CourseImage>(entity =>
         {
-            entity.HasKey(e => e.CourseImageId).HasName("PK__Course_I__349B6F847C465A9D");
+            entity.HasKey(e => e.CourseImageId).HasName("PK__Course_I__349B6F848A5E9695");
 
             entity.ToTable("Course_Images");
 
@@ -127,7 +127,7 @@ public partial class PersfashApplicationDbContext : DbContext
 
         modelBuilder.Entity<CourseMaterial>(entity =>
         {
-            entity.HasKey(e => e.CourseMaterialId).HasName("PK__CourseMa__1BC9609BF685BE99");
+            entity.HasKey(e => e.CourseMaterialId).HasName("PK__CourseMa__1BC9609B8C86F360");
 
             entity.ToTable("CourseMaterial");
 
@@ -148,11 +148,11 @@ public partial class PersfashApplicationDbContext : DbContext
 
         modelBuilder.Entity<Customer>(entity =>
         {
-            entity.HasKey(e => e.CustomerId).HasName("PK__Customer__A4AE64B8734B2837");
+            entity.HasKey(e => e.CustomerId).HasName("PK__Customer__A4AE64B830D9FAB8");
 
-            entity.HasIndex(e => e.Username, "UQ__Customer__536C85E4EB76A71A").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__Customer__536C85E417A47299").IsUnique();
 
-            entity.HasIndex(e => e.Email, "UQ__Customer__A9D1053468A51211").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Customer__A9D105344063E7E5").IsUnique();
 
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
             entity.Property(e => e.DateJoined)
@@ -181,7 +181,7 @@ public partial class PersfashApplicationDbContext : DbContext
 
         modelBuilder.Entity<CustomerCourse>(entity =>
         {
-            entity.HasKey(e => e.CustomerCourseId).HasName("PK__Customer__DDCED13348845B81");
+            entity.HasKey(e => e.CustomerCourseId).HasName("PK__Customer__DDCED133809241A9");
 
             entity.Property(e => e.CustomerCourseId).HasColumnName("CustomerCourseID");
             entity.Property(e => e.CourseId).HasColumnName("CourseID");
@@ -201,9 +201,9 @@ public partial class PersfashApplicationDbContext : DbContext
 
         modelBuilder.Entity<CustomerProfile>(entity =>
         {
-            entity.HasKey(e => e.ProfileId).HasName("PK__Customer__290C88840382A88F");
+            entity.HasKey(e => e.ProfileId).HasName("PK__Customer__290C8884CC081384");
 
-            entity.HasIndex(e => e.CustomerId, "UQ__Customer__A4AE64B9B0802FD0").IsUnique();
+            entity.HasIndex(e => e.CustomerId, "UQ__Customer__A4AE64B9B3FE0F57").IsUnique();
 
             entity.Property(e => e.ProfileId).HasColumnName("ProfileID");
             entity.Property(e => e.BodyType).IsUnicode(false);
@@ -225,7 +225,7 @@ public partial class PersfashApplicationDbContext : DbContext
 
         modelBuilder.Entity<CustomerSubscription>(entity =>
         {
-            entity.HasKey(e => e.CustomerSubscriptionId).HasName("PK__Customer__ADE6426726B99E15");
+            entity.HasKey(e => e.CustomerSubscriptionId).HasName("PK__Customer__ADE64267AC30369D");
 
             entity.Property(e => e.CustomerSubscriptionId).HasColumnName("CustomerSubscriptionID");
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
@@ -246,11 +246,11 @@ public partial class PersfashApplicationDbContext : DbContext
 
         modelBuilder.Entity<FashionInfluencer>(entity =>
         {
-            entity.HasKey(e => e.InfluencerId).HasName("PK__FashionI__C32C1162DF3C4575");
+            entity.HasKey(e => e.InfluencerId).HasName("PK__FashionI__C32C11622D7C556A");
 
-            entity.HasIndex(e => e.Username, "UQ__FashionI__536C85E49C74C2F9").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__FashionI__536C85E41675E717").IsUnique();
 
-            entity.HasIndex(e => e.Email, "UQ__FashionI__A9D1053486D764B8").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__FashionI__A9D10534C5D633A5").IsUnique();
 
             entity.Property(e => e.InfluencerId).HasColumnName("InfluencerID");
             entity.Property(e => e.DateJoined)
@@ -277,7 +277,7 @@ public partial class PersfashApplicationDbContext : DbContext
 
         modelBuilder.Entity<FashionItem>(entity =>
         {
-            entity.HasKey(e => e.ItemId).HasName("PK__FashionI__727E83EB6AA04329");
+            entity.HasKey(e => e.ItemId).HasName("PK__FashionI__727E83EB17987E78");
 
             entity.Property(e => e.ItemId).HasColumnName("ItemID");
             entity.Property(e => e.Brand).HasMaxLength(100);
@@ -318,7 +318,7 @@ public partial class PersfashApplicationDbContext : DbContext
 
         modelBuilder.Entity<FashionItemImage>(entity =>
         {
-            entity.HasKey(e => e.ItemImageId).HasName("PK__FashionI__09AE32B7650E1AB8");
+            entity.HasKey(e => e.ItemImageId).HasName("PK__FashionI__09AE32B77FE79055");
 
             entity.ToTable("FashionItem_Images");
 
@@ -336,7 +336,7 @@ public partial class PersfashApplicationDbContext : DbContext
 
         modelBuilder.Entity<Feedback>(entity =>
         {
-            entity.HasKey(e => e.FeedbackId).HasName("PK__Feedback__6A4BEDF65711CE8F");
+            entity.HasKey(e => e.FeedbackId).HasName("PK__Feedback__6A4BEDF66F97132E");
 
             entity.ToTable("Feedback");
 
@@ -369,9 +369,9 @@ public partial class PersfashApplicationDbContext : DbContext
 
         modelBuilder.Entity<Partner>(entity =>
         {
-            entity.HasKey(e => e.PartnerId).HasName("PK__Partners__39FD6332C609DCDB");
+            entity.HasKey(e => e.PartnerId).HasName("PK__Partners__39FD63327269E101");
 
-            entity.HasIndex(e => e.Username, "UQ__Partners__536C85E4FA9D27EB").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__Partners__536C85E475F97727").IsUnique();
 
             entity.Property(e => e.PartnerId).HasColumnName("PartnerID");
             entity.Property(e => e.ContactEmail)
@@ -384,6 +384,9 @@ public partial class PersfashApplicationDbContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false);
             entity.Property(e => e.PartnerName).HasMaxLength(255);
+            entity.Property(e => e.PartnerProfilePicture)
+                .HasMaxLength(255)
+                .IsUnicode(false);
             entity.Property(e => e.Password)
                 .HasMaxLength(255)
                 .IsUnicode(false);
@@ -401,7 +404,7 @@ public partial class PersfashApplicationDbContext : DbContext
 
         modelBuilder.Entity<Payment>(entity =>
         {
-            entity.HasKey(e => e.PaymentId).HasName("PK__Payment__9B556A5822ADBA3F");
+            entity.HasKey(e => e.PaymentId).HasName("PK__Payment__9B556A5808A32610");
 
             entity.ToTable("Payment");
 
@@ -428,7 +431,7 @@ public partial class PersfashApplicationDbContext : DbContext
 
         modelBuilder.Entity<Recommendation>(entity =>
         {
-            entity.HasKey(e => e.RecommendationId).HasName("PK__Recommen__AA15BEC485567CC6");
+            entity.HasKey(e => e.RecommendationId).HasName("PK__Recommen__AA15BEC4B5A92A63");
 
             entity.Property(e => e.RecommendationId).HasColumnName("RecommendationID");
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
@@ -449,7 +452,7 @@ public partial class PersfashApplicationDbContext : DbContext
 
         modelBuilder.Entity<RefreshToken>(entity =>
         {
-            entity.HasKey(e => e.RefreshTokenId).HasName("PK__RefreshT__F5845E59DB116BDA");
+            entity.HasKey(e => e.RefreshTokenId).HasName("PK__RefreshT__F5845E59E2843D64");
 
             entity.ToTable("RefreshToken");
 
@@ -482,7 +485,7 @@ public partial class PersfashApplicationDbContext : DbContext
 
         modelBuilder.Entity<Subscription>(entity =>
         {
-            entity.HasKey(e => e.SubscriptionId).HasName("PK__Subscrip__9A2B24BD2C81E2BA");
+            entity.HasKey(e => e.SubscriptionId).HasName("PK__Subscrip__9A2B24BD7DDC729F");
 
             entity.Property(e => e.SubscriptionId).HasColumnName("SubscriptionID");
             entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
@@ -493,11 +496,11 @@ public partial class PersfashApplicationDbContext : DbContext
 
         modelBuilder.Entity<SystemAdmin>(entity =>
         {
-            entity.HasKey(e => e.AdminId).HasName("PK__SystemAd__719FE4E822A7E496");
+            entity.HasKey(e => e.AdminId).HasName("PK__SystemAd__719FE4E81002A3D5");
 
             entity.ToTable("SystemAdmin");
 
-            entity.HasIndex(e => e.Username, "UQ__SystemAd__536C85E4677BFF91").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__SystemAd__536C85E4C4F96110").IsUnique();
 
             entity.Property(e => e.AdminId).HasColumnName("AdminID");
             entity.Property(e => e.Password)
@@ -513,7 +516,7 @@ public partial class PersfashApplicationDbContext : DbContext
 
         modelBuilder.Entity<Wardrobe>(entity =>
         {
-            entity.HasKey(e => e.WardrobeId).HasName("PK__Wardrobe__D1E4D2E21BDF6B10");
+            entity.HasKey(e => e.WardrobeId).HasName("PK__Wardrobe__D1E4D2E21E4A0977");
 
             entity.ToTable("Wardrobe");
 
@@ -531,7 +534,7 @@ public partial class PersfashApplicationDbContext : DbContext
 
         modelBuilder.Entity<WardrobeItem>(entity =>
         {
-            entity.HasKey(e => e.WardrobeItemId).HasName("PK__Wardrobe__72A363C99A4813AD");
+            entity.HasKey(e => e.WardrobeItemId).HasName("PK__Wardrobe__72A363C96B18EC1B");
 
             entity.Property(e => e.WardrobeItemId).HasColumnName("WardrobeItemID");
             entity.Property(e => e.ItemId).HasColumnName("ItemID");

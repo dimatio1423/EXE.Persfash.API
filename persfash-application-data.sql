@@ -14,10 +14,10 @@ VALUES
 (4, 'Pear', 'Bohemian', 'Regular', 'M' , 'Purple, Yellow', 'Linen, Cotton', 'Vacation, Wedding', 'Art enthusiast, Yoga practitioner', 'http://facebook.com/emilyjohnson', 1);
 
 
-INSERT INTO Partners (PartnerName, WebsiteURL, ContactEmail, ContactPhone, Email, Password, Username, Status)
+INSERT INTO Partners (PartnerName, PartnerProfilePicture, WebsiteURL, ContactEmail, ContactPhone, Email, Password, Username, Status)
 VALUES
-('FashionWorld', 'http://fashionworld.com', 'contact@fashionworld.com', '123-456-7890', 'partner1@fashionworld.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'partner1', 'Active'),
-('StyleHub', 'http://stylehub.com', 'support@stylehub.com', '098-765-4321', 'partner2@stylehub.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'partner2', 'Active');
+('FashionWorld', 'profileURL.png','http://fashionworld.com', 'contact@fashionworld.com', '123-456-7890', 'partner1@fashionworld.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'partner1', 'Active'),
+('StyleHub', 'profileURL2.png','http://stylehub.com', 'support@stylehub.com', '098-765-4321', 'partner2@stylehub.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'partner2', 'Active');
 
 
 INSERT INTO FashionItems (ItemName, Category, Brand, Price, FitType, GenderTarget, FashionTrend, Size, Color, Material, Occasion, ThumbnailURL, ProductURL, PartnerID, Status)

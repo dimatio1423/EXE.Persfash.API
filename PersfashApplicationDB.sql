@@ -38,6 +38,7 @@ CREATE TABLE CustomerProfiles (
 CREATE TABLE Partners (
     PartnerID INT PRIMARY KEY IDENTITY(1,1),
     PartnerName NVARCHAR(255),
+	PartnerProfilePicture VARCHAR(255),
     WebsiteURL VARCHAR(255),
     ContactEmail VARCHAR(255),
     ContactPhone VARCHAR(255),

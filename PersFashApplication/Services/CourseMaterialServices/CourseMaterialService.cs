@@ -174,8 +174,8 @@ namespace Services.CourseMaterialServices
                 throw new ApiException(HttpStatusCode.BadRequest, "Can not modify another fashion influencer's material");
             }
 
-            currCourseMaterial.MaterialName = courseMaterialUpdateReqModel.MaterialName;
-            currCourseMaterial.MaterialLink = courseMaterialUpdateReqModel.MaterialLink;
+            currCourseMaterial.MaterialName = !string.IsNullOrEmpty(courseMaterialUpdateReqModel.MaterialName) ? courseMaterialUpdateReqModel.MaterialName : currCourseMaterial.MaterialName;
+            currCourseMaterial.MaterialLink = !string.IsNullOrEmpty(courseMaterialUpdateReqModel.MaterialLink) ? courseMaterialUpdateReqModel.MaterialLink : currCourseMaterial.MaterialLink; ;
 
             await _courseMaterialRepository.Update(currCourseMaterial);
         }

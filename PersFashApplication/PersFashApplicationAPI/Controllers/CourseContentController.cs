@@ -21,6 +21,9 @@ namespace PersFashApplicationAPI.Controllers
             _courseContentService = courseContentService;
         }
 
+        /// <summary>
+        /// View course content by course 
+        /// </summary>
         [HttpGet]
         [Route ("course/{courseId}")] 
         
@@ -39,6 +42,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Create new course 
+        /// </summary>
         [HttpPost]
         [Authorize (Roles = "FashionInfluencer")]
 
@@ -58,6 +64,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Update course 
+        /// </summary>
         [HttpPut]
         [Authorize(Roles = "FashionInfluencer")]
 
@@ -77,6 +86,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Remove course 
+        /// </summary>
         [HttpDelete]
         [Route ("{courseContentId}")]
         [Authorize(Roles = "FashionInfluencer")]

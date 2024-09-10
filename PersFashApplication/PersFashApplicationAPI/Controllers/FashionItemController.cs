@@ -22,6 +22,10 @@ namespace PersFashApplicationAPI.Controllers
             _fashionItemService = fashionItemService;
         }
 
+
+        /// <summary>
+        /// View fashion items
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> ViewFashionItems(int? page = 1, int? size = 10)
         {
@@ -38,6 +42,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// View details fashion items
+        /// </summary>
         [HttpGet]
         [Route("{itemId}")]
         public async Task<IActionResult> ViewDetailsFashionItem(int itemId)
@@ -55,6 +62,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Create new fashion item for partner
+        /// </summary>
         [HttpPost]
         [Authorize(Roles = "Partner")]
         public async Task<IActionResult> CreateNewFashionItem([FromBody] FashionItemCreateReqModel fashionItemCreateReqModel)
@@ -73,6 +83,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Update fashion items
+        /// </summary>
         [HttpPut]
         [Authorize(Roles = "Partner")]
         public async Task<IActionResult> UpdateFashionItem([FromBody] FashionItemUpdateReqModel fashionItemUpdateReqModel)
@@ -91,6 +104,10 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+
+        /// <summary>
+        /// Remove fashion items
+        /// </summary>
         [HttpDelete]
         [Route("{itemId}")]
         [Authorize(Roles ="Partner")]
@@ -110,6 +127,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// View fashion items of the current logging partner
+        /// </summary>
         [HttpGet]
         [Route("partner")]
         [Authorize(Roles = "Partner")]
@@ -130,6 +150,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// View fashion items by partner
+        /// </summary>
         [HttpGet]
         [Route("partner/{partnerId}")]
         public async Task<IActionResult> ViewFashionItemsByPartner([FromRoute] int partnerId, int? page = 1, int? size = 10)

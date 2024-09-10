@@ -17,6 +17,9 @@ namespace PersFashApplicationAPI.Controllers
             _aWSService = aWSService;
         }
 
+        /// <summary>
+        /// For uploading images
+        /// </summary>
         [HttpPost]
         [Route("image")]
         public async Task<IActionResult> UploadFileImages(List<IFormFile> images)
@@ -34,6 +37,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// For uploading other files
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> UploadFile(List<IFormFile> files)
         {

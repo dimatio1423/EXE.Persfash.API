@@ -19,6 +19,9 @@ namespace PersFashApplicationAPI.Controllers
             _courseMaterialService = courseMaterialService;
         }
 
+        /// <summary>
+        /// View course material by course content
+        /// </summary>
         [HttpGet]
         [Route("course-content/{courseContentId}")]
 
@@ -37,6 +40,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Add new course material for course content
+        /// </summary>
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> CreateNewMaterial([FromBody] MaterialCreateReqModel materialCreateReqModel)
@@ -55,6 +61,10 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+
+        /// <summary>
+        /// Update course material
+        /// </summary>
         [HttpPut]
         [Authorize]
         public async Task<IActionResult> UpdateMaterial([FromBody] CourseMaterialUpdateReqModel courseMaterialUpdateReqModel)
@@ -73,6 +83,10 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+
+        /// <summary>
+        /// Remove course material
+        /// </summary>
         [HttpDelete]
         [Route ("{materialId}")]
         [Authorize]

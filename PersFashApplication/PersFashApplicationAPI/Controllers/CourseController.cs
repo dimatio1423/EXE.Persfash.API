@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Services.CourseServices;
+using System.ComponentModel;
 using System.Net;
 
 namespace PersFashApplicationAPI.Controllers
@@ -20,6 +21,9 @@ namespace PersFashApplicationAPI.Controllers
             _courseService = courseService;
         }
 
+        /// <summary>
+        /// View courses
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetCourses(int? page = 1, int? size = 10)
         {
@@ -36,6 +40,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// View courses by influencer
+        /// </summary>
         [HttpGet]
         [Route("influencer/{influencerId}")]
         public async Task<IActionResult> GetCoursesByInfluencerId([FromRoute] int influencerId, int? page = 1, int? size = 10)
@@ -53,6 +60,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// View courses of the current logging influencer
+        /// </summary>
         [HttpGet]
         [Route("influencer")]
         [Authorize (Roles = "FashionInfluencer")]
@@ -74,6 +84,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Add new course
+        /// </summary>
         [HttpPost]
         [Authorize(Roles = "FashionInfluencer")]
         public async Task<IActionResult> CreateNewCourses(CourseCreateReqModel courseCreateReqModel)
@@ -93,6 +106,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Update course information
+        /// </summary>
         [HttpPut]
         [Authorize(Roles = "FashionInfluencer")]
         public async Task<IActionResult> UpdateCourse(CourseUpdateReqModel courseUpdateReqModel)
@@ -112,6 +128,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Change status of the current course
+        /// </summary>
         [HttpPost]
         [Route ("activate-decativate/{courseId}")]
         [Authorize(Roles = "FashionInfluencer")]
@@ -132,6 +151,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Check if the current customer has already owned the course
+        /// </summary>
         [HttpPost]
         [Route("check-customer")]
         [Authorize(Roles ="Customer")]
@@ -153,6 +175,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// View details course
+        /// </summary>
         [HttpPost]
         [Route("{courseId}")]
         public async Task<IActionResult> ViewDetailsCourse([FromRoute] int courseId)

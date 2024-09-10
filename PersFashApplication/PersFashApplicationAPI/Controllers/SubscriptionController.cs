@@ -20,6 +20,9 @@ namespace PersFashApplicationAPI.Controllers
             _subscriptionService = subscriptionService;
         }
 
+        /// <summary>
+        /// View subscriptions
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> ViewSubscriptions(int? page = 1, int? size = 10)
         {
@@ -37,6 +40,10 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+
+        /// <summary>
+        /// View details subscriptions
+        /// </summary>
         [HttpGet]
         [Route("{subscriptionId}")]
         public async Task<IActionResult> ViewDetailsSubscription([FromRoute] int subscriptionId)
@@ -55,6 +62,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Create new subscription for admin
+        /// </summary>
         [HttpPost]
         [Authorize (Roles = "Admin")]
         public async Task<IActionResult> CreateNewSubscription([FromBody] SubscriptionCreateReqModel subscriptionCreateReqModel )
@@ -72,6 +82,10 @@ namespace PersFashApplicationAPI.Controllers
 
             return StatusCode(response.Code, response);
         }
+
+        /// <summary>
+        /// Update subscription for admin
+        /// </summary>
 
         [HttpPut]
         [Authorize(Roles = "Admin")]
@@ -91,6 +105,10 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+
+        /// <summary>
+        /// Remove subscriptions
+        /// </summary>
         [HttpDelete]
         [Route("/{subscriptionId}")]
         [Authorize(Roles = "Admin")]

@@ -239,7 +239,12 @@ namespace Services.FashionItemsServices
                 foreach (var item in currItemImages)
                 {
                     var s3Key = _aWSService.ExtractS3Key(item.ImageUrl);
-                    await _aWSService.DeleteFile("persfash-application", s3Key);
+
+                    if (!string.IsNullOrEmpty(s3Key))
+                    {
+                        await _aWSService.DeleteFile("persfash-application", s3Key);
+                    }
+                    
                     await _fashionItemImageRepository.Remove(item);
                 }
 
