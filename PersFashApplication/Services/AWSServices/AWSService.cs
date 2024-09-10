@@ -3,6 +3,7 @@ using Amazon.S3.Model;
 using Amazon.S3.Util;
 using Microsoft.AspNetCore.Http;
 using Services.AWSService;
+using Services.FileServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,16 +16,24 @@ namespace Services.AWSServices
     public class AWSService : IAWSService
     {
         private readonly IAmazonS3 _amazonS3;
+        private readonly IFileService _fileService;
 
-        public AWSService(IAmazonS3 amazonS3)
+        public AWSService(IAmazonS3 amazonS3, IFileService fileService)
         {
             _amazonS3 = amazonS3;
+            _fileService = fileService;
         }
         public async Task DeleteFile(string bucketName, string key)
         {
             var bucketExist = await AmazonS3Util.DoesS3BucketExistV2Async(_amazonS3, bucketName);
             if (!bucketExist) throw new Exception("Bucket does not exist");
             await _amazonS3.DeleteObjectAsync(bucketName, key);
+        }
+
+        public string ExtractS3Key(string url)
+        {
+            var parts = url.Split(new[] { ".com/" }, StringSplitOptions.None);
+            return parts.Length > 1 ? parts[1] : string.Empty;
         }
 
         public async Task<string> UploadFile(IFormFile file, string bucketName, string? prefix)
@@ -38,7 +47,9 @@ namespace Services.AWSServices
             //    duration = tfile.Properties.Duration;
             //}
 
-                var bucketExist = await AmazonS3Util.DoesS3BucketExistV2Async(_amazonS3, bucketName);
+            //_fileService.CheckImageFile(file);
+
+            var bucketExist = await AmazonS3Util.DoesS3BucketExistV2Async(_amazonS3, bucketName);
             if (!bucketExist) throw new Exception("Bucket does not exist");
 
             var request = new PutObjectRequest
@@ -63,6 +74,83 @@ namespace Services.AWSServices
             string url = $"https://{bucketName}.s3.ap-southeast-2.amazonaws.com/{request.Key}";
 
             return url;
+        }
+
+        public async Task<List<string>> UploadFiles(List<IFormFile> files, string bucketName, string? prefix)
+        {
+            List<string> imageURLs = [];
+
+            var bucketExist = await AmazonS3Util.DoesS3BucketExistV2Async(_amazonS3, bucketName);
+            if (!bucketExist) throw new Exception("Bucket does not exist");
+
+            foreach (var file in files)
+            {
+                var request = new PutObjectRequest
+                {
+                    BucketName = bucketName,
+                    Key = string.IsNullOrEmpty(prefix) ? file.FileName : $"{prefix?.Trim('/')}/{file.Name}",
+                    InputStream = file.OpenReadStream()
+                };
+
+                request.Metadata.Add("Content-Type", file.ContentType);
+                var uploadResult = await _amazonS3.PutObjectAsync(request);
+
+
+                var metadata = await _amazonS3.GetObjectMetadataAsync(new GetObjectMetadataRequest
+                {
+                    BucketName = bucketName,
+                    Key = request.Key
+                });
+
+                if (metadata == null) throw new Exception("Object metadata does not exist");
+
+                string url = $"https://{bucketName}.s3.ap-southeast-2.amazonaws.com/{request.Key}";
+
+                imageURLs.Add(url);
+            }
+
+            return imageURLs;
+        }
+
+        public async Task<List<string>> UploadFilesImages(List<IFormFile> files, string bucketName, string? prefix)
+        {
+            List<string> imageURLs = [];
+
+            foreach (var file in files)
+            {
+                _fileService.CheckImageFile(file);
+            }
+
+            var bucketExist = await AmazonS3Util.DoesS3BucketExistV2Async(_amazonS3, bucketName);
+            if (!bucketExist) throw new Exception("Bucket does not exist");
+
+            foreach (var file in files)
+            {
+                var request = new PutObjectRequest
+                {
+                    BucketName = bucketName,
+                    Key = string.IsNullOrEmpty(prefix) ? file.FileName : $"{prefix?.Trim('/')}/{file.Name}",
+                    InputStream = file.OpenReadStream()
+                };
+
+                request.Metadata.Add("Content-Type", file.ContentType);
+                var uploadResult = await _amazonS3.PutObjectAsync(request);
+
+
+                var metadata = await _amazonS3.GetObjectMetadataAsync(new GetObjectMetadataRequest
+                {
+                    BucketName = bucketName,
+                    Key = request.Key
+                });
+
+                if (metadata == null) throw new Exception("Object metadata does not exist");
+
+                string url = $"https://{bucketName}.s3.ap-southeast-2.amazonaws.com/{request.Key}";
+
+                imageURLs.Add(url);
+            }
+
+            return imageURLs;
         }
     }
 }

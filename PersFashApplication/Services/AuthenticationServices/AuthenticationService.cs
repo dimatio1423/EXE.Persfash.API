@@ -1,5 +1,6 @@
 ﻿using BusinessObject.Entities;
 using BusinessObject.Enums;
+using BusinessObject.Models.PasswordModel;
 using BusinessObject.Models.UserModels.Request;
 using BusinessObject.Models.UserModels.Response;
 using Microsoft.Extensions.Configuration;
@@ -9,7 +10,9 @@ using Repositories.PartnerRepos;
 using Repositories.RefreshTokenRepos;
 using Repositories.SystemAdminRepos;
 using Repositories.UserRepos;
+using Services.EmailService;
 using Services.Helper.CustomExceptions;
+using Services.Helper.VerifyCode;
 using Services.Helpers.Handler.DecodeTokenHandler;
 using Services.JWTService;
 using Services.Security;
@@ -33,7 +36,9 @@ namespace Services.AuthenticationServices
         private readonly ISystemAdminRepository _adminRepository;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
         private readonly IDecodeTokenHandler _decodeToken;
+        private readonly IEmailService _emailService;
         private readonly IJWTService _jWTService;
+        private readonly VerificationCodeCache verificationCodeCache;
 
         public AuthenticationService(ICustomerRepository customerRepository, 
             IPartnerRepository partnerRepository, 
@@ -41,15 +46,126 @@ namespace Services.AuthenticationServices
             IRefreshTokenRepository refreshTokenRepository,
             ISystemAdminRepository adminRepository,
             IDecodeTokenHandler decodeToken,
-            IJWTService jWTService)
+            IEmailService emailService,
+            IJWTService jWTService,
+            VerificationCodeCache verificationCodeCache
+            )
         {
+             this.verificationCodeCache = verificationCodeCache;
+
             _customerRepository = customerRepository;
             _partnerRepository = partnerRepository;
             _fashionInfluencerRepository = fashionInfluencerRepository;
             _adminRepository = adminRepository;
             _refreshTokenRepository = refreshTokenRepository;
             _decodeToken = decodeToken;
+            _emailService = emailService;
             _jWTService = jWTService;
+        }
+
+        public async Task ChangePassword(string token, ChangePasswordReqModel changePasswordReqModel)
+        {
+            var decode = _decodeToken.decode(token);
+
+            var currCustomer = await _customerRepository.GetCustomerByUsername(decode.username);
+
+            var currPartner = await _partnerRepository.GetPartnerByUsername(decode.username);
+
+            var currInfluencer = await _fashionInfluencerRepository.GetFashionInfluencerByUsername(decode.username);
+
+            if (currCustomer != null)
+            {
+
+                if (!PasswordHasher.VerifyPassword(changePasswordReqModel.OldPassword, currCustomer.Password))
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, "The old password incorrect");
+                }
+
+                if (changePasswordReqModel.OldPassword.Equals(changePasswordReqModel.NewPassword))
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, "The new password is the same with old password");
+                }
+
+                currCustomer.Password = PasswordHasher.HashPassword(changePasswordReqModel.NewPassword);
+
+                await _customerRepository.Update(currCustomer);
+            }
+            else if (currPartner != null)
+            {
+                if (!PasswordHasher.VerifyPassword(changePasswordReqModel.OldPassword, currPartner.Password))
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, "The old password incorrect");
+                }
+
+                if (changePasswordReqModel.OldPassword.Equals(changePasswordReqModel.NewPassword))
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, "The new password is the same with old password");
+                }
+
+                currPartner.Password = PasswordHasher.HashPassword(changePasswordReqModel.NewPassword);
+
+                await _partnerRepository.Update(currPartner);
+            }
+            else if (currInfluencer != null)
+            {
+                if (!PasswordHasher.VerifyPassword(changePasswordReqModel.OldPassword, currInfluencer.Password))
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, "The old password incorrect");
+                }
+
+                if (changePasswordReqModel.OldPassword.Equals(changePasswordReqModel.NewPassword))
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, "The new password is the same with old password");
+                }
+
+                currInfluencer.Password = PasswordHasher.HashPassword(changePasswordReqModel.NewPassword);
+
+                await _fashionInfluencerRepository.Update(currInfluencer);
+            }
+            else
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "User does not exist");
+            }
+        }
+
+        public async Task ForgotPassword(string email)
+        {
+            var currCustomer = await _customerRepository.GetCustomerByEmail(email);
+
+            var currPartner = await _partnerRepository.GetPartnerByEmail(email);
+
+            var currInfluencer = await _fashionInfluencerRepository.GetFashionInfluencerByEmail(email);
+
+            if (currCustomer != null)
+            {
+
+                var otp = GenerateOTP();
+
+                verificationCodeCache.Put(currCustomer.Username, otp, 5);
+
+                await _emailService.SendUserResetPassword(currCustomer.FullName, currCustomer.Email, otp);
+
+            }
+            else if (currPartner != null)
+            {
+                var otp = GenerateOTP();
+
+                verificationCodeCache.Put(currPartner.Username, otp, 5);
+
+                await _emailService.SendUserResetPassword(currPartner.PartnerName, currPartner.Email, otp);
+            }
+            else if (currInfluencer != null)
+            {
+                var otp = GenerateOTP();
+
+                verificationCodeCache.Put(currInfluencer.Username, otp, 5);
+
+                await _emailService.SendUserResetPassword(currInfluencer.FullName, currInfluencer.Email, otp);
+            }
+            else
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "User does not exist");
+            }
         }
 
         public async Task<UserInformationModel> GetUserInfor(string token)
@@ -263,9 +379,83 @@ namespace Services.AuthenticationServices
             }
         }
 
+        public async Task Logout(string refreshToken)
+        {
+            var currRefreshToken = await _refreshTokenRepository.GetByRefreshToken(refreshToken);
+
+            if (currRefreshToken == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Refresh token does not exist");
+            }
+
+            await _refreshTokenRepository.Remove(currRefreshToken);
+        }
+
         public Task RegisterCustomer(UserLoginReqModel userLoginReqModel)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task ResetPassword(ResetPasswordReqModel resetPasswordReqModel)
+        {
+            var currCustomer = await _customerRepository.GetCustomerByEmail(resetPasswordReqModel.Email);
+
+            var currPartner = await _partnerRepository.GetPartnerByEmail(resetPasswordReqModel.Email);
+
+            var currInfluencer = await _fashionInfluencerRepository.GetFashionInfluencerByEmail(resetPasswordReqModel.Email);
+
+            if (currCustomer != null)
+            {
+
+                var otp = verificationCodeCache.Get(currCustomer.Username);
+
+                if (otp == null || !otp.Equals(resetPasswordReqModel.OTP))
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, "OTP has expired or invalid OTP");
+                }
+
+                currCustomer.Password = PasswordHasher.HashPassword(resetPasswordReqModel.NewPassword);
+
+                await _customerRepository.Update(currCustomer);
+
+            }
+            else if (currPartner != null)
+            {
+                var otp = verificationCodeCache.Get(currPartner.Username);
+
+                if (otp == null || !otp.Equals(resetPasswordReqModel.OTP))
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, "OTP has expired or invalid OTP");
+                }
+
+                currPartner.Password = PasswordHasher.HashPassword(resetPasswordReqModel.NewPassword);
+
+                await _partnerRepository.Update(currPartner);
+            }
+            else if (currInfluencer != null)
+            {
+                var otp = verificationCodeCache.Get(currInfluencer.Username);
+
+                if (otp == null || !otp.Equals(resetPasswordReqModel.OTP))
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, "OTP has expired or invalid OTP");
+                }
+
+                currInfluencer.Password = PasswordHasher.HashPassword(resetPasswordReqModel.NewPassword);
+
+                await _fashionInfluencerRepository.Update(currInfluencer);
+            }
+            else
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "User does not exist");
+            }
+        }
+
+        public string GenerateOTP()
+        {
+            var otp = new Random().Next(100000, 999999).ToString();
+
+            return otp;
         }
     }
 }

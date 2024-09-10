@@ -1,4 +1,4 @@
-
+Drop database PersfashApplicationDB
 CREATE DATABASE PersfashApplicationDB;
 GO
 USE PersfashApplicationDB;
@@ -19,14 +19,18 @@ CREATE TABLE Customers (
 
 CREATE TABLE CustomerProfiles (
     ProfileID INT PRIMARY KEY IDENTITY(1,1),
-    CustomerID INT,
+    CustomerID INT UNIQUE,
     BodyType VARCHAR(MAX),
     FashionStyle VARCHAR(MAX),
+	FitPreferences VARCHAR(MAX),
+	PreferredSize VARCHAR (MAX),
     PreferredColors VARCHAR(MAX),
     PreferredMaterials VARCHAR(MAX),
     Occasion VARCHAR(255),
     Lifestyle TEXT,
-    SocialMediaLinks NVARCHAR(MAX),
+    FacebookLink NVARCHAR(MAX),
+    InstagramLink NVARCHAR(MAX),
+    TikTokLink NVARCHAR(MAX),
     ProfileSetupComplete BIT,
     FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
 );
@@ -34,6 +38,7 @@ CREATE TABLE CustomerProfiles (
 CREATE TABLE Partners (
     PartnerID INT PRIMARY KEY IDENTITY(1,1),
     PartnerName NVARCHAR(255),
+	PartnerProfilePicture VARCHAR(255),
     WebsiteURL VARCHAR(255),
     ContactEmail VARCHAR(255),
     ContactPhone VARCHAR(255),
@@ -45,15 +50,18 @@ CREATE TABLE Partners (
 
 CREATE TABLE FashionItems (
     ItemID INT PRIMARY KEY IDENTITY(1,1),
-    ItemName VARCHAR(255) NOT NULL,
+    ItemName NVARCHAR(255) NOT NULL,
     Category VARCHAR(100),
-    Brand VARCHAR(100),
+    Brand NVARCHAR(100),
     Price DECIMAL(10, 2),
+	FitType VARCHAR(MAX),
+	GenderTarget VARCHAR(MAX),
+	FashionTrend VARCHAR(MAX),
     Size VARCHAR(50),
     Color VARCHAR(MAX),
     Material VARCHAR(MAX),
+	ThumbnailURL VARCHAR(255),
     Occasion VARCHAR(MAX),
-    ImageURL VARCHAR(255),
     ProductURL VARCHAR(255),
 	PartnerID INT,
     DateAdded DATETIME DEFAULT GETDATE(),
@@ -61,11 +69,18 @@ CREATE TABLE FashionItems (
 	FOREIGN KEY (PartnerID) REFERENCES Partners(PartnerID)
 );
 
+CREATE TABLE FashionItem_Images(
+   ItemImageID INT PRIMARY KEY IDENTITY(1,1),
+   ItemID INT,
+   ImageURL VARCHAR(255)
+   FOREIGN KEY (ItemID) REFERENCES FashionItems(ItemID)
+)
+
 CREATE TABLE Recommendations (
     RecommendationID INT PRIMARY KEY IDENTITY(1,1),
     CustomerID INT,
     ItemID INT,
-    RecommendationType VARCHAR(100),
+    RecommendationType NVARCHAR(100),
     RecommendationDate DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
     FOREIGN KEY (ItemID) REFERENCES FashionItems(ItemID)
@@ -79,20 +94,30 @@ CREATE TABLE FashionInfluencers (
 	Password VARCHAR(255) NOT NULL,
     Specialty VARCHAR(MAX),
     ProfilePicture VARCHAR(255),
-    SocialMediaLinks NVARCHAR(MAX),
+    FacebookLink NVARCHAR(MAX),
+    InstagramLink NVARCHAR(MAX),
+    TikTokLink NVARCHAR(MAX),
 	Status VARCHAR(50),
     DateJoined DATETIME DEFAULT GETDATE()
 );
 
 CREATE TABLE Courses (
     CourseID INT PRIMARY KEY IDENTITY(1,1),
-    CourseName VARCHAR(255),
+    CourseName NVARCHAR(255),
     Description TEXT,
     Price DECIMAL(10, 2),
     InstructorID INT,
+	ThumbnailURL VARCHAR(255),
 	Status VARCHAR(50),
     FOREIGN KEY (InstructorID) REFERENCES FashionInfluencers(InfluencerID)
 );
+
+CREATE TABLE Course_Images(
+   CourseImageID INT PRIMARY KEY IDENTITY(1,1),
+   CourseID INT,
+   ImageURL VARCHAR(255)
+   FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
+)
 
 CREATE TABLE CourseContent (
     CourseContentID INT PRIMARY KEY IDENTITY(1,1),
@@ -112,11 +137,10 @@ CREATE TABLE CourseMaterial (
 );
 
 CREATE TABLE CustomerCourses (
-    UserCourseID INT PRIMARY KEY IDENTITY(1,1),
+    CustomerCourseID INT PRIMARY KEY IDENTITY(1,1),
     CustomerID INT,
     CourseID INT,
     EnrollmentDate DATETIME DEFAULT GETDATE(),
-    CompletionStatus VARCHAR(50),
     FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
     FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
 );
@@ -176,9 +200,9 @@ CREATE TABLE RefreshToken (
 CREATE TABLE Subscriptions(
 	SubscriptionID INT PRIMARY KEY IDENTITY(1,1),
 	SubscriptionTitle NVARCHAR(MAX) NOT NULL,
-	Price DECIMAL(18, 2) NOT NULL,
-	DurationInDays INT NOT NULL,
-	Description NVARCHAR(255) NULL,
+	Price DECIMAL(18, 2),
+	DurationInDays INT,
+	Description NVARCHAR(MAX),
 	Status VARCHAR(50)
 )
 
@@ -186,9 +210,9 @@ CREATE TABLE CustomerSubscriptions(
 	CustomerSubscriptionID INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	CustomerID INT NOT NULL,
 	SubscriptionID INT NOT NULL,
-	StartDate datetime NOT NULL,
-	EndDate datetime NOT NULL,
-	IsActive bit NOT NULL, 
+	StartDate datetime ,
+	EndDate datetime ,
+	IsActive bit, 
 	FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
     FOREIGN KEY (SubscriptionID) REFERENCES Subscriptions(SubscriptionID)
 )
@@ -198,7 +222,9 @@ CREATE TABLE Payment(
    PayementDate datetime NOT NULL,
    Price DECIMAL(10, 2) NOT NULL,
    CustomerID INT NOT NULL,
-   SubscriptionID INT NOT NULL,
+   SubscriptionID INT,
+   CourseID INT,
    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
-   FOREIGN KEY (SubscriptionID) REFERENCES Subscriptions(SubscriptionID)
+   FOREIGN KEY (SubscriptionID) REFERENCES Subscriptions(SubscriptionID),
+   FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
 )

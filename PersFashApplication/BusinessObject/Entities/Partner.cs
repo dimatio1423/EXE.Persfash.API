@@ -9,6 +9,8 @@ public partial class Partner
 
     public string? PartnerName { get; set; }
 
+    public string? PartnerProfilePicture { get; set; }
+
     public string? WebsiteUrl { get; set; }
 
     public string? ContactEmail { get; set; }

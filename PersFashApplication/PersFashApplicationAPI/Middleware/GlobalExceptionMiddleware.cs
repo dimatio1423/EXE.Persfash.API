@@ -1,4 +1,5 @@
 ﻿
+using BusinessObject.Models.ResultModel;
 using Services.Helper.CustomExceptions;
 
 namespace MusicStreamingAPI.MiddleWare
@@ -33,9 +34,10 @@ namespace MusicStreamingAPI.MiddleWare
                     context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 }
 
-                var response = new
+                var response = new ResultModel
                 {
-                    StatusCode = context.Response.StatusCode,
+                    IsSuccess = false,
+                    Code = context.Response.StatusCode,
                     Message = ex is ApiException apiException ? apiException.Message : ex.Message,
                 };
 

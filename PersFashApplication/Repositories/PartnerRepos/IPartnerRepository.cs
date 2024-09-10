@@ -11,6 +11,7 @@ namespace Repositories.PartnerRepos
     public interface IPartnerRepository : IGenericRepository<Partner>
     {
         Task<Partner> GetPartnerByUsername(string username);
+        Task<Partner> GetPartnerByEmail(string email);
 
     }
 }
