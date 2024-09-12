@@ -26,16 +26,41 @@ namespace PersFashApplicationAPI.Controllers
         /// <summary>
         /// View fashion items
         /// </summary>
-        [HttpGet]
-        public async Task<IActionResult> ViewFashionItems(int? page = 1, int? size = 10)
+        [HttpPost]
+        [Route("view")]
+        public async Task<IActionResult> ViewFashionItems(FashionItemFilterReqModel? fashionItemFilterReqModel, int? page = 1, int? size = 10
+            , string? sortBy = "name_asc")
         {
-            var result = await _fashionItemService.ViewFashionItems(page, size);
+
+            var result = await _fashionItemService.ViewFashionItems(page, size, fashionItemFilterReqModel, sortBy);
 
             ResultModel response = new ResultModel
             {
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.OK,
                 Message = "View fashion items successfully",
+                Data = result,
+            };
+
+            return StatusCode(response.Code, response);
+        }
+
+        /// <summary>
+        /// Search fashion items
+        /// </summary>
+        [HttpPost]
+        [Route("search")]
+        public async Task<IActionResult> SearchFashionItems(FashionItemFilterReqModel? fashionItemFilterReqModel, string? searchValue, int? page = 1, int? size = 10
+            , string? sortBy = "name_asc")
+        {
+
+            var result = await _fashionItemService.SearchFashionItems(page, size, fashionItemFilterReqModel, sortBy, searchValue);
+
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "Search fashion items successfully",
                 Data = result,
             };
 

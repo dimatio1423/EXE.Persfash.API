@@ -11,5 +11,6 @@ namespace Repositories.SystemAdminRepos
     public interface ISystemAdminRepository : IGenericRepository<SystemAdmin>
     {
         Task<SystemAdmin> GetAdminByUsername(string username);
+        Task<bool> IsExistedByUsername(string username);
     }
 }

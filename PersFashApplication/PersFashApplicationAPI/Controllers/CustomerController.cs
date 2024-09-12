@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Entities;
+using BusinessObject.Models.CustomerModels.Request;
 using BusinessObject.Models.ResultModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -113,6 +114,23 @@ namespace PersFashApplicationAPI.Controllers
                 Code = (int)HttpStatusCode.OK,
                 Message = "View current customer course successfully",
                 Data = result
+            };
+
+            return StatusCode(response.Code, response);
+        }
+
+        [HttpPost]
+        [Route("register")]
+        public async Task<IActionResult> RegisterCustomer(CustomerRegisterReqModel customerRegisterReqModel)
+        {
+
+            await _customerService.CustomerReigster(customerRegisterReqModel);
+
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "Register new customer successfully",
             };
 
             return StatusCode(response.Code, response);

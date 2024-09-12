@@ -12,6 +12,7 @@ using Repositories.CourseImagesRepos;
 using Repositories.CourseMaterialRepos;
 using Repositories.CourseRepos;
 using Repositories.FashionInfluencerRepos;
+using Repositories.PartnerRepos;
 using Repositories.SystemAdminRepos;
 using Repositories.UserCourseRepos;
 using Repositories.UserRepos;
@@ -34,6 +35,7 @@ namespace Services.CourseServices
         private readonly ICustomerCourseRepository _customerCourseRepository;
         private readonly ICustomerRepository _customerRepository;
         private readonly ICourseImageRepository _courseImageRepository;
+        private readonly IPartnerRepository _partnerRepository;
         private readonly IAWSService _aWSService;
         private readonly ISystemAdminRepository _systemAdminRepository;
         private readonly IMapper _mapper;
@@ -42,7 +44,8 @@ namespace Services.CourseServices
         private readonly ICourseContentRepository _courseContentRepository;
         private readonly ICourseMaterialRepository _courseMaterialRepository;
 
-        public CourseService(IFashionInfluencerRepository fashionInfluencerRepository, 
+        public CourseService(
+            IFashionInfluencerRepository fashionInfluencerRepository, 
             IMapper mapper, 
             IDecodeTokenHandler decodeToken, 
             ICourseRepository courseRepository,
@@ -50,6 +53,7 @@ namespace Services.CourseServices
             ICourseMaterialRepository courseMaterialRepository,
             ICustomerCourseRepository customerCourseRepository,
             ICourseImageRepository courseImageRepository, 
+            IPartnerRepository partnerRepository,
             IAWSService aWSService,
             ICustomerRepository customerRepository,
             ISystemAdminRepository systemAdminRepository)
@@ -61,6 +65,7 @@ namespace Services.CourseServices
             _customerCourseRepository = customerCourseRepository;
             _customerRepository = customerRepository;
             _courseImageRepository = courseImageRepository;
+            _partnerRepository = partnerRepository;
             _aWSService = aWSService;
             _systemAdminRepository = systemAdminRepository;
             _mapper = mapper;
@@ -237,11 +242,43 @@ namespace Services.CourseServices
         }
     
 
-        public async Task<List<CourseViewListResModel>> GetCourses(int? page, int? size)
+        public async Task<List<CourseViewListResModel>> GetCourses(string? token, int? page, int? size, string? sortBy)
         {
-            var courses = await _courseRepository.GetCourses( page, size);
-          
-            return _mapper.Map<List<CourseViewListResModel>>(courses.Where(x => x.Status.Equals(StatusEnums.Available.ToString())).ToList());
+
+            List<Course> courses = new List<Course>();
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                var decode = _decodeToken.decode(token);
+
+                var currentCustomer = await _customerRepository.GetCustomerByUsername(decode.username);
+
+                if (currentCustomer != null)
+                {
+                    var customerCourse = await _customerCourseRepository.GetCustomerCoursesByCustomerId(currentCustomer.CustomerId);
+
+                    courses = await _courseRepository.GetCourses(page, size);
+
+                    courses = sortCourse(courses, sortBy);
+
+                    return _mapper.Map<List<CourseViewListResModel>>(courses.Where(x => x.Status.Equals(StatusEnums.Available.ToString())
+                    && !customerCourse.Select(uc => uc.CourseId).ToList().Contains(x .CourseId)).ToList());
+                } else
+                {
+                    courses = await _courseRepository.GetCourses(page, size);
+
+                    courses = sortCourse(courses, sortBy);
+
+                    return _mapper.Map<List<CourseViewListResModel>>(courses.Where(x => x.Status.Equals(StatusEnums.Available.ToString())).ToList());
+                }
+            }else
+            {
+                courses = await _courseRepository.GetCourses(page, size);
+
+                courses = sortCourse(courses, sortBy);
+
+                return _mapper.Map<List<CourseViewListResModel>>(courses.Where(x => x.Status.Equals(StatusEnums.Available.ToString())).ToList());
+            }
         }
 
         public async Task<List<CourseViewListResModel>> GetCoursesByInfluencerId(int influencerId, int? page, int? size)
@@ -280,6 +317,42 @@ namespace Services.CourseServices
             return _mapper.Map<List<CourseViewListResModel>>(courses);
         }
 
+        public async Task<List<CourseViewListResModel>> SearchCourses(string? token, int? page, int? size, string? searchValue, string? sortBy)
+        {
+            var courses = await _courseRepository.GetCourses(page, size);
+
+            if (!string.IsNullOrEmpty(searchValue))
+            {
+                courses = courses.Where(x => x.CourseName.ToLower().Contains(searchValue.Trim().ToLower())).ToList();
+            }
+
+            courses = sortCourse(courses, sortBy);
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                var decode = _decodeToken.decode(token);
+
+                var currentCustomer = await _customerRepository.GetCustomerByUsername(decode.username);
+
+                if (currentCustomer != null)
+                {
+                    var customerCourse = await _customerCourseRepository.GetCustomerCoursesByCustomerId(currentCustomer.CustomerId);
+
+
+                    return _mapper.Map<List<CourseViewListResModel>>(courses.Where(x => x.Status.Equals(StatusEnums.Available.ToString())
+                    && !customerCourse.Select(uc => uc.CourseId).ToList().Contains(x.CourseId)).ToList());
+                }
+                else
+                {
+                    return _mapper.Map<List<CourseViewListResModel>>(courses.Where(x => x.Status.Equals(StatusEnums.Available.ToString())).ToList());
+                }
+            }
+            else
+            {
+                return _mapper.Map<List<CourseViewListResModel>>(courses.Where(x => x.Status.Equals(StatusEnums.Available.ToString())).ToList());
+            }
+        }
+
         public async Task UpdateCourse(string token, CourseUpdateReqModel courseUpdateReqModel)
         {
             var decodedToken = _decodeToken.decode(token);
@@ -311,6 +384,16 @@ namespace Services.CourseServices
             currCourse.CourseName = !string.IsNullOrEmpty(courseUpdateReqModel.CourseName) ? courseUpdateReqModel.CourseName : currCourse.CourseName;
             currCourse.Price = courseUpdateReqModel.Price != null ? courseUpdateReqModel.Price : currCourse.Price;
             currCourse.Description = !string.IsNullOrEmpty(courseUpdateReqModel.Description) ? courseUpdateReqModel.Description : currCourse.Description;
+
+            if (!string.IsNullOrEmpty(courseUpdateReqModel.Thumbnail))
+            {
+                var s3key = _aWSService.ExtractS3Key(currCourse.ThumbnailUrl);
+                if (!string.IsNullOrEmpty(s3key))
+                {
+                    await _aWSService.DeleteFile("persfash-application", s3key);
+                }
+            }
+
             currCourse.ThumbnailUrl = !string.IsNullOrEmpty(courseUpdateReqModel.Thumbnail) ? courseUpdateReqModel.Thumbnail : currCourse.ThumbnailUrl;
 
             if (courseUpdateReqModel.CourseImages != null && courseUpdateReqModel.CourseImages.Count > 0)
@@ -349,5 +432,33 @@ namespace Services.CourseServices
 
             await _courseRepository.Update(currCourse);
         }
+
+        public List<Course> sortCourse(List<Course> courses, string? sortBy)
+        {
+            switch(sortBy)
+            {
+                case "name_asc":
+                    courses = courses.OrderBy(x => x.CourseName).ToList();
+                    break;
+
+                case "name_desc":
+                    courses = courses.OrderByDescending(x => x.CourseName).ToList();
+                    break;
+
+                case "price_asc":
+                    courses = courses.OrderBy(x => x.Price).ToList();
+                    break;
+
+                case "price_desc":
+                    courses = courses.OrderByDescending(x => x.Price).ToList();
+                    break;
+
+                default:
+                    courses = courses.OrderBy(x => x.CourseName).ToList();
+                    break;
+            }
+
+            return courses;
+        } 
     }
 }

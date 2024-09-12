@@ -12,6 +12,8 @@ namespace Repositories.PartnerRepos
     {
         Task<Partner> GetPartnerByUsername(string username);
         Task<Partner> GetPartnerByEmail(string email);
+        Task<bool> IsExistedByEmail(string email);
+        Task<bool> IsExistedByUsername(string username);
 
     }
 }

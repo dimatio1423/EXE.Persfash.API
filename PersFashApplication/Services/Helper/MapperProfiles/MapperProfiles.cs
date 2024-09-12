@@ -3,6 +3,7 @@ using BusinessObject.Entities;
 using BusinessObject.Models.CourseContentModel.Response;
 using BusinessObject.Models.CourseMaterialModel.Response;
 using BusinessObject.Models.CourseModel.Response;
+using BusinessObject.Models.CustomerModels.Response;
 using BusinessObject.Models.CustomerSubscriptionModel.Response;
 using BusinessObject.Models.FashionItemsModel.Response;
 using BusinessObject.Models.InfluencerModel.Response;
@@ -49,6 +50,12 @@ namespace Services.Helper.MapperProfiles
 
             //Partner
             CreateMap<Partner, PartnerViewModel>().ReverseMap();
+
+            //CustomerProfile
+            CreateMap<CustomerProfile, CustomerProfileViewModel>().ReverseMap();
+
+            //Customer
+            CreateMap<Customer, CustomerViewModel>().ReverseMap();
 
 
         }

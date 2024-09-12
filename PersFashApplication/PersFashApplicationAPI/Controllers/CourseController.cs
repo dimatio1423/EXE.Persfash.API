@@ -25,15 +25,38 @@ namespace PersFashApplicationAPI.Controllers
         /// View courses
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> GetCourses(int? page = 1, int? size = 10)
+        public async Task<IActionResult> GetCourses(string? sortBy, int? page = 1, int? size = 10)
         {
-            var result = await _courseService.GetCourses(page, size);
+
+            var token = !string.IsNullOrEmpty(Request.Headers["Authorization"].ToString()) ? Request.Headers["Authorization"].ToString().Split(" ")[1] : null ;
+
+            var result = await _courseService.GetCourses(token, page, size, sortBy);
 
             ResultModel response = new ResultModel
             {
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.OK,
                 Message = "View courses successfully",
+                Data = result
+            };
+
+            return StatusCode(response.Code, response);
+        }
+
+        [HttpGet]
+        [Route("search")]
+        public async Task<IActionResult> SearchCourse(string? sortBy, string? searchValue, int? page = 1, int? size = 10)
+        {
+
+            var token = !string.IsNullOrEmpty(Request.Headers["Authorization"].ToString()) ? Request.Headers["Authorization"].ToString().Split(" ")[1] : null;
+
+            var result = await _courseService.SearchCourses(token, page, size, searchValue, sortBy);
+
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "Search courses successfully",
                 Data = result
             };
 

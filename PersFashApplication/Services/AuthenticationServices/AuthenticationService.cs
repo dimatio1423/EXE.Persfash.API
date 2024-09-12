@@ -188,6 +188,7 @@ namespace Services.AuthenticationServices
                     Username = currCustomer.Username,
                     Email = currCustomer.Email,
                     Role = RoleEnums.Customer.ToString(),
+                    Gender = currCustomer.Gender
                 };
 
                 return userInformation;

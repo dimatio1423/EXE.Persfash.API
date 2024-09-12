@@ -12,6 +12,7 @@ namespace Repositories.FashionInfluencerRepos
     {
         Task<FashionInfluencer> GetFashionInfluencerByUsername(string username);
         Task<FashionInfluencer> GetFashionInfluencerByEmail(string email);
-
+        Task<bool> IsExistedByEmail(string email);
+        Task<bool> IsExistedByUsername(string username);
     }
 }

@@ -11,7 +11,7 @@ namespace Services.CourseServices
 {
     public interface ICourseService
     {
-        Task<List<CourseViewListResModel>> GetCourses(int? page, int? size);
+        Task<List<CourseViewListResModel>> GetCourses(string? token, int? page, int? size, string? sortBy);
         Task<List<CourseViewListResModel>> GetCoursesByInfluencerId(int influencerId, int? page, int? size);
         Task<List<CourseViewListResModel>> GetCoursesOfCurrentInfluencerId(string token, int? page, int? size);
         Task CreateNewCourse(string token, CourseCreateReqModel courseCreateReqModel);
@@ -20,5 +20,6 @@ namespace Services.CourseServices
         Task<bool> CheckCustomerCourse(string token, int courseId);
         Task<CourseViewDetailsModel> GetCourseDetails(int courseId);
         Task<List<CourseViewListResModel>> GetCourseOfCustomer(string token);
+        Task<List<CourseViewListResModel>> SearchCourses(string? token, int? page, int? size, string? searchValue, string? sortBy);
     }
 }

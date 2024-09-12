@@ -29,5 +29,17 @@ namespace Repositories.SystemAdminRepos
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<bool> IsExistedByUsername(string username)
+        {
+            try
+            {
+                return await _context.SystemAdmins.FirstOrDefaultAsync(x => x.Username.Equals(username)) != null ? true : false;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

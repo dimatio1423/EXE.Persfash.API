@@ -41,5 +41,29 @@ namespace Repositories.PartnerRepos
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<bool> IsExistedByEmail(string email)
+        {
+            try
+            {
+                return await _context.Partners.FirstOrDefaultAsync(x => x.Email.Equals(email)) != null ? true : false;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<bool> IsExistedByUsername(string username)
+        {
+            try
+            {
+                return await _context.Partners.FirstOrDefaultAsync(x => x.Username.Equals(username)) != null ? true : false;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

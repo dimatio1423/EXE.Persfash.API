@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Entities;
+using Microsoft.EntityFrameworkCore;
 using Repositories.GenericRepos;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,19 @@ namespace Repositories.UserProfilesRepos
         public CustomerProfileRepository(PersfashApplicationDbContext context) : base(context)
         {
             _context = context;
+        }
+
+        public async Task<CustomerProfile> GetCustomerProfileByCustomerId(int customerId)
+        {
+            try
+            {
+
+                return await _context.CustomerProfiles.Where(x => x.CustomerId == customerId).FirstOrDefaultAsync();
+
+            }catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

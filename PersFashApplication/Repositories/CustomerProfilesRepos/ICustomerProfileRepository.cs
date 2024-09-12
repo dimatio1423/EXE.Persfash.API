@@ -10,5 +10,6 @@ namespace Repositories.UserProfilesRepos
 {
     public interface ICustomerProfileRepository : IGenericRepository<CustomerProfile>
     {
+        Task<CustomerProfile> GetCustomerProfileByCustomerId(int customerId);
     }
 }

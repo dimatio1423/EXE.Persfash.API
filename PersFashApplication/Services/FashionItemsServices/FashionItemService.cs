@@ -93,11 +93,11 @@ namespace Services.FashionItemsServices
                 Price = fashionItemCreateReqModel.Price,
                 FitType = fashionItemCreateReqModel.FitType,
                 GenderTarget = fashionItemCreateReqModel.GenderTarget,
-                FashionTrend = string.Join(", ", fashionItemCreateReqModel.FashionTrend),
-                Size = string.Join(", ", fashionItemCreateReqModel.Size),
-                Color = string.Join(", ", fashionItemCreateReqModel.Color),
-                Material = string.Join(", ", fashionItemCreateReqModel.Material),
-                Occasion = string.Join(", ", fashionItemCreateReqModel.Occasion),
+                FashionTrend = string.Join(",", fashionItemCreateReqModel.FashionTrend),
+                Size = string.Join(",", fashionItemCreateReqModel.Size),
+                Color = string.Join(",", fashionItemCreateReqModel.Color),
+                Material = string.Join(",", fashionItemCreateReqModel.Material),
+                Occasion = string.Join(",", fashionItemCreateReqModel.Occasion),
                 ThumbnailUrl = fashionItemCreateReqModel.Thumbnail,
                 ProductUrl = fashionItemCreateReqModel.ProductUrl,
                 PartnerId = currPartner.PartnerId,
@@ -152,6 +152,33 @@ namespace Services.FashionItemsServices
             currItem.Status = StatusEnums.Unavailable.ToString();
 
             await _fashionItemRepository.Update(currItem);
+        }
+
+        public Task<List<FashionItemViewListRes>> FashionItemRecommendationForCustomer(int customerId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<FashionItemViewListRes>> SearchFashionItems(int? page, int? size, FashionItemFilterReqModel? fashionItemFilterReqModel, string? sortBy, string? searchValue)
+        {
+            var fashionItems = await _fashionItemRepository.GetFashionItems(page, size);
+
+
+            if (!string.IsNullOrEmpty(searchValue))
+            {
+                fashionItems = fashionItems.Where(x => x.ItemName.ToLower().Contains(searchValue.Trim().ToLower())).ToList();
+            }
+
+            if (fashionItemFilterReqModel != null)
+            {
+                fashionItems = filterFashionItem(fashionItems, fashionItemFilterReqModel);
+            }
+
+            if (!string.IsNullOrEmpty(sortBy))
+            {
+                fashionItems = sortFashionItem(fashionItems, sortBy);
+            }
+            return _mapper.Map<List<FashionItemViewListRes>>(fashionItems);
         }
 
         public async Task UpdateFashionItem(string token, FashionItemUpdateReqModel fashionItemUpdateReqModel)
@@ -227,6 +254,16 @@ namespace Services.FashionItemsServices
             currItem.Color = (fashionItemUpdateReqModel.Color != null && fashionItemUpdateReqModel.Color.Count > 0) ? string.Join(", ", fashionItemUpdateReqModel.Color) : currItem.Color;
             currItem.Material = (fashionItemUpdateReqModel.Material != null && fashionItemUpdateReqModel.Material.Count > 0) ? string.Join(", ", fashionItemUpdateReqModel.Material) : currItem.Material;
             currItem.Occasion = (fashionItemUpdateReqModel.Occasion != null && fashionItemUpdateReqModel.Occasion.Count > 0) ? string.Join(", ", fashionItemUpdateReqModel.Occasion) : currItem.Occasion;
+            
+            if (!string.IsNullOrEmpty(fashionItemUpdateReqModel.Thumbnail))
+            {
+                var s3key = _aWSService.ExtractS3Key(currItem.ThumbnailUrl);
+                if (!string.IsNullOrEmpty(s3key))
+                {
+                    await _aWSService.DeleteFile("persfash-application", s3key);
+                }
+            }
+            
             currItem.ThumbnailUrl = !string.IsNullOrEmpty(fashionItemUpdateReqModel.Thumbnail) ? fashionItemUpdateReqModel.Thumbnail : currItem.ThumbnailUrl;
             currItem.ProductUrl = !string.IsNullOrEmpty(fashionItemUpdateReqModel.ProductUrl) ? fashionItemUpdateReqModel.ProductUrl : currItem.ProductUrl;
 
@@ -283,10 +320,18 @@ namespace Services.FashionItemsServices
             return fashionItemDetails;
         }
 
-        public async Task<List<FashionItemViewListRes>> ViewFashionItems(int? page, int? size)
+        public async Task<List<FashionItemViewListRes>> ViewFashionItems(int? page, int? size, FashionItemFilterReqModel? fashionItemFilterReqModel, string? sortBy)
         {
             var fashionItems = await _fashionItemRepository.GetFashionItems(page, size);
 
+            if (fashionItemFilterReqModel != null)
+            {
+                fashionItems = filterFashionItem(fashionItems, fashionItemFilterReqModel);
+            }
+
+            if (!string.IsNullOrEmpty(sortBy)) {
+                fashionItems = sortFashionItem(fashionItems, sortBy);
+            }
             return _mapper.Map<List<FashionItemViewListRes>>(fashionItems);
         }
 
@@ -325,6 +370,116 @@ namespace Services.FashionItemsServices
             var fashionItems = await _fashionItemRepository.GetFashionItemsByPartner(currPartner.PartnerId, page, size);
 
             return _mapper.Map<List<FashionItemViewListRes>>(fashionItems);
+        }
+
+        public List<FashionItem> filterFashionItem(List<FashionItem> fashionItems, FashionItemFilterReqModel fashionItemFilterReqModel)
+        {
+            if (fashionItemFilterReqModel.Category is not null && fashionItemFilterReqModel.Category.Any())
+            {
+                fashionItems = fashionItems
+                    .Where(x => !string.IsNullOrEmpty(x.Category) && fashionItemFilterReqModel.Category
+                    .Any(category => new List<string>(x.Category.Split(new[] { ", " }, StringSplitOptions.None))
+                    .Contains(category))).ToList();
+            }
+
+            if (fashionItemFilterReqModel.Brand is not null && fashionItemFilterReqModel.Brand.Any())
+            {
+                fashionItems = fashionItems
+                    .Where(x => fashionItemFilterReqModel.Brand
+                    .Contains(x.Brand)).ToList();
+            }
+
+            if (fashionItemFilterReqModel.FitType is not null && fashionItemFilterReqModel.FitType.Any())
+            {
+                fashionItems = fashionItems
+                    .Where(x => !string.IsNullOrEmpty(x.FitType) && fashionItemFilterReqModel.FitType
+                    .Any(fitType => new List<string>(x.FitType.Split(new[] { ", " }, StringSplitOptions.None))
+                    .Contains(fitType))).ToList();
+            }
+
+            if (fashionItemFilterReqModel.GenderTarget is not null && fashionItemFilterReqModel.GenderTarget.Any())
+            {
+                fashionItems = fashionItems
+                    .Where(x => !string.IsNullOrEmpty(x.GenderTarget) && fashionItemFilterReqModel.GenderTarget
+                    .Any(genderTarget => new List<string>(x.GenderTarget.Split(new[] { ", " }, StringSplitOptions.None))
+                    .Contains(genderTarget))).ToList();
+            }
+
+            if (fashionItemFilterReqModel.FashionTrend is not null && fashionItemFilterReqModel.FashionTrend.Any())
+            {
+                fashionItems = fashionItems
+                    .Where(x => !string.IsNullOrEmpty(x.FashionTrend) && fashionItemFilterReqModel.FashionTrend
+                    .Any(fashionTrend => new List<string>(x.FashionTrend.Split(new[] { ", " }, StringSplitOptions.None))
+                    .Contains(fashionTrend))).ToList();
+            }
+
+            if (fashionItemFilterReqModel.Size is not null && fashionItemFilterReqModel.Size.Any())
+            {
+                fashionItems = fashionItems
+                    .Where(x => !string.IsNullOrEmpty(x.Size) && fashionItemFilterReqModel.Size
+                    .Any(size => new List<string>(x.Size.Split(new[] { ", " }, StringSplitOptions.None))
+                    .Contains(size))).ToList();
+            }
+
+            if (fashionItemFilterReqModel.Color is not null && fashionItemFilterReqModel.Color.Any())
+            {
+                fashionItems = fashionItems
+                    .Where(x => !string.IsNullOrEmpty(x.Color) && fashionItemFilterReqModel.Color
+                    .Any(color => new List<string>(x.Color.Split(new[] { ", " }, StringSplitOptions.None))
+                    .Contains(color))).ToList();
+            }
+
+            if (fashionItemFilterReqModel.Material is not null && fashionItemFilterReqModel.Material.Any())
+            {
+                fashionItems = fashionItems
+                    .Where(x => !string.IsNullOrEmpty(x.Material) && fashionItemFilterReqModel.Material
+                    .Any(material => new List<string>(x.Material.Split(new[] { ", " }, StringSplitOptions.None))
+                    .Contains(material))).ToList();
+            }
+
+            if (fashionItemFilterReqModel.Occasion is not null && fashionItemFilterReqModel.Occasion.Any())
+            {
+                fashionItems = fashionItems
+                    .Where(x => !string.IsNullOrEmpty(x.Occasion) && fashionItemFilterReqModel.Occasion
+                    .Any(occasion => new List<string>(x.Occasion.Split(new[] { ", " }, StringSplitOptions.None))
+                    .Contains(occasion))).ToList();
+            }
+
+            if (fashionItemFilterReqModel.MinPrice.HasValue && fashionItemFilterReqModel.MaxPrice.HasValue)
+            {
+                fashionItems = fashionItems
+                    .Where(x => x.Price >= fashionItemFilterReqModel.MinPrice && x.Price <= fashionItemFilterReqModel.MaxPrice)
+                    .ToList();
+            }
+            return fashionItems;
+        }
+
+        public List<FashionItem> sortFashionItem(List<FashionItem> fashionItems, string? sortBy)
+        {
+            switch (sortBy)
+            {
+                case "name_asc":
+                    fashionItems = fashionItems.OrderBy(x => x.ItemName).ToList();
+                    break;
+
+                case "name_desc":
+                    fashionItems = fashionItems.OrderByDescending(x => x.ItemName).ToList();
+                    break;
+
+                case "price_asc":
+                    fashionItems = fashionItems.OrderBy(x => x.Price).ToList();
+                    break;
+
+                case "price_desc":
+                    fashionItems = fashionItems.OrderByDescending(x => x.Price).ToList();
+                    break;
+
+                default:
+                    fashionItems = fashionItems.OrderBy(x => x.ItemName).ToList();
+                    break;
+            }
+
+            return fashionItems;
         }
     }
 }

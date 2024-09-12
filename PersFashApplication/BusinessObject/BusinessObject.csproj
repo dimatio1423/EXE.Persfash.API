@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <Folder Include="Models\CustomerCourseModel\Request\" />
-    <Folder Include="Models\CustomerModels\Response\" />
     <Folder Include="Models\CustomerSubscriptionModel\Request\" />
     <Folder Include="Models\InfluencerModel\Request\" />
     <Folder Include="Models\PartnerModel\Request\" />

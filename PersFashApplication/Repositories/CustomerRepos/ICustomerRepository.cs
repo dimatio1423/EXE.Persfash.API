@@ -12,5 +12,8 @@ namespace Repositories.UserRepos
     {
         Task<Customer> GetCustomerByUsername(string username);
         Task<Customer> GetCustomerByEmail(string email);
+        Task<bool> IsExistedByEmail(string email);
+        Task<bool> IsExistedByUsername(string username);
+
     }
 }
