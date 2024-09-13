@@ -58,6 +58,13 @@ namespace Services.SubscriptionServices
                 throw new ApiException(HttpStatusCode.NotFound, "Admin does not exist");
             }
 
+            var currSubscription = await _subscriptionRepository.GetSubscriptionsByName(subscriptionCreateReqModel.SubscriptionTitle);
+
+            if (currSubscription != null)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Subscription with title has already been used");
+            }
+
             Subscription subscription = new Subscription
             {
                 SubscriptionTitle = subscriptionCreateReqModel.SubscriptionTitle,

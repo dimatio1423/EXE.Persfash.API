@@ -13,5 +13,8 @@ namespace Services.UserServices
         Task<CustomerProfileViewModel> GetCustomerProfile(string token);
         Task CustomerReigster(CustomerRegisterReqModel customerRegisterReqModel);
         Task CustomerProfileSetup(string token, CustomerProfileSetupReqModel customerProfileSetupReqModel);
+        Task CustomerProfileSetupUpdate(string token, CustomerProfileSetupUpdateReqModel customerProfileSetupUpdateReqModel);
+        Task<CustomerInformationViewModel> GetCustomerInformation(int customerId);
+        Task UpdateCustomerInformation(string token, CustomerInformationUpdateReqModel customerInformationUpdateReqModel);
     }
 }

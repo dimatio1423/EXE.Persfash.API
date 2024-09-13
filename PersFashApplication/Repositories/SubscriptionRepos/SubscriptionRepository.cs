@@ -30,5 +30,17 @@ namespace Repositories.SubscriptionRepos
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<Subscription> GetSubscriptionsByName(string name)
+        {
+            try
+            {
+                return await _context.Subscriptions.Where(x => x.SubscriptionTitle.ToLower().Equals(name.ToLower())).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

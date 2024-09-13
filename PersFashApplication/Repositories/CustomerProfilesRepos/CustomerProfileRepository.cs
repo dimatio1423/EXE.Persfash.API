@@ -23,7 +23,9 @@ namespace Repositories.UserProfilesRepos
             try
             {
 
-                return await _context.CustomerProfiles.Where(x => x.CustomerId == customerId).FirstOrDefaultAsync();
+                return await _context.CustomerProfiles
+                    .Include(x => x.Customer)
+                    .Where(x => x.CustomerId == customerId).FirstOrDefaultAsync();
 
             }catch(Exception ex)
             {

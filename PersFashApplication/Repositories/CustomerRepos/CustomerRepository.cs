@@ -18,6 +18,21 @@ namespace Repositories.UserRepos
             _context = context;
         }
 
+        public async Task<int> AddCustomer(Customer customer)
+        {
+            try
+            {
+                await _context.Customers.AddAsync(customer);
+                await _context.SaveChangesAsync();
+
+                return customer.CustomerId;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<Customer> GetCustomerByEmail(string email)
         {
             try

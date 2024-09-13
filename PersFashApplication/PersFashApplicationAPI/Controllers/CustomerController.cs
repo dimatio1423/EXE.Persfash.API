@@ -119,6 +119,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Register new customer
+        /// </summary>
         [HttpPost]
         [Route("register")]
         public async Task<IActionResult> RegisterCustomer(CustomerRegisterReqModel customerRegisterReqModel)
@@ -131,6 +134,119 @@ namespace PersFashApplicationAPI.Controllers
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.OK,
                 Message = "Register new customer successfully",
+            };
+
+            return StatusCode(response.Code, response);
+        }
+
+        /// <summary>
+        /// View customer information
+        /// </summary>
+        [HttpGet]
+        [Route("information")]
+        public async Task<IActionResult> GetCustomerInformation(int customerId)
+        {
+
+            var result = await _customerService.GetCustomerInformation(customerId);
+
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "Get customer information successfully",
+                Data = result
+            };
+
+            return StatusCode(response.Code, response);
+        }
+
+        /// <summary>
+        /// Update customer information
+        /// </summary>
+        [HttpPut]
+        [Route("information")]
+        [Authorize]
+        public async Task<IActionResult> UpdateCustomerInformation([FromBody] CustomerInformationUpdateReqModel customerInformationUpdateReqModel)
+        {
+
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+            await _customerService.UpdateCustomerInformation(token, customerInformationUpdateReqModel);
+
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "Update customer information successfully",
+            };
+
+            return StatusCode(response.Code, response);
+        }
+
+        /// <summary>
+        /// View customer profile
+        /// </summary>
+        [HttpGet]
+        [Route("profile")]
+        [Authorize]
+        public async Task<IActionResult> GetCustomerProfileSetup()
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+            var result = await _customerService.GetCustomerProfile(token);
+
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "Get customer profile successfully",
+                Data = result
+            };
+
+            return StatusCode(response.Code, response);
+        }
+
+
+        /// <summary>
+        /// Setup customer profile
+        /// </summary>
+        [HttpPost]
+        [Route("profile")]
+        [Authorize]
+        public async Task<IActionResult> UpdateCustomerProfileSetup(CustomerProfileSetupReqModel customerProfileSetupReq)
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+            await _customerService.CustomerProfileSetup(token, customerProfileSetupReq);
+
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "Create customer profile successfully",
+            };
+
+            return StatusCode(response.Code, response);
+        }
+
+
+        /// <summary>
+        /// Update customer profile
+        /// </summary>
+        [HttpPut]
+        [Route("profile")]
+        [Authorize]
+        public async Task<IActionResult> UpdateCustomerProfileSetup(CustomerProfileSetupUpdateReqModel customerProfileSetupUpdateReqModel)
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+             await _customerService.CustomerProfileSetupUpdate(token, customerProfileSetupUpdateReqModel);
+
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "Update customer profile successfully",
             };
 
             return StatusCode(response.Code, response);

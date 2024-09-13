@@ -16,6 +16,8 @@ namespace BusinessObject.Models.UserModels.Response
 
         public string? Gender { get; set; }
 
+        public string? ProfileURL { get; set; }
+
         public string? Role { get; set; }
     }
 }

@@ -82,6 +82,11 @@ namespace Services.FashionItemsServices
                 throw new ApiException(HttpStatusCode.BadRequest, "Invalid gender target type");
             }
 
+            if (!Enum.IsDefined(typeof(CategoryEnums), fashionItemCreateReqModel.Category))
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Invalid category type");
+            }
+
 
             //var thumbnailLink = await _aWSService.UploadFile(fashionItemCreateReqModel.Thumbnail, "persfash-application", null);
 
@@ -93,11 +98,11 @@ namespace Services.FashionItemsServices
                 Price = fashionItemCreateReqModel.Price,
                 FitType = fashionItemCreateReqModel.FitType,
                 GenderTarget = fashionItemCreateReqModel.GenderTarget,
-                FashionTrend = string.Join(",", fashionItemCreateReqModel.FashionTrend),
-                Size = string.Join(",", fashionItemCreateReqModel.Size),
-                Color = string.Join(",", fashionItemCreateReqModel.Color),
-                Material = string.Join(",", fashionItemCreateReqModel.Material),
-                Occasion = string.Join(",", fashionItemCreateReqModel.Occasion),
+                FashionTrend = string.Join(", ", fashionItemCreateReqModel.FashionTrend),
+                Size = string.Join(", ", fashionItemCreateReqModel.Size),
+                Color = string.Join(", ", fashionItemCreateReqModel.Color),
+                Material = string.Join(", ", fashionItemCreateReqModel.Material),
+                Occasion = string.Join(", ", fashionItemCreateReqModel.Occasion),
                 ThumbnailUrl = fashionItemCreateReqModel.Thumbnail,
                 ProductUrl = fashionItemCreateReqModel.ProductUrl,
                 PartnerId = currPartner.PartnerId,
@@ -242,10 +247,18 @@ namespace Services.FashionItemsServices
                 }
             }
 
+            if (!string.IsNullOrEmpty(fashionItemUpdateReqModel.Category))
+            {
+                if (!Enum.IsDefined(typeof(CategoryEnums), fashionItemUpdateReqModel.Category))
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, "Invalid category type");
+                }
+            }
+
             //var thumbnailLink = fashionItemUpdateReqModel.Thumbnail != null ? await _aWSService.UploadFile(fashionItemUpdateReqModel.Thumbnail, "persfash-application", null) : null;
 
             currItem.ItemName = !string.IsNullOrEmpty(fashionItemUpdateReqModel.ItemName) ? fashionItemUpdateReqModel.ItemName : currItem.ItemName;
-            currItem.Category = fashionItemUpdateReqModel.Category;
+            currItem.Category = !string.IsNullOrEmpty(fashionItemUpdateReqModel.Category) ? fashionItemUpdateReqModel.Category : currItem.Category; ;
             currItem.Price = fashionItemUpdateReqModel.Price != null ? fashionItemUpdateReqModel.Price : currItem.Price;
             currItem.FitType = !string.IsNullOrEmpty(fashionItemUpdateReqModel.FitType) ? fashionItemUpdateReqModel.FitType : currItem.FitType;
             currItem.GenderTarget = !string.IsNullOrEmpty(fashionItemUpdateReqModel.GenderTarget) ? fashionItemUpdateReqModel.GenderTarget : currItem.GenderTarget;

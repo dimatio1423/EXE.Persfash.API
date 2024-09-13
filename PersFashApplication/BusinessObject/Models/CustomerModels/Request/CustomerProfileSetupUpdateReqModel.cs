@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BusinessObject.Models.CustomerModels.Response
+namespace BusinessObject.Models.CustomerModels.Request
 {
-    public class CustomerProfileViewModel
+    public class CustomerProfileSetupUpdateReqModel
     {
+        [Required(ErrorMessage ="Profile ID is required")]
         public int ProfileId { get; set; }
-
-        public CustomerViewModel? Customer { get; set; }
 
         public string? BodyType { get; set; }
 
@@ -34,14 +34,5 @@ namespace BusinessObject.Models.CustomerModels.Response
 
         public string? TikTokLink { get; set; }
 
-        public bool? ProfileSetupComplete { get; set; }
-    }
-
-    public class CustomerViewModel
-    {
-        public int CustomerId { get; set; }
-        public string Username { get; set; } = null!;
-        public string Email { get; set; } = null!;
-        public string? ProfilePicture { get; set; }
     }
 }

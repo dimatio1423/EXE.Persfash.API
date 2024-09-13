@@ -188,6 +188,7 @@ namespace Services.AuthenticationServices
                     Username = currCustomer.Username,
                     Email = currCustomer.Email,
                     Role = RoleEnums.Customer.ToString(),
+                    ProfileURL = currCustomer.ProfilePicture,
                     Gender = currCustomer.Gender
                 };
 
@@ -199,6 +200,7 @@ namespace Services.AuthenticationServices
                     UserId = currPartner.PartnerId,
                     Username = currPartner.Username,
                     Email = currPartner.Email,
+                    ProfileURL = currPartner.PartnerProfilePicture,
                     Role = RoleEnums.Partner.ToString(),
                 };
 
@@ -210,6 +212,7 @@ namespace Services.AuthenticationServices
                     UserId = currInfluencer.InfluencerId,
                     Username = currInfluencer.Username,
                     Email = currInfluencer.Email,
+                    ProfileURL = currInfluencer.ProfilePicture,
                     Role = RoleEnums.FashionInfluencer.ToString(),
                 };
 
