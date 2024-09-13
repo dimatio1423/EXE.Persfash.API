@@ -494,5 +494,10 @@ namespace Services.FashionItemsServices
 
             return fashionItems;
         }
+
+        public Task<List<FashionItemViewListRes>> RecommendFashionItemForCustomer(int customerId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

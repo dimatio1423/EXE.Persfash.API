@@ -11,6 +11,7 @@ using Repositories.SystemAdminRepos;
 using Repositories.UserProfilesRepos;
 using Repositories.UserRepos;
 using Repositories.UserSubscriptionRepos;
+using Services.EmailService;
 using Services.Helper.CustomExceptions;
 using Services.Helpers.Handler.DecodeTokenHandler;
 using Services.Security;
@@ -34,6 +35,7 @@ namespace Services.UserServices
         private readonly IDecodeTokenHandler _decodeTokenHandler;
         private readonly ISystemAdminRepository _systemAdminRepository;
         private readonly ISubscriptionRepository _subscriptionRepository;
+        private readonly IEmailService _emailService;
 
         public CustomerService(ICustomerRepository customerRepository, 
             ICustomerProfileRepository customerProfileRepository,
@@ -43,7 +45,8 @@ namespace Services.UserServices
             IDecodeTokenHandler decodeTokenHandler,
             ISystemAdminRepository systemAdminRepository,
             ISubscriptionRepository subscriptionRepository,
-            ICustomerSubscriptionRepository customerSubscriptionRepository)
+            ICustomerSubscriptionRepository customerSubscriptionRepository,
+            IEmailService emailService) 
         {
             _customerRepository = customerRepository;
             _customerProfileRepository = customerProfileRepository;
@@ -54,6 +57,7 @@ namespace Services.UserServices
             _decodeTokenHandler = decodeTokenHandler;
             _systemAdminRepository = systemAdminRepository;
             _subscriptionRepository = subscriptionRepository;
+            _emailService = emailService;
         }
         public async Task CustomerProfileSetup(string token, CustomerProfileSetupReqModel customerProfileSetupReqModel)
         {
@@ -143,6 +147,8 @@ namespace Services.UserServices
             };
 
             await _customerSubscriptionRepository.Add(customerSubscription);
+
+            await _emailService.SendRegistrationEmail(customer.FullName, customer.Email);
         }
 
         public async Task<CustomerProfileViewModel> GetCustomerProfile(string token)

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 using MailKit.Net.Smtp;
+using System.Security.Cryptography.X509Certificates;
 
 
 namespace Services.EmailService
@@ -19,34 +20,191 @@ namespace Services.EmailService
         {
             _config = config;
         }
-        // Gửi lúc đăng ký thành công
-        public async Task SendRegistrationEmail(string fullName, string userEmail, EmailSendingFormat sendingFormat)
+
+        public async Task SendCoursePaymentSuccessEmail(string fullName, string courseName, string userEmail)
         {
-            //var email = new MimeMessage();
-            //email.From.Add(MailboxAddress.Parse(_config.GetSection("SmtpSettings:Username").Value));
-            //email.To.Add(MailboxAddress.Parse($"{userEmail}"));
-            //email.Subject = "[FAMS] - Tài khoản được tạo thành công";
-            //email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
-            //{
-            //    Text = "<!DOCTYPE html>\r\n\r\n<html\r\n  lang=\"en\"\r\n  xmlns:o=\"urn:schemas-microsoft-com:office:office\"\r\n  xmlns:v=\"urn:schemas-microsoft-com:vml\"\r\n>\r\n  <head>\r\n    <title></title>\r\n    <meta content=\"text/html; charset=utf-8\" http-equiv=\"Content-Type\" />\r\n    <meta content=\"width=device-width, initial-scale=1.0\" name=\"viewport\" />\r\n    <!--[if mso\r\n      ]><xml\r\n        ><o:OfficeDocumentSettings\r\n          ><o:PixelsPerInch>96</o:PixelsPerInch\r\n          ><o:AllowPNG /></o:OfficeDocumentSettings></xml\r\n    ><![endif]-->\r\n    <!--[if !mso]><!-->\r\n    <link\r\n      href=\"https://fonts.googleapis.com/css?family=Cabin\"\r\n      rel=\"stylesheet\"\r\n      type=\"text/css\"\r\n    />\r\n    <!--<![endif]-->\r\n    <style>\r\n      * {\r\n        box-sizing: border-box;\r\n      }\r\n\r\n      body {\r\n        margin: 0;\r\n        padding: 0;\r\n      }\r\n\r\n      a[x-apple-data-detectors] {\r\n        color: inherit !important;\r\n        text-decoration: inherit !important;\r\n      }\r\n\r\n      #MessageViewBody a {\r\n        color: inherit;\r\n        text-decoration: none;\r\n      }\r\n\r\n      p {\r\n        line-height: inherit;\r\n      }\r\n\r\n      .desktop_hide,\r\n      .desktop_hide table {\r\n        mso-hide: all;\r\n        display: none;\r\n        max-height: 0px;\r\n        overflow: hidden;\r\n      }\r\n\r\n      .image_block img + div {\r\n        display: none;\r\n      }\r\n\r\n      @media (max-width: 670px) {\r\n        .desktop_hide table.icons-inner,\r\n        .social_block.desktop_hide .social-table {\r\n          display: inline-block !important;\r\n        }\r\n\r\n        .icons-inner {\r\n          text-align: center;\r\n        }\r\n\r\n        .icons-inner td {\r\n          margin: 0 auto;\r\n        }\r\n\r\n        .image_block div.fullWidth {\r\n          max-width: 100% !important;\r\n        }\r\n\r\n        .mobile_hide {\r\n          display: none;\r\n        }\r\n\r\n        .row-content {\r\n          width: 100% !important;\r\n        }\r\n\r\n        .stack .column {\r\n          width: 100%;\r\n          display: block;\r\n        }\r\n\r\n        .mobile_hide {\r\n          min-height: 0;\r\n          max-height: 0;\r\n          max-width: 0;\r\n          overflow: hidden;\r\n          font-size: 0px;\r\n        }\r\n\r\n        .desktop_hide,\r\n        .desktop_hide table {\r\n          display: table !important;\r\n          max-height: none !important;\r\n        }\r\n      }\r\n    </style>\r\n  </head>\r\n  <body\r\n    style=\"\r\n      background-color: #000000;\r\n      margin: 0;\r\n      padding: 0;\r\n      -webkit-text-size-adjust: none;\r\n      text-size-adjust: none;\r\n    \"\r\n  >\r\n    <table\r\n      border=\"0\"\r\n      cellpadding=\"0\"\r\n      cellspacing=\"0\"\r\n      class=\"nl-container\"\r\n      role=\"presentation\"\r\n      style=\"\r\n        mso-table-lspace: 0pt;\r\n        mso-table-rspace: 0pt;\r\n        background-color: #000000;\r\n      \"\r\n      width=\"100%\"\r\n    >\r\n      <tbody>\r\n        <tr>\r\n          <td>\r\n            <table\r\n              align=\"center\"\r\n              border=\"0\"\r\n              cellpadding=\"0\"\r\n              cellspacing=\"0\"\r\n              class=\"row row-1\"\r\n              role=\"presentation\"\r\n              style=\"\r\n                mso-table-lspace: 0pt;\r\n                mso-table-rspace: 0pt;\r\n                background-color: #f3e6f8;\r\n              \"\r\n              width=\"100%\"\r\n            >\r\n              <tbody>\r\n                <tr>\r\n                  <td>\r\n                    <table\r\n                      align=\"center\"\r\n                      border=\"0\"\r\n                      cellpadding=\"0\"\r\n                      cellspacing=\"0\"\r\n                      class=\"row-content stack\"\r\n                      role=\"presentation\"\r\n                      style=\"\r\n                        mso-table-lspace: 0pt;\r\n                        mso-table-rspace: 0pt;\r\n                        color: #000000;\r\n                        width: 650px;\r\n                        margin: 0 auto;\r\n                      \"\r\n                      width=\"650\"\r\n                    >\r\n                      <tbody>\r\n                        <tr>\r\n                          <td\r\n                            class=\"column column-1\"\r\n                            style=\"\r\n                              mso-table-lspace: 0pt;\r\n                              mso-table-rspace: 0pt;\r\n                              font-weight: 400;\r\n                              text-align: left;\r\n                              padding-bottom: 5px;\r\n                              padding-top: 5px;\r\n                              vertical-align: top;\r\n                              border-top: 0px;\r\n                              border-right: 0px;\r\n                              border-bottom: 0px;\r\n                              border-left: 0px;\r\n                            \"\r\n                            width=\"100%\"\r\n                          >\r\n                            <table\r\n                              border=\"0\"\r\n                              cellpadding=\"0\"\r\n                              cellspacing=\"0\"\r\n                              class=\"image_block block-1\"\r\n                              role=\"presentation\"\r\n                              style=\"\r\n                                mso-table-lspace: 0pt;\r\n                                mso-table-rspace: 0pt;\r\n                              \"\r\n                              width=\"100%\"\r\n                            ></table>\r\n                          </td>\r\n                        </tr>\r\n                      </tbody>\r\n                    </table>\r\n                  </td>\r\n                </tr>\r\n              </tbody>\r\n            </table>\r\n            <table\r\n              align=\"center\"\r\n              border=\"0\"\r\n              cellpadding=\"0\"\r\n              cellspacing=\"0\"\r\n              class=\"row row-2\"\r\n              role=\"presentation\"\r\n              style=\"\r\n                mso-table-lspace: 0pt;\r\n                mso-table-rspace: 0pt;\r\n                background-color: #f3e6f8;\r\n              \"\r\n              width=\"100%\"\r\n            >\r\n              <tbody>\r\n                <tr>\r\n                  <td>\r\n                    <table\r\n                      align=\"center\"\r\n                      border=\"0\"\r\n                      cellpadding=\"0\"\r\n                      cellspacing=\"0\"\r\n                      class=\"row-content stack\"\r\n                      role=\"presentation\"\r\n                      style=\"\r\n                        mso-table-lspace: 0pt;\r\n                        mso-table-rspace: 0pt;\r\n                        background-color: #ffffff;\r\n                        background-image: url('images/ResetPassword_BG_2.png');\r\n                        background-position: center top;\r\n                        background-repeat: no-repeat;\r\n                        color: #000000;\r\n                        width: 650px;\r\n                        margin: 0 auto;\r\n                      \"\r\n                      width=\"650\"\r\n                    >\r\n                      <tbody>\r\n                        <tr>\r\n                          <td\r\n                            class=\"column column-1\"\r\n                            style=\"\r\n                              mso-table-lspace: 0pt;\r\n                              mso-table-rspace: 0pt;\r\n                              font-weight: 400;\r\n                              text-align: left;\r\n                              padding-top: 45px;\r\n                              vertical-align: top;\r\n                              border-top: 0px;\r\n                              border-right: 0px;\r\n                              border-bottom: 0px;\r\n                              border-left: 0px;\r\n                            \"\r\n                            width=\"100%\"\r\n                          >\r\n                            <table\r\n                              border=\"0\"\r\n                              cellpadding=\"20\"\r\n                              cellspacing=\"0\"\r\n                              class=\"divider_block block-1\"\r\n                              role=\"presentation\"\r\n                              style=\"\r\n                                mso-table-lspace: 0pt;\r\n                                mso-table-rspace: 0pt;\r\n                              \"\r\n                              width=\"100%\"\r\n                            >\r\n                              <tr>\r\n                                <td class=\"pad\">\r\n                                  <div align=\"center\" class=\"alignment\">\r\n                                    <table\r\n                                      border=\"0\"\r\n                                      cellpadding=\"0\"\r\n                                      cellspacing=\"0\"\r\n                                      role=\"presentation\"\r\n                                      style=\"\r\n                                        mso-table-lspace: 0pt;\r\n                                        mso-table-rspace: 0pt;\r\n                                      \"\r\n                                      width=\"100%\"\r\n                                    >\r\n                                      <tr>\r\n                                        <td\r\n                                          class=\"divider_inner\"\r\n                                          style=\"\r\n                                            font-size: 1px;\r\n                                            line-height: 1px;\r\n                                            border-top: 0px solid #bbbbbb;\r\n                                          \"\r\n                                        >\r\n                                          <span> </span>\r\n                                        </td>\r\n                                      </tr>\r\n                                    </table>\r\n                                  </div>\r\n                                </td>\r\n                              </tr>\r\n                            </table>\r\n                            <table\r\n                              border=\"0\"\r\n                              cellpadding=\"20\"\r\n                              cellspacing=\"0\"\r\n                              class=\"image_block block-2\"\r\n                              role=\"presentation\"\r\n                              style=\"\r\n                                mso-table-lspace: 0pt;\r\n                                mso-table-rspace: 0pt;\r\n                              \"\r\n                              width=\"100%\"\r\n                            ></table>\r\n                            <table\r\n                              border=\"0\"\r\n                              cellpadding=\"0\"\r\n                              cellspacing=\"0\"\r\n                              class=\"heading_block block-3\"\r\n                              role=\"presentation\"\r\n                              style=\"\r\n                                mso-table-lspace: 0pt;\r\n                                mso-table-rspace: 0pt;\r\n                              \"\r\n                              width=\"100%\"\r\n                            >\r\n                              <tr>\r\n                                <td\r\n                                  class=\"pad\"\r\n                                  style=\"\r\n                                    padding-top: 35px;\r\n                                    text-align: center;\r\n                                    width: 100%;\r\n                                  \"\r\n                                >\r\n                                  <h1\r\n                                    style=\"\r\n                                      margin: 0;\r\n                                      color: #8412c0;\r\n                                      direction: ltr;\r\n                                      font-family: 'Cabin', Arial,\r\n                                        'Helvetica Neue', Helvetica, sans-serif;\r\n                                      font-size: 28px;\r\n                                      font-weight: 400;\r\n                                      letter-spacing: normal;\r\n                                      line-height: 120%;\r\n                                      text-align: center;\r\n                                      margin-top: 0;\r\n                                      margin-bottom: 0;\r\n                                      mso-line-height-alt: 33.6px;\r\n                                    \"\r\n                                  >\r\n                                    <strong>" +
-            //    sendingFormat.Title +
-            //    "</strong>\r\n                                  </h1>\r\n                                </td>\r\n                              </tr>\r\n                            </table>\r\n                            <table\r\n                              border=\"0\"\r\n                              cellpadding=\"0\"\r\n                              cellspacing=\"0\"\r\n                              class=\"paragraph_block block-4\"\r\n                              role=\"presentation\"\r\n                              style=\"\r\n                                mso-table-lspace: 0pt;\r\n                                mso-table-rspace: 0pt;\r\n                                word-break: break-word;\r\n                              \"\r\n                              width=\"100%\"\r\n                            >\r\n                              <tr>\r\n                                <td\r\n                                  class=\"pad\"\r\n                                  style=\"\r\n                                    padding-left: 45px;\r\n                                    padding-right: 45px;\r\n                                    padding-top: 10px;\r\n                                  \"\r\n                                >\r\n                                  <div\r\n                                    style=\"\r\n                                      color: #393d47;\r\n                                      font-family: 'Cabin', Arial,\r\n                                        'Helvetica Neue', Helvetica, sans-serif;\r\n                                      font-size: 18px;\r\n                                      line-height: 150%;\r\n                                      text-align: center;\r\n                                      mso-line-height-alt: 27px;\r\n                                    \"\r\n                                  >\r\n                                    <p\r\n                                      style=\"margin: 0; word-break: break-word\"\r\n                                    >\r\n                                      <span style=\"color: #aa67cf\"\r\n                                        >Hi " +
-            //    fullName +
-            //    "," +
-            //    sendingFormat.Information +
-            //    "</span\r\n                                      >\r\n                                    </p>\r\n                                    <p>\r\n                                      <strong style=\"color: #aa67cf\"\r\n                                        >Please login with the following\r\n                                        information:</strong\r\n                                      >\r\n                                    </p>\r\n\r\n                                    <div class=\"information-container\">\r\n                                      <p style=\"color: #aa67cf\">\r\n                                        Username: " +
-            //    userEmail +
-            //    "\r\n                                      </p>\r\n                                      <p style=\"color: #aa67cf\">\r\n                                        Password:" +
+            var email = new MimeMessage();
+            email.From.Add(MailboxAddress.Parse(_config.GetSection("SmtpSettings:Username").Value));
+            email.To.Add(MailboxAddress.Parse(userEmail));
+            email.Subject = "[PersFash Application] - Course Payment Confirmation";
+
+            email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+            {
+                Text = $@"
+ <!DOCTYPE html>
+ <html lang='en'>
+ <head>
+     <meta charset='UTF-8'>
+     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+     <title>Payment Confirmation</title>
+ </head>
+ <body style='font-family: Arial, sans-serif; background-color: #dcf343; color: #ffffff;'>
+     <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #4949e9; '>
+         <h1 style='color: #ffffff;'>Payment Received!</h1>
+         <p>Hi {fullName},</p>
+         <p>We have successfully received your payment for the course: <strong>{courseName}</strong>.</p>
+         <p>You are now enrolled in the course. Get ready to learn from the best in the fashion industry!</p>
+         <p>Thank you,</p>
+         <p>The PersFash Team</p>
+     </div>
+ </body>
+ </html>"
+            };
+
+            using var smtp = new SmtpClient();
+            await smtp.ConnectAsync(_config.GetSection("SmtpSettings:Host").Value, 587, MailKit.Security.SecureSocketOptions.StartTls);
+            await smtp.AuthenticateAsync(_config.GetSection("SmtpSettings:Username").Value, _config.GetSection("SmtpSettings:Password").Value);
+            await smtp.SendAsync(email);
+            await smtp.DisconnectAsync(true);
+        }
+
+        public async Task SendInfluencerRegistrationEmail(string fullName, string userEmail)
+        {
+            var email = new MimeMessage();
+            email.From.Add(MailboxAddress.Parse(_config.GetSection("SmtpSettings:Username").Value));
+            email.To.Add(MailboxAddress.Parse(userEmail));
+            email.Subject = "[PersFash Application] - Fashion Influencer Partner Registration Success";
+
+            email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+            {
+                Text = $@"
+ <!DOCTYPE html>
+ <html lang='en'>
+ <head>
+     <meta charset='UTF-8'>
+     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+     <title>Partner Registration Success</title>
+ </head>
+ <body style='font-family: Arial, sans-serif; background-color: #dcf343; color: #ffffff;'>
+     <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #4949e9; '>
+         <h1 style='color: #ffffff;'>Welcome, {fullName}!</h1>
+         <p>We are excited to have you join the PersFash family as an fashion influencer partner. You can now share your fashion insights, host courses, and connect with your audience!</p>
+         <p>Start creating your profile and engaging with fashion enthusiasts.</p>
+         <p>Thank you,</p>
+         <p>The PersFash Team</p>
+     </div>
+ </body>
+ </html>"
+            };
+
+            using var smtp = new SmtpClient();
+            await smtp.ConnectAsync(_config.GetSection("SmtpSettings:Host").Value, 587, MailKit.Security.SecureSocketOptions.StartTls);
+            await smtp.AuthenticateAsync(_config.GetSection("SmtpSettings:Username").Value, _config.GetSection("SmtpSettings:Password").Value);
+            await smtp.SendAsync(email);
+            await smtp.DisconnectAsync(true);
+        }
+
+        public async Task SendPartnerRegistrationEmail(string partnerName, string partnerEmail)
+        {
+            var email = new MimeMessage();
+            email.From.Add(MailboxAddress.Parse(_config.GetSection("SmtpSettings:Username").Value));
+            email.To.Add(MailboxAddress.Parse(partnerEmail));
+            email.Subject = "[PersFash Application] - Store Partner Registration Success";
+
+            email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+            {
+                Text = $@"
+ <!DOCTYPE html>
+ <html lang='en'>
+ <head>
+     <meta charset='UTF-8'>
+     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+     <title>Partner Registration Success</title>
+ </head>
+ <body style='font-family: Arial, sans-serif; background-color: #dcf343; color: #ffffff;'>
+     <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #4949e9;'>
+         <h1 style='color: #ffffff;'>Welcome, {partnerName}!</h1>
+         <p>We are thrilled to have your store as a partner with PersFash. Now, you can showcase your products and reach a wide audience of fashion enthusiasts.</p>
+         <p>Start managing your store and connecting with customers!</p>
+         <p>Thank you,</p>
+         <p>The PersFash Team</p>
+     </div>
+ </body>
+ </html>"
+            };
+
+            using var smtp = new SmtpClient();
+            await smtp.ConnectAsync(_config.GetSection("SmtpSettings:Host").Value, 587, MailKit.Security.SecureSocketOptions.StartTls);
+            await smtp.AuthenticateAsync(_config.GetSection("SmtpSettings:Username").Value, _config.GetSection("SmtpSettings:Password").Value);
+            await smtp.SendAsync(email);
+            await smtp.DisconnectAsync(true);
+        }
+
+        // Gửi lúc đăng ký thành công
+        public async Task SendRegistrationEmail(string fullName, string userEmail)
+        {
+            var email = new MimeMessage();
+            email.From.Add(MailboxAddress.Parse(_config.GetSection("SmtpSettings:Username").Value));
+            email.To.Add(MailboxAddress.Parse($"{userEmail}"));
+            email.Subject = "[PersFash Application] - Welcome to PersFash!";
+            email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+            {
+                Text = $@"
+                     <!DOCTYPE html>
+                     <html lang='en'>
+                     <head>
+                         <meta charset='UTF-8'>
+                         <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                         <title>Welcome to PersFash</title>
+                     </head>
+                     <body style='font-family: Arial, sans-serif; background-color: #dcf343; color: #ffffff;'>
+                         <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #4949e9; '>
+                             <h1 style='color: #ffffff;'>Welcome to PersFash!</h1>
+                             <p>Hi {fullName},</p>
+                             <p>Thank you for registering with PersFash. We're excited to have you on board! Explore our platform for the latest in fashion, style advice, and personalized recommendations.</p>
+                             <p>We hope you enjoy the experience!</p>
+                             <p>Thank you,</p>
+                             <p>The PersFash Team</p>
+                         </div>
+                     </body>
+                     </html>"
+            };
 
 
-            //};
-
-            //using var smtp = new SmtpClient();
-            //await smtp.ConnectAsync(_config.GetSection("SmtpSettings:Host").Value, 587, MailKit.Security.SecureSocketOptions.StartTls);
-            //await smtp.AuthenticateAsync(_config.GetSection("SmtpSettings:Username").Value, _config.GetSection("SmtpSettings:Password").Value);
-            //await smtp.SendAsync(email);
-            //await smtp.DisconnectAsync(true);
+            using var smtp = new SmtpClient();
+            await smtp.ConnectAsync(_config.GetSection("SmtpSettings:Host").Value, 587, MailKit.Security.SecureSocketOptions.StartTls);
+            await smtp.AuthenticateAsync(_config.GetSection("SmtpSettings:Username").Value, _config.GetSection("SmtpSettings:Password").Value);
+            await smtp.SendAsync(email);
+            await smtp.DisconnectAsync(true);
             throw new NotImplementedException();
+        }
+
+        public async Task SendUpgradeToPremiumEmail(string fullName, string userEmail, string subscriptionName)
+        {
+            var email = new MimeMessage();
+            email.From.Add(MailboxAddress.Parse(_config.GetSection("SmtpSettings:Username").Value));
+            email.To.Add(MailboxAddress.Parse(userEmail));
+            email.Subject = $"[PersFash Application] - Congratulations on Your {subscriptionName} Upgrade!";
+
+            email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+            {
+                Text = $@"
+ <!DOCTYPE html>
+ <html lang='en'>
+ <head>
+     <meta charset='UTF-8'>
+     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+     <title>{subscriptionName} Upgrade Success</title>
+ </head>
+ <body style='font-family: Arial, sans-serif; background-color: #dcf343; color: #ffffff;'>
+     <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #4949e9; '>
+         <h1 style='color: #ffffff;'>You are now a {subscriptionName} Member!</h1>
+         <p>Hi {fullName},</p>
+         <p>Congratulations on upgrading to {subscriptionName}! You now have access to exclusive content, features, and perks available only to {subscriptionName} members.</p>
+         <p>Enjoy the enhanced experience!</p>
+         <p>Thank you,</p>
+         <p>The PersFash Team</p>
+     </div>
+ </body>
+ </html>"
+            };
+
+            using var smtp = new SmtpClient();
+            await smtp.ConnectAsync(_config.GetSection("SmtpSettings:Host").Value, 587, MailKit.Security.SecureSocketOptions.StartTls);
+            await smtp.AuthenticateAsync(_config.GetSection("SmtpSettings:Username").Value, _config.GetSection("SmtpSettings:Password").Value);
+            await smtp.SendAsync(email);
+            await smtp.DisconnectAsync(true);
+
         }
 
         public async Task SendUserResetPassword(string fullName, string userEmail, string OTP)
@@ -68,12 +226,12 @@ namespace Services.EmailService
             <meta name='viewport' content='width=device-width, initial-scale=1.0'>
             <title>Password Reset</title>
         </head>
-        <body style='font-family: Arial, sans-serif; background-color: #f3e6f8;'>
-            <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #ffffff;'>
-                <h1 style='color: #8412c0;'>Password Reset Request</h1>
+        <body style='font-family: Arial, sans-serif; background-color: #dcf343; color: #ffffff;'>
+            <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #4949e9; '>
+                <h1 style='color: #ffffff;'>Password Reset Request</h1>
                 <p>Hi {fullName},</p>
                 <p>You have requested to reset your password. Please use the following OTP (One-Time Password) to reset your password:</p>
-                <p style='font-size: 24px; font-weight: bold; color: #aa67cf;'>{OTP}</p>
+                <p style='font-size: 24px; font-weight: bold; color: #fffff;'>{OTP}</p>
                 <p>This OTP is valid for a limited time. Please use it as soon as possible.</p>
                 <p>If you did not request a password reset, please ignore this email.</p>
                 <p>Thank you,</p>
