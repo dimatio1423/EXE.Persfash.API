@@ -31,24 +31,24 @@ namespace Services.EmailService
             email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
             {
                 Text = $@"
- <!DOCTYPE html>
- <html lang='en'>
- <head>
-     <meta charset='UTF-8'>
-     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-     <title>Payment Confirmation</title>
- </head>
- <body style='font-family: Arial, sans-serif; background-color: #dcf343; color: #ffffff;'>
-     <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #4949e9; '>
-         <h1 style='color: #ffffff;'>Payment Received!</h1>
-         <p>Hi {fullName},</p>
-         <p>We have successfully received your payment for the course: <strong>{courseName}</strong>.</p>
-         <p>You are now enrolled in the course. Get ready to learn from the best in the fashion industry!</p>
-         <p>Thank you,</p>
-         <p>The PersFash Team</p>
-     </div>
- </body>
- </html>"
+         <!DOCTYPE html>
+         <html lang='en'>
+         <head>
+             <meta charset='UTF-8'>
+             <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+             <title>Payment Confirmation</title>
+         </head>
+         <body style='font-family: Arial, sans-serif; background-color: #dcf343; color: #ffffff;'>
+             <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #4949e9; '>
+                 <h1 style='color: #ffffff;'>Payment Received!</h1>
+                 <p style='color: #ffffff;'>Hi {fullName},</p>
+                 <p style='color: #ffffff;'>We have successfully received your payment for the course: <strong>{courseName}</strong>.</p>
+                 <p style='color: #ffffff;'>You are now enrolled in the course. Get ready to learn from the best in the fashion industry!</p>
+                 <p style='color: #ffffff;'>Thank you,</p>
+                 <p style='color: #ffffff;'>The PersFash Team</p>
+             </div>
+         </body>
+         </html>"
             };
 
             using var smtp = new SmtpClient();
@@ -68,23 +68,23 @@ namespace Services.EmailService
             email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
             {
                 Text = $@"
- <!DOCTYPE html>
- <html lang='en'>
- <head>
-     <meta charset='UTF-8'>
-     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-     <title>Partner Registration Success</title>
- </head>
- <body style='font-family: Arial, sans-serif; background-color: #dcf343; color: #ffffff;'>
-     <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #4949e9; '>
-         <h1 style='color: #ffffff;'>Welcome, {fullName}!</h1>
-         <p>We are excited to have you join the PersFash family as an fashion influencer partner. You can now share your fashion insights, host courses, and connect with your audience!</p>
-         <p>Start creating your profile and engaging with fashion enthusiasts.</p>
-         <p>Thank you,</p>
-         <p>The PersFash Team</p>
-     </div>
- </body>
- </html>"
+         <!DOCTYPE html>
+         <html lang='en'>
+         <head>
+             <meta charset='UTF-8'>
+             <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+             <title>Partner Registration Success</title>
+         </head>
+         <body style='font-family: Arial, sans-serif; background-color: #dcf343; color: #ffffff;'>
+             <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #4949e9; '>
+                 <h1 style='color: #ffffff;'>Welcome, {fullName}!</h1>
+                 <p style='color: #ffffff;'>We are excited to have you join the PersFash family as an fashion influencer partner. You can now share your fashion insights, host courses, and connect with your audience!</p>
+                 <p style='color: #ffffff;'>Start creating your profile and engaging with fashion enthusiasts.</p>
+                 <p style='color: #ffffff;'>Thank you,</p>
+                 <p style='color: #ffffff;'>The PersFash Team</p>
+             </div>
+         </body>
+         </html>"
             };
 
             using var smtp = new SmtpClient();
@@ -104,23 +104,23 @@ namespace Services.EmailService
             email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
             {
                 Text = $@"
- <!DOCTYPE html>
- <html lang='en'>
- <head>
-     <meta charset='UTF-8'>
-     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-     <title>Partner Registration Success</title>
- </head>
- <body style='font-family: Arial, sans-serif; background-color: #dcf343; color: #ffffff;'>
-     <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #4949e9;'>
-         <h1 style='color: #ffffff;'>Welcome, {partnerName}!</h1>
-         <p>We are thrilled to have your store as a partner with PersFash. Now, you can showcase your products and reach a wide audience of fashion enthusiasts.</p>
-         <p>Start managing your store and connecting with customers!</p>
-         <p>Thank you,</p>
-         <p>The PersFash Team</p>
-     </div>
- </body>
- </html>"
+         <!DOCTYPE html>
+         <html lang='en'>
+         <head>
+             <meta charset='UTF-8'>
+             <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+             <title>Partner Registration Success</title>
+         </head>
+         <body style='font-family: Arial, sans-serif; background-color: #dcf343; color: #ffffff;'>
+             <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #4949e9;'>
+                 <h1 style='color: #ffffff;'>Welcome, {partnerName}!</h1>
+                 <p style='color: #ffffff;'>We are thrilled to have your store as a partner with PersFash. Now, you can showcase your products and reach a wide audience of fashion enthusiasts.</p>
+                 <p style='color: #ffffff;'>Start managing your store and connecting with customers!</p>
+                 <p style='color: #ffffff;'>Thank you,</p>
+                 <p style='color: #ffffff;'>The PersFash Team</p>
+             </div>
+         </body>
+         </html>"
             };
 
             using var smtp = new SmtpClient();
@@ -150,11 +150,11 @@ namespace Services.EmailService
                      <body style='font-family: Arial, sans-serif; background-color: #dcf343; color: #ffffff;'>
                          <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #4949e9; '>
                              <h1 style='color: #ffffff;'>Welcome to PersFash!</h1>
-                             <p>Hi {fullName},</p>
-                             <p>Thank you for registering with PersFash. We're excited to have you on board! Explore our platform for the latest in fashion, style advice, and personalized recommendations.</p>
-                             <p>We hope you enjoy the experience!</p>
-                             <p>Thank you,</p>
-                             <p>The PersFash Team</p>
+                             <p style='color: #ffffff;'>Hi {fullName},</p>
+                             <p style='color: #ffffff;'>Thank you for registering with PersFash. We're excited to have you on board! Explore our platform for the latest in fashion, style advice, and personalized recommendations.</p>
+                             <p style='color: #ffffff;'>We hope you enjoy the experience!</p>
+                             <p style='color: #ffffff;'>Thank you,</p>
+                             <p style='color: #ffffff;'>The PersFash Team</p>
                          </div>
                      </body>
                      </html>"
@@ -179,24 +179,24 @@ namespace Services.EmailService
             email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
             {
                 Text = $@"
- <!DOCTYPE html>
- <html lang='en'>
- <head>
-     <meta charset='UTF-8'>
-     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-     <title>{subscriptionName} Upgrade Success</title>
- </head>
- <body style='font-family: Arial, sans-serif; background-color: #dcf343; color: #ffffff;'>
-     <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #4949e9; '>
-         <h1 style='color: #ffffff;'>You are now a {subscriptionName} Member!</h1>
-         <p>Hi {fullName},</p>
-         <p>Congratulations on upgrading to {subscriptionName}! You now have access to exclusive content, features, and perks available only to {subscriptionName} members.</p>
-         <p>Enjoy the enhanced experience!</p>
-         <p>Thank you,</p>
-         <p>The PersFash Team</p>
-     </div>
- </body>
- </html>"
+         <!DOCTYPE html>
+         <html lang='en'>
+         <head>
+             <meta charset='UTF-8'>
+             <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+             <title>{subscriptionName} Upgrade Success</title>
+         </head>
+         <body style='font-family: Arial, sans-serif; background-color: #dcf343; color: #ffffff;'>
+             <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #4949e9; '>
+                 <h1 style='color: #ffffff;'>You are now a {subscriptionName} Member!</h1>
+                 <p style='color: #ffffff;'>Hi {fullName},</p>
+                 <p style='color: #ffffff;'>Congratulations on upgrading to {subscriptionName}! You now have access to exclusive content, features, and perks available only to {subscriptionName} members.</p>
+                 <p style='color: #ffffff;'>Enjoy the enhanced experience!</p>
+                 <p style='color: #ffffff;'>Thank you,</p>
+                 <p style='color: #ffffff;'>The PersFash Team</p>
+             </div>
+         </body>
+         </html>"
             };
 
             using var smtp = new SmtpClient();
@@ -229,13 +229,13 @@ namespace Services.EmailService
         <body style='font-family: Arial, sans-serif; background-color: #dcf343; color: #ffffff;'>
             <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #4949e9; '>
                 <h1 style='color: #ffffff;'>Password Reset Request</h1>
-                <p>Hi {fullName},</p>
-                <p>You have requested to reset your password. Please use the following OTP (One-Time Password) to reset your password:</p>
+                <p style='color: #ffffff;'>Hi {fullName},</p>
+                <p style='color: #ffffff;'>You have requested to reset your password. Please use the following OTP (One-Time Password) to reset your password:</p>
                 <p style='font-size: 24px; font-weight: bold; color: #fffff;'>{OTP}</p>
-                <p>This OTP is valid for a limited time. Please use it as soon as possible.</p>
-                <p>If you did not request a password reset, please ignore this email.</p>
-                <p>Thank you,</p>
-                <p>The Music_streaming Team</p>
+                <p style='color: #ffffff;'>This OTP is valid for a limited time. Please use it as soon as possible.</p>
+                <p style='color: #ffffff;'>If you did not request a password reset, please ignore this email.</p>
+                <p style='color: #ffffff;'>Thank you,</p>
+                <p style='color: #ffffff;'>The PersFash Team</p>
             </div>
         </body>
         </html>"

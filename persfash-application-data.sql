@@ -22,7 +22,7 @@ VALUES
 
 INSERT INTO FashionItems (ItemName, Category, Brand, Price, FitType, GenderTarget, FashionTrend, Size, Color, Material, Occasion, ThumbnailURL, ProductURL, PartnerID, Status)
 VALUES
-('Slim Fit Blazer', 'Jacket', 'Zara', 150.00, 'Slim', 'Uninsex', 'Minimalist' ,'M', 'Gray', 'Wool', 'Business', 'slimfitblazer.jpg', 'www.fashionco.com/slimfitblazer', 1, 'Available'),
+('Slim Fit Blazer', 'Jacket', 'Zara', 150.00, 'Slim', 'Unisex', 'Minimalist' ,'M', 'Gray', 'Wool', 'Business', 'slimfitblazer.jpg', 'www.fashionco.com/slimfitblazer', 1, 'Available'),
 ('Summer Dress', 'Dress', 'H&M', 75.00, 'Regular', 'Women', 'Vintage' ,'S', 'Red', 'Cotton', 'Casual', 'summerdress.jpg', 'www.styleworld.com/summerdress', 2, 'Available');
 
 

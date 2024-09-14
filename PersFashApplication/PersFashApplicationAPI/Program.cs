@@ -52,6 +52,7 @@ using Services.UserCourseServices;
 using Services.UserProfilesServices;
 using Services.UserServices;
 using Services.UserSubscriptionServices;
+using Services.WardrobeServices;
 using System.Reflection;
 using System.Text;
 
@@ -122,6 +123,7 @@ builder.Services.AddScoped<ICustomerProfileService, CustomerProfileService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICustomerSubscriptionService, CustomerSubscriptionService>();
 builder.Services.AddScoped<IDecodeTokenHandler, DecodeTokenHandler>();
+builder.Services.AddScoped<IWardrobeService, WardrobeService>();
 
 //-----------------------------------------VerificationCodeCache-----------------------------------------
 

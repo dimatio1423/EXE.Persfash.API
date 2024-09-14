@@ -16,5 +16,6 @@ namespace Services.UserServices
         Task CustomerProfileSetupUpdate(string token, CustomerProfileSetupUpdateReqModel customerProfileSetupUpdateReqModel);
         Task<CustomerInformationViewModel> GetCustomerInformation(int customerId);
         Task UpdateCustomerInformation(string token, CustomerInformationUpdateReqModel customerInformationUpdateReqModel);
+        Task<bool> CheckCustomerProfileExisted(string token);
     }
 }

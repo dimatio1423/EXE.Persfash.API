@@ -42,6 +42,18 @@ namespace Repositories.PartnerRepos
             }
         }
 
+        public async Task<List<Partner>> GetPartnersByIds(List<int> partnerIds)
+        {
+            try
+            {
+                return await _context.Partners.Where(x => partnerIds.Contains(x.PartnerId)).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<bool> IsExistedByEmail(string email)
         {
             try

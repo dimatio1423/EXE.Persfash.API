@@ -14,5 +14,6 @@ namespace Repositories.FashionItemsRepos
         Task<List<FashionItem>> GetFashionItemsByPartner(int partnerId, int? page, int? size);
         Task<FashionItem> GetFashionItemsById(int itemId);
         Task<List<FashionItem>> GetFashionItems(int? page, int? size);
+        Task<List<FashionItem>> GetRecommendationFashionItemForCustomer(int customerId, int? page, int? size);
     }
 }

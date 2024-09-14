@@ -1,5 +1,6 @@
 ﻿using BusinessObject.Models.FashionItemsModel.Request;
 using BusinessObject.Models.FashionItemsModel.Response;
+using BusinessObject.Models.PartnerModel.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,6 @@ namespace Services.FashionItemsServices
         Task UpdateFashionItem(string token, FashionItemUpdateReqModel fashionItemUpdateReqModel);
         Task DeleteFashionItem(string token, int fashionItemId);
         Task<List<FashionItemViewListRes>> SearchFashionItems(int? page, int? size, FashionItemFilterReqModel? fashionItemFilterReqModel, string? sortBy, string? searchValue);
-        Task<List<FashionItemViewListRes>> FashionItemRecommendationForCustomer(int customerId);
-        Task<List<FashionItemViewListRes>> RecommendFashionItemForCustomer(int customerId);
+        Task<List<FashionItemViewListRes>> RecommendFashionItemForCustomer(string token, int? page, int? size);
     }
 }

@@ -7,6 +7,8 @@ using Newtonsoft.Json.Linq;
 using Repositories.FashionItemImageRepos;
 using Repositories.FashionItemsRepos;
 using Repositories.PartnerRepos;
+using Repositories.UserProfilesRepos;
+using Repositories.UserRepos;
 using Services.AWSService;
 using Services.AWSServices;
 using Services.FileServices;
@@ -27,6 +29,8 @@ namespace Services.FashionItemsServices
         private readonly IFashionItemRepository _fashionItemRepository;
         private readonly IFashionItemImageRepository _fashionItemImageRepository;
         private readonly IPartnerRepository _partnerRepository;
+        private readonly ICustomerRepository _customerRepository;
+        private readonly ICustomerProfileRepository _customerProfileRepository;
         private readonly IFileService _fileService;
         private readonly IAWSService _aWSService;
         private readonly IMapper _mapper;
@@ -36,6 +40,8 @@ namespace Services.FashionItemsServices
             IFashionItemRepository fashionItemRepository,
             IFashionItemImageRepository fashionItemImageRepository,
             IPartnerRepository partnerRepository,
+            ICustomerRepository customerRepository,
+            ICustomerProfileRepository customerProfileRepository,
             IFileService fileService,
             IAWSService aWSService,
             IMapper mapper)
@@ -43,6 +49,8 @@ namespace Services.FashionItemsServices
             _fashionItemRepository = fashionItemRepository;
             _fashionItemImageRepository = fashionItemImageRepository;
             _partnerRepository = partnerRepository;
+            _customerRepository = customerRepository;
+            _customerProfileRepository = customerProfileRepository;
             _fileService = fileService;
             _aWSService = aWSService;
             _mapper = mapper;
@@ -157,11 +165,6 @@ namespace Services.FashionItemsServices
             currItem.Status = StatusEnums.Unavailable.ToString();
 
             await _fashionItemRepository.Update(currItem);
-        }
-
-        public Task<List<FashionItemViewListRes>> FashionItemRecommendationForCustomer(int customerId)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<List<FashionItemViewListRes>> SearchFashionItems(int? page, int? size, FashionItemFilterReqModel? fashionItemFilterReqModel, string? sortBy, string? searchValue)
@@ -413,9 +416,8 @@ namespace Services.FashionItemsServices
             if (fashionItemFilterReqModel.GenderTarget is not null && fashionItemFilterReqModel.GenderTarget.Any())
             {
                 fashionItems = fashionItems
-                    .Where(x => !string.IsNullOrEmpty(x.GenderTarget) && fashionItemFilterReqModel.GenderTarget
-                    .Any(genderTarget => new List<string>(x.GenderTarget.Split(new[] { ", " }, StringSplitOptions.None))
-                    .Contains(genderTarget))).ToList();
+                    .Where(x => fashionItemFilterReqModel.GenderTarget
+                    .Contains(x.GenderTarget)).ToList();
             }
 
             if (fashionItemFilterReqModel.FashionTrend is not null && fashionItemFilterReqModel.FashionTrend.Any())
@@ -495,9 +497,32 @@ namespace Services.FashionItemsServices
             return fashionItems;
         }
 
-        public Task<List<FashionItemViewListRes>> RecommendFashionItemForCustomer(int customerId)
+        public async Task<List<FashionItemViewListRes>> RecommendFashionItemForCustomer(string token, int? page, int? size)
         {
-            throw new NotImplementedException();
+            var decodedToken = _decodeToken.decode(token);
+
+            if (!decodedToken.roleName.Equals(RoleEnums.Customer.ToString()))
+            {
+                throw new ApiException(HttpStatusCode.Forbidden, "You do not have permission to perform this function");
+            }
+
+            var currCustomer = await _customerRepository.GetCustomerByUsername(decodedToken.username);
+
+            if (currCustomer == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Customer does not exist");
+            }
+
+            var currCustomerProfile = await _customerProfileRepository.GetCustomerProfileByCustomerId(currCustomer.CustomerId);
+
+            if (currCustomerProfile == null)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Please complete the profile setup");
+            }
+
+            var items = await _fashionItemRepository.GetRecommendationFashionItemForCustomer(currCustomer.CustomerId, page, size);
+
+            return _mapper.Map<List<FashionItemViewListRes>>(items);
         }
     }
 }

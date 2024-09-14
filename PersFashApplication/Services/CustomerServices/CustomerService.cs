@@ -307,5 +307,26 @@ namespace Services.UserServices
                 await _partnerRepository.IsExistedByEmail(email) ||
                 await _fashionInfluencerRepository.IsExistedByEmail(email));
         }
+
+        public async Task<bool> CheckCustomerProfileExisted(string token)
+        {
+            var decodeToken = _decodeTokenHandler.decode(token);
+
+            if (!decodeToken.roleName.Equals(RoleEnums.Customer.ToString()))
+            {
+                throw new ApiException(HttpStatusCode.Forbidden, "You do not have permission to perform this function");
+            }
+
+            var currCustomer = await _customerRepository.GetCustomerByUsername(decodeToken.username);
+
+            if (currCustomer == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Customer does not exist");
+            }
+
+            var currCustomerProfile = await _customerProfileRepository.GetCustomerProfileByCustomerId(currCustomer.CustomerId);
+
+            return currCustomerProfile != null ? true : false;
+        }
     }
 }

@@ -11,5 +11,7 @@ namespace BusinessObject.Models.PartnerModel.Response
         public int PartnerId { get; set; }
 
         public string? PartnerName { get; set; }
+
+        public string? PartnerProfilePicture { get; set; }
     }
 }
