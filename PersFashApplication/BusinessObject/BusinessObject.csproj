@@ -26,7 +26,6 @@
     <Folder Include="Models\CustomerSubscriptionModel\Request\" />
     <Folder Include="Models\InfluencerModel\Request\" />
     <Folder Include="Models\PartnerModel\Request\" />
-    <Folder Include="Models\WardrobeModel\Response\" />
   </ItemGroup>
 
 </Project>

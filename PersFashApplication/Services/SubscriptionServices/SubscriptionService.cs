@@ -128,10 +128,9 @@ namespace Services.SubscriptionServices
                 throw new ApiException(HttpStatusCode.NotFound, "Subscription does not exist");
             }
 
-            currSubscription.SubscriptionTitle = !string.IsNullOrEmpty(subscriptionUpdateReqModel.SubscriptionTitle) ? subscriptionUpdateReqModel.SubscriptionTitle : currSubscription.SubscriptionTitle;
             currSubscription.Price = subscriptionUpdateReqModel.Price != null ? subscriptionUpdateReqModel.Price : currSubscription.Price;
             currSubscription.DurationInDays = subscriptionUpdateReqModel.DurationInDays != null ? subscriptionUpdateReqModel.DurationInDays : currSubscription.DurationInDays;
-            currSubscription.Description = !string.IsNullOrEmpty(subscriptionUpdateReqModel.SubscriptionTitle) ? subscriptionUpdateReqModel.SubscriptionTitle : currSubscription.SubscriptionTitle;
+            currSubscription.Description = !string.IsNullOrEmpty(subscriptionUpdateReqModel.Description) ? subscriptionUpdateReqModel.Description : currSubscription.Description;
 
             await _subscriptionRepository.Update(currSubscription);
         }

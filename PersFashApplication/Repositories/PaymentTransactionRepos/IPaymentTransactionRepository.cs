@@ -6,10 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repositories.WardrobeItemRepos
+namespace Repositories.PaymentTransactionRepos
 {
-    public interface IWardrobeItemRepository : IGenericRepository<WardrobeItem>
+    public interface IPaymentTransactionRepository : IGenericRepository<PaymentTransaction>
     {
-        Task<List<WardrobeItem>> GetWardrobeItemsByWardrobeId(int wardrobeId);
     }
 }

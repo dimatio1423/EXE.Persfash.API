@@ -72,7 +72,7 @@ CREATE TABLE FashionItems (
 CREATE TABLE FashionItem_Images(
    ItemImageID INT PRIMARY KEY IDENTITY(1,1),
    ItemID INT,
-   ImageURL VARCHAR(255)
+   ImageURL VARCHAR(255),
    FOREIGN KEY (ItemID) REFERENCES FashionItems(ItemID)
 )
 
@@ -115,7 +115,7 @@ CREATE TABLE Courses (
 CREATE TABLE Course_Images(
    CourseImageID INT PRIMARY KEY IDENTITY(1,1),
    CourseID INT,
-   ImageURL VARCHAR(255)
+   ImageURL VARCHAR(255),
    FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
 )
 
@@ -227,4 +227,26 @@ CREATE TABLE Payment(
    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
    FOREIGN KEY (SubscriptionID) REFERENCES Subscriptions(SubscriptionID),
    FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
+)
+
+CREATE TABLE PaymentTransactions (
+    TransactionID INT PRIMARY KEY IDENTITY(1,1),
+    PaymentID INT NOT NULL,  
+    InfluencerID INT NOT NULL,  
+    OriginalAmount DECIMAL(10, 2) NOT NULL,  
+    CommissionAmount DECIMAL(10, 2), 
+    TransferredAmount DECIMAL(10, 2) NOT NULL, 
+    TransferDate DATETIME DEFAULT GETDATE(), 
+    Status VARCHAR(50), 
+    FOREIGN KEY (PaymentID) REFERENCES Payment(PaymentID),
+    FOREIGN KEY (InfluencerID) REFERENCES FashionInfluencers(InfluencerID)
+);
+
+CREATE TABLE InfluencerPaymentInformation (
+   PaymentInformationID INT PRIMARY KEY IDENTITY (1,1),
+   InfluencerID INT NOT NULL,  
+   BankName NVARCHAR (MAX) NOT NULL,
+   BankAccountNumber VARCHAR(MAX) NOT NULL,
+   BankAccountName NVARCHAR(MAX) NOT NULL,
+   FOREIGN KEY (InfluencerID) REFERENCES FashionInfluencers(InfluencerID)
 )

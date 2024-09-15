@@ -9,6 +9,7 @@ using BusinessObject.Models.FashionItemsModel.Response;
 using BusinessObject.Models.InfluencerModel.Response;
 using BusinessObject.Models.PartnerModel.Response;
 using BusinessObject.Models.SubscriptionModels.Response;
+using BusinessObject.Models.WardrobeModel.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,6 +66,15 @@ namespace Services.Helper.MapperProfiles
             //Customer
             CreateMap<Customer, CustomerViewModel>().ReverseMap();
             CreateMap<Customer, CustomerInformationViewModel>().ReverseMap();
+
+
+            //Wardrobe
+            CreateMap<Wardrobe, WardrobeViewListResModel>().ReverseMap();
+            CreateMap<Wardrobe, WardrobeViewDetailsResModel>().ReverseMap();
+
+            //WardrobeItem
+            CreateMap<WardrobeItem, WardrobeItemViewListResModel>().ReverseMap();
+
 
 
         }

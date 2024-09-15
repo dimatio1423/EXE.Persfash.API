@@ -15,8 +15,10 @@ using Repositories.FashionItemImageRepos;
 using Repositories.FashionItemsRepos;
 using Repositories.FeedbackRepos;
 using Repositories.GenericRepos;
+using Repositories.InfluencerPaymentInformationRepos;
 using Repositories.PartnerRepos;
 using Repositories.PaymentRepos;
+using Repositories.PaymentTransactionRepos;
 using Repositories.RecommendationRepos;
 using Repositories.RefreshTokenRepos;
 using Repositories.SubscriptionRepos;
@@ -98,6 +100,8 @@ builder.Services.AddScoped<IWardrobeRepository, WardrobeRepository>();
 builder.Services.AddScoped<IWardrobeItemRepository, WardrobeItemRepository>();
 builder.Services.AddScoped<IFashionItemImageRepository, FashionItemImageRepository>();
 builder.Services.AddScoped<ICourseImageRepository, CourseImageRepository>();
+builder.Services.AddScoped<IPaymentTransactionRepository, PaymentTransactionRepository>();
+builder.Services.AddScoped<IInfluencerPaymentInformationRepository, InfluencerPaymentInformationRepository>();
 
 //-----------------------------------------SERVICES-----------------------------------------
 

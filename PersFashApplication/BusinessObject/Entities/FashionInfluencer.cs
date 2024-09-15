@@ -33,5 +33,9 @@ public partial class FashionInfluencer
 
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
 
+    public virtual ICollection<InfluencerPaymentInformation> InfluencerPaymentInformations { get; set; } = new List<InfluencerPaymentInformation>();
+
+    public virtual ICollection<PaymentTransaction> PaymentTransactions { get; set; } = new List<PaymentTransaction>();
+
     public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 }

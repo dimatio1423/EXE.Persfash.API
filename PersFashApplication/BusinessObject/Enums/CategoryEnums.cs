@@ -10,6 +10,7 @@ namespace BusinessObject.Enums
     {
         Tops,
         Bottoms,
-        Accessories
+        Accessories,
+        Shoes
     }
 }

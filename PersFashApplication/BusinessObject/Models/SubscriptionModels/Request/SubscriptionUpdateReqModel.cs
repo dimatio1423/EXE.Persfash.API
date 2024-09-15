@@ -11,7 +11,6 @@ namespace BusinessObject.Models.SubscriptionModels.Request
     {
         [Required(ErrorMessage ="SubscriptionId is required")]
         public int subscriptionId { get; set; }
-        public string? SubscriptionTitle { get; set; } = null!;
 
         [Range(0.01, 10000000.00, ErrorMessage = "Price must be between 0.01 and 10,000,000.")]
         public decimal? Price { get; set; }

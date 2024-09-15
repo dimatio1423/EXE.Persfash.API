@@ -48,6 +48,21 @@ namespace Repositories.UserSubscriptionRepos
             }
         }
 
+        public async Task<CustomerSubscription> GetCustomerSubscriptionByCustomerIdAndSubscriptionId(int customerId, int subscriptionId)
+        {
+            try
+            {
+
+                return await _context.CustomerSubscriptions
+                    .Include(x => x.Subscription)
+                    .Where(x => x.CustomerId == customerId && x.SubscriptionId == subscriptionId && x.IsActive == true).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<List<CustomerSubscription>> GetCustomerSubscriptionBySubscriptionId(int subscriptionId)
         {
             try

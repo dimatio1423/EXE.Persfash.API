@@ -7,13 +7,10 @@ using System.Threading.Tasks;
 
 namespace BusinessObject.Models.WardrobeModel.Request
 {
-    public class WardrobeItemCreateReqModel
+    public class WardrobeUpdateReqModel
     {
-        [Required(ErrorMessage ="Wardrobe id is required")]
+        [Required(ErrorMessage = "Wardrobe id is required")]
         public int WardrobeId { get; set; }
-
-        [Required(ErrorMessage = "Item id is required")]
-
-        public int ItemId { get; set; }
+        public string? Title { get; set; }
     }
 }

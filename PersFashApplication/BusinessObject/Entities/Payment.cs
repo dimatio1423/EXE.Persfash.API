@@ -21,5 +21,7 @@ public partial class Payment
 
     public virtual Customer Customer { get; set; } = null!;
 
+    public virtual ICollection<PaymentTransaction> PaymentTransactions { get; set; } = new List<PaymentTransaction>();
+
     public virtual Subscription? Subscription { get; set; }
 }

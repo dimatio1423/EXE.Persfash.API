@@ -10,5 +10,7 @@ namespace Repositories.WardrobeRepos
 {
     public interface IWardrobeRepository : IGenericRepository<Wardrobe>
     {
+        Task<List<Wardrobe>> GetWardrobesByCustomerId(int customerId);
+        Task<Wardrobe> GetWardrobeById(int wardrobeId);
     }
 }
