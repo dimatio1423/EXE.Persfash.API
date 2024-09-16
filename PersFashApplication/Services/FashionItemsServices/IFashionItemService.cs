@@ -20,5 +20,6 @@ namespace Services.FashionItemsServices
         Task DeleteFashionItem(string token, int fashionItemId);
         Task<List<FashionItemViewListRes>> SearchFashionItems(int? page, int? size, FashionItemFilterReqModel? fashionItemFilterReqModel, string? sortBy, string? searchValue);
         Task<List<FashionItemViewListRes>> RecommendFashionItemForCustomer(string token, int? page, int? size);
+        Task<List<FashionItemViewListRes>> RecommendFashionItemForCustomerFilter(string token, int? page, int? size, string filter);
     }
 }

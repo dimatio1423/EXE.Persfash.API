@@ -55,7 +55,7 @@ namespace Repositories.UserSubscriptionRepos
 
                 return await _context.CustomerSubscriptions
                     .Include(x => x.Subscription)
-                    .Where(x => x.CustomerId == customerId && x.SubscriptionId == subscriptionId && x.IsActive == true).FirstOrDefaultAsync();
+                    .Where(x => x.CustomerId == customerId && x.SubscriptionId == subscriptionId).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {

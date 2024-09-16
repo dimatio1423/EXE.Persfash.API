@@ -33,6 +33,10 @@ public partial class Customer
 
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
 
+    public virtual ICollection<OutfitCombination> OutfitCombinations { get; set; } = new List<OutfitCombination>();
+
+    public virtual ICollection<OutfitFavorite> OutfitFavorites { get; set; } = new List<OutfitFavorite>();
+
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
     public virtual ICollection<Recommendation> Recommendations { get; set; } = new List<Recommendation>();

@@ -1,4 +1,4 @@
-Drop database PersfashApplicationDB
+--Drop database PersfashApplicationDB
 CREATE DATABASE PersfashApplicationDB;
 GO
 USE PersfashApplicationDB;
@@ -224,6 +224,7 @@ CREATE TABLE Payment(
    CustomerID INT NOT NULL,
    SubscriptionID INT,
    CourseID INT,
+   Status VARCHAR(50),
    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
    FOREIGN KEY (SubscriptionID) REFERENCES Subscriptions(SubscriptionID),
    FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
@@ -249,4 +250,36 @@ CREATE TABLE InfluencerPaymentInformation (
    BankAccountNumber VARCHAR(MAX) NOT NULL,
    BankAccountName NVARCHAR(MAX) NOT NULL,
    FOREIGN KEY (InfluencerID) REFERENCES FashionInfluencers(InfluencerID)
+)
+
+CREATE TABLE OutfitCombinations (
+    OutfitID INT PRIMARY KEY IDENTITY(1,1),
+	CustomerID INT,
+    TopItemID INT,  -- The top fashion item (shirt, blouse, etc.)
+    BottomItemID INT,  -- The bottom fashion item (pants, skirt, etc.)
+    ShoesItemID INT,  -- Shoes for the outfit
+    AccessoriesItemID INT,  -- Any accessories for the outfit
+    CreatedDate DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (TopItemID) REFERENCES FashionItems(ItemID),
+    FOREIGN KEY (BottomItemID) REFERENCES FashionItems(ItemID),
+    FOREIGN KEY (ShoesItemID) REFERENCES FashionItems(ItemID),
+    FOREIGN KEY (AccessoriesItemID) REFERENCES FashionItems(ItemID),
+	FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
+
+CREATE TABLE OutfitFavorite(
+    OutfitFavoriteID INT PRIMARY KEY IDENTITY(1,1),
+	CustomerID INT,
+    TopItemID INT,  -- The top fashion item (shirt, blouse, etc.)
+    BottomItemID INT,  -- The bottom fashion item (pants, skirt, etc.)
+    ShoesItemID INT,  -- Shoes for the outfit
+    AccessoriesItemID INT,  -- Any accessories for the outfit
+	DressItemID INT, -- For Femail customer
+    CreatedDate DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (TopItemID) REFERENCES FashionItems(ItemID),
+    FOREIGN KEY (BottomItemID) REFERENCES FashionItems(ItemID),
+    FOREIGN KEY (ShoesItemID) REFERENCES FashionItems(ItemID),
+    FOREIGN KEY (AccessoriesItemID) REFERENCES FashionItems(ItemID),
+	FOREIGN KEY (DressItemID) REFERENCES FashionItems(ItemID),
+	FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
 )

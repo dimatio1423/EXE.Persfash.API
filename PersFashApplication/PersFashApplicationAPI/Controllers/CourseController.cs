@@ -1,5 +1,9 @@
-﻿using BusinessObject.Models.CourseModel.Request;
+﻿using BusinessObject.Enums;
+using BusinessObject.Models.CourseModel.Request;
+using BusinessObject.Models.PaymentModel.Request;
+using BusinessObject.Models.PaymentModel.Response;
 using BusinessObject.Models.ResultModel;
+using BusinessObject.Models.SubscriptionModels.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -216,6 +220,75 @@ namespace PersFashApplicationAPI.Controllers
             };
 
             return StatusCode(response.Code, response);
+        }
+
+        /// <summary>
+        /// Purchase course, create payment url transaction for customer course
+        /// </summary>
+        [HttpPost]
+        [Route("purchase")]
+        [Authorize]
+        public async Task<IActionResult> PurchaseCourse(CoursePaymentReqModel coursePaymentReqModel)
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+            var paymentId = await _courseService.CreateCustomerCourseTransaction(token, coursePaymentReqModel.courseId);
+
+            var paymentUrl = await _courseService.GetPaymentUrl(HttpContext, paymentId, coursePaymentReqModel.redirectUrl);
+
+            var result = new PaymentResModel
+            {
+                paymentId = paymentId,
+                paymentUrl = paymentUrl
+            };
+
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "Get subscription paymentUrl successfully",
+                Data = result
+            };
+
+            return StatusCode(response.Code, response);
+        }
+
+        /// <summary>
+        /// Update status of payment customer subscription
+        /// </summary>
+        [HttpPut]
+        [Route("purchase")]
+        [Authorize]
+        public async Task<IActionResult> UpdateCourseTransaction(PaymentUpdateReqModel paymentUpdateReqModel)
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+            var payment = await _courseService.UpdateCustomerCourseTransaction(paymentUpdateReqModel);
+
+            if (payment.Status.Equals(PaymentStatusEnums.Paid.ToString()))
+            {
+                await _courseService.AddCustomerCourse(token, (int)payment.CourseId);
+
+                ResultModel response = new ResultModel
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "Update customer course successfully",
+                };
+
+                return StatusCode(response.Code, response);
+            }
+            else
+            {
+                ResultModel response = new ResultModel
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = "Update customer course failed",
+                };
+
+                return StatusCode(response.Code, response);
+            }
         }
     }
 }

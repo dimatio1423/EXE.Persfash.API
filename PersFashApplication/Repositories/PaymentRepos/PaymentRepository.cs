@@ -16,5 +16,20 @@ namespace Repositories.PaymentRepos
         {
             _context = context;
         }
+
+        public async Task<int> AddPayment(Payment payment)
+        {
+            try
+            {
+                await _context.Payments.AddAsync(payment);
+                await _context.SaveChangesAsync();
+
+                return payment.PaymentId;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

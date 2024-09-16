@@ -1,6 +1,9 @@
-﻿using BusinessObject.Models.CustomerSubscriptionModel.Response;
+﻿using BusinessObject.Entities;
+using BusinessObject.Models.CustomerSubscriptionModel.Response;
+using BusinessObject.Models.PaymentModel.Request;
 using BusinessObject.Models.SubscriptionModels.Request;
 using BusinessObject.Models.SubscriptionModels.Response;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,5 +22,11 @@ namespace Services.SubscriptionServices
         Task<CustomerSubscriptionViewResModel> ViewDetailsSubscriptionOfCustomer(string token, int customerSubscriptionId);
         Task<List<CustomerSubscriptionViewResModel>> ViewCurrentSubscriptionsOfCustomer(string token);
         Task<List<CustomerSubscriptionViewResModel>> ViewSubscriptionHistoryOfCustomer(string token);
+        Task AddCustomerSubscription(string token, int subscriptionId);
+
+        // Payment
+        Task<int> CreateCustomerSubscriptionTransaction(string token, int subscriptionId);
+        Task<string> GetPaymentUrl(HttpContext context, int paymentId, string redirectUrl);
+        Task<Payment> UpdateCustomerSubscriptionTransaction(PaymentUpdateReqModel paymentUpdateReqModel); 
     }
 }

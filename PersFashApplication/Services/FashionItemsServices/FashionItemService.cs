@@ -524,5 +524,33 @@ namespace Services.FashionItemsServices
 
             return _mapper.Map<List<FashionItemViewListRes>>(items);
         }
+
+        public async Task<List<FashionItemViewListRes>> RecommendFashionItemForCustomerFilter(string token, int? page, int? size, string filter)
+        {
+            var decodedToken = _decodeToken.decode(token);
+
+            if (!decodedToken.roleName.Equals(RoleEnums.Customer.ToString()))
+            {
+                throw new ApiException(HttpStatusCode.Forbidden, "You do not have permission to perform this function");
+            }
+
+            var currCustomer = await _customerRepository.GetCustomerByUsername(decodedToken.username);
+
+            if (currCustomer == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Customer does not exist");
+            }
+
+            var currCustomerProfile = await _customerProfileRepository.GetCustomerProfileByCustomerId(currCustomer.CustomerId);
+
+            if (currCustomerProfile == null)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Please complete the profile setup");
+            }
+
+            var items = await _fashionItemRepository.GetRecommendationFashionItemForCustomerFilter(currCustomer.CustomerId, page, size, filter);
+
+            return _mapper.Map<List<FashionItemViewListRes>>(items);
+        }
     }
 }

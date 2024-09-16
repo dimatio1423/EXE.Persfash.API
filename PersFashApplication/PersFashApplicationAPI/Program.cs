@@ -16,6 +16,8 @@ using Repositories.FashionItemsRepos;
 using Repositories.FeedbackRepos;
 using Repositories.GenericRepos;
 using Repositories.InfluencerPaymentInformationRepos;
+using Repositories.OutfitCombinationRepos;
+using Repositories.OutfitFavoriteRepos;
 using Repositories.PartnerRepos;
 using Repositories.PaymentRepos;
 using Repositories.PaymentTransactionRepos;
@@ -54,6 +56,7 @@ using Services.UserCourseServices;
 using Services.UserProfilesServices;
 using Services.UserServices;
 using Services.UserSubscriptionServices;
+using Services.VnPayService;
 using Services.WardrobeServices;
 using System.Reflection;
 using System.Text;
@@ -102,6 +105,8 @@ builder.Services.AddScoped<IFashionItemImageRepository, FashionItemImageReposito
 builder.Services.AddScoped<ICourseImageRepository, CourseImageRepository>();
 builder.Services.AddScoped<IPaymentTransactionRepository, PaymentTransactionRepository>();
 builder.Services.AddScoped<IInfluencerPaymentInformationRepository, InfluencerPaymentInformationRepository>();
+builder.Services.AddScoped<IOutfitCombinationRepository, OutfitCombinationRepository>();
+builder.Services.AddScoped<IOutfitFavoriteRepository, OutfitFavoriteRepository>();
 
 //-----------------------------------------SERVICES-----------------------------------------
 
@@ -128,6 +133,7 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICustomerSubscriptionService, CustomerSubscriptionService>();
 builder.Services.AddScoped<IDecodeTokenHandler, DecodeTokenHandler>();
 builder.Services.AddScoped<IWardrobeService, WardrobeService>();
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 
 //-----------------------------------------VerificationCodeCache-----------------------------------------
 

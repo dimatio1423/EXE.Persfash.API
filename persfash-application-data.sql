@@ -8,8 +8,8 @@ VALUES
 
 INSERT INTO CustomerProfiles (CustomerID, BodyType, FashionStyle, FitPreferences, PreferredSize, PreferredColors, PreferredMaterials, Occasion, Lifestyle, FacebookLink, ProfileSetupComplete)
 VALUES
-(1, 'Rectangle', 'Casual', 'Slim', 'M,L', 'Blue, Black', 'Cotton, Denim', 'Casual, Business', 'Outdoor enthusiast, Tech-savvy', 'http://twitter.com/johndoe', 1),
-(2, 'Hourglass', 'Chic', 'Regular', 'M,L', 'Red, White', 'Silk, Leather', 'Formal, Party', 'Fashion blogger, Travel lover', 'http://instagram.com/janedoe', 1),
+(1, 'Rectangle', 'Casual', 'Slim', 'M, L', 'Blue, Black', 'Cotton, Denim', 'Casual, Business', 'Outdoor enthusiast, Tech-savvy', 'http://twitter.com/johndoe', 1),
+(2, 'Hourglass', 'Chic', 'Regular', 'M, L', 'Red, White', 'Silk, Leather', 'Formal, Party', 'Fashion blogger, Travel lover', 'http://instagram.com/janedoe', 1),
 (3, 'Inverted Triangle', 'Athleisure','Loose', 'L, XL', 'Gray, Green', 'Polyester, Nylon', 'Sport, Casual', 'Gym lover, Adventure seeker', 'http://linkedin.com/in/michael', 1),
 (4, 'Pear', 'Bohemian', 'Regular', 'M' , 'Purple, Yellow', 'Linen, Cotton', 'Vacation, Wedding', 'Art enthusiast, Yoga practitioner', 'http://facebook.com/emilyjohnson', 1);
 
@@ -39,8 +39,8 @@ VALUES
 
 INSERT INTO Courses (CourseName, Description, Price, InstructorID, ThumbnailURL, Status)
 VALUES
-('Mastering Streetwear', 'A comprehensive course on streetwear fashion.', 49.99, 2,'thumbnail.jpg', 'Available'),
-('Chic Fashion Basics', 'Learn the basics of chic fashion style.', 39.99, 1, 'thumbnail.jpg', 'Available');
+('Mastering Streetwear', 'A comprehensive course on streetwear fashion.', 200000, 2,'thumbnail.jpg', 'Available'),
+('Chic Fashion Basics', 'Learn the basics of chic fashion style.', 400000, 1, 'thumbnail.jpg', 'Available');
 
 INSERT INTO CourseContent (Content, Duration, CourseID)
 VALUES
@@ -70,8 +70,8 @@ VALUES
 INSERT INTO Subscriptions (SubscriptionTitle, Price, DurationInDays, Description, Status)
 VALUES
 ('Free', null, null, 'Access to basic features and limited courses.', 'Active'),
-('Premium', 19.99, 60, 'Access to all features and unlimited courses.', 'Active'),
-('Courses', 29.99, 90, 'All-access pass including exclusive content and perks.', 'Active');
+('Premium', 99000.00, 60, 'Access to all features and unlimited courses.', 'Active'),
+('Courses', null, null, 'All-access pass including exclusive content and perks.', 'Active');
 
 INSERT INTO SystemAdmin (Username, Password, Status)
 VALUES
@@ -91,6 +91,9 @@ VALUES
 INSERT INTO CustomerSubscriptions (CustomerID, SubscriptionID, StartDate, EndDate, IsActive)
 VALUES
 (1, 1, null, null, 1),  
+(2, 1, null, null, 0),
+(3, 1, null, null, 1),
 (2, 2, '2024-08-15', '2024-11-15', 1), 
-(3, 3, '2024-06-01', '2024-08-30', 0);  
+(3, 2, '2024-06-01', '2024-08-30', 0);  
+
 

@@ -307,6 +307,29 @@ namespace PersFashApplicationAPI.Controllers
         }
 
         /// <summary>
+        /// Get recommendation fashion items for customer filter
+        /// </summary>
+        [HttpGet]
+        [Route("recommendation/fashion-item-filter")]
+        [Authorize]
+        public async Task<IActionResult> GetCustomerRecommendationFashionItemFilter(string filter = "Occasion" ,int? page = 1, int? size = 10)
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+            var result = await _fashionItemService.RecommendFashionItemForCustomerFilter(token, page, size, filter);
+
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "Get recommended fashion items filter for customer successfully",
+                Data = result,
+            };
+
+            return StatusCode(response.Code, response);
+        }
+
+        /// <summary>
         /// Get recommendation store for customer base on the profile setup
         /// </summary>
         [HttpGet]

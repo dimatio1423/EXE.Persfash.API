@@ -2,14 +2,19 @@
 using BusinessObject.Entities;
 using BusinessObject.Enums;
 using BusinessObject.Models.CustomerSubscriptionModel.Response;
+using BusinessObject.Models.PaymentModel.Request;
 using BusinessObject.Models.SubscriptionModels.Request;
 using BusinessObject.Models.SubscriptionModels.Response;
+using BusinessObject.Models.VnPayModel.Request;
+using Microsoft.AspNetCore.Http;
+using Repositories.PaymentRepos;
 using Repositories.SubscriptionRepos;
 using Repositories.SystemAdminRepos;
 using Repositories.UserRepos;
 using Repositories.UserSubscriptionRepos;
 using Services.Helper.CustomExceptions;
 using Services.Helpers.Handler.DecodeTokenHandler;
+using Services.VnPayService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,13 +32,17 @@ namespace Services.SubscriptionServices
         private readonly IMapper _mapper;
         private readonly ICustomerSubscriptionRepository _customerSubscriptionRepository;
         private readonly ISystemAdminRepository _systemAdminRepository;
+        private readonly IPaymentRepository _paymentRepository;
+        private readonly IVnPayService _vnPayService;
 
         public SubscriptionService(ISubscriptionRepository subscriptionRepository, 
             IDecodeTokenHandler decodeToken, 
             IMapper mapper,
             ISystemAdminRepository systemAdminRepository,
             ICustomerRepository customerRepository,
-            ICustomerSubscriptionRepository customerSubscriptionRepository)
+            ICustomerSubscriptionRepository customerSubscriptionRepository,
+            IPaymentRepository paymentRepository,
+            IVnPayService vnPayService)
         {
             _subscriptionRepository = subscriptionRepository;
             _customerRepository = customerRepository;
@@ -41,7 +50,10 @@ namespace Services.SubscriptionServices
             _mapper = mapper;
             _customerSubscriptionRepository = customerSubscriptionRepository;
             _systemAdminRepository = systemAdminRepository;
+            _paymentRepository = paymentRepository;
+            _vnPayService = vnPayService;
         }
+
         public async Task CreateNewSubscription(string token, SubscriptionCreateReqModel subscriptionCreateReqModel)
         {
             var decodedToken = _decodeToken.decode(token);
@@ -103,6 +115,97 @@ namespace Services.SubscriptionServices
             currSubscription.Status = StatusEnums.Inactive.ToString();
 
             await _subscriptionRepository.Update(currSubscription);
+        }
+
+        public async Task<int> CreateCustomerSubscriptionTransaction(string token, int subscriptionId)
+        {
+            var decodeToken = _decodeToken.decode(token);
+
+            var currCustomer = await _customerRepository.GetCustomerByUsername(decodeToken.username);
+
+            if (currCustomer == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Customer does not exist");
+            }
+
+            var currSubscription = await _subscriptionRepository.Get(subscriptionId);
+
+            if (currSubscription == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Subscription does not exist");
+            }
+
+            var currCustomerSubscription = await _customerSubscriptionRepository.GetCustomerSubscriptionByCustomerIdAndSubscriptionId(currCustomer.CustomerId, currSubscription.SubscriptionId);
+
+            if (currCustomerSubscription != null && currCustomerSubscription.IsActive == true)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, $"The customer has already subscribed for the {currSubscription.SubscriptionTitle}");
+            }
+
+            Payment newPayment = new Payment
+            {
+                PayementDate = DateTime.Now,
+                Price = (decimal)currSubscription.Price,
+                CustomerId = currCustomer.CustomerId,
+                SubscriptionId = currSubscription.SubscriptionId,
+                Status = PaymentStatusEnums.Unpaid.ToString()
+            };
+
+            var paymentId = await _paymentRepository.AddPayment(newPayment);
+
+            return paymentId;
+        }
+
+        public async Task<string> GetPaymentUrl(HttpContext context, int paymentId, string redirectUrl)
+        {
+            var currPayment = await _paymentRepository.Get(paymentId);
+
+            if (currPayment == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Payment does not exist");
+            }
+
+            if (currPayment.Status.Equals(PaymentStatusEnums.Paid.ToString()))
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "The payment has already been paid");
+            }
+
+            VnPayReqModel vnPayReqModel = new VnPayReqModel
+            {
+                OrderId = (int)currPayment.SubscriptionId,
+                PaymentId = currPayment.PaymentId,
+                Amount = currPayment.Price,
+                CreatedDate = currPayment.PayementDate,
+                RedirectUrl = redirectUrl,
+            };
+
+            return _vnPayService.CreatePaymentUrl(context, vnPayReqModel);
+        }
+
+        public async Task<Payment> UpdateCustomerSubscriptionTransaction(PaymentUpdateReqModel paymentUpdateReqModel)
+        {
+            var currPayment = await _paymentRepository.Get(paymentUpdateReqModel.paymentId);
+
+            if (currPayment == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Payment does not exist");
+            }
+
+            if (!currPayment.Status.Equals(PaymentStatusEnums.Unpaid.ToString()))
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "The payment is not in unpaid status");
+            }
+
+            if (!Enum.IsDefined(typeof(PaymentStatusEnums), paymentUpdateReqModel.status))
+            {
+                throw new ApiException(HttpStatusCode.BadRequest,"Please choose valid status");
+            }
+
+            currPayment.Status = paymentUpdateReqModel.status;
+            currPayment.PayementDate = DateTime.Now;
+            await _paymentRepository.Update(currPayment);
+
+            return currPayment;
         }
 
         public async Task UpdateSubscription(string token, SubscriptionUpdateReqModel subscriptionUpdateReqModel)
@@ -236,6 +339,67 @@ namespace Services.SubscriptionServices
             var subscriptions = await _subscriptionRepository.GetAll(page, size);
 
             return _mapper.Map<List<SubscriptionViewDetailsResModel>>(subscriptions.Where(x => x.Status.Equals(StatusEnums.Active.ToString())).ToList());
+        }
+
+        public async Task AddCustomerSubscription(string token, int subscriptionId)
+        {
+            var decodeToken = _decodeToken.decode(token);
+
+            var currCustomer = await _customerRepository.GetCustomerByUsername(decodeToken.username);
+
+            if (currCustomer == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Customer does not exist");
+            }
+
+            var currSubscription = await _subscriptionRepository.Get(subscriptionId);
+
+            if (currSubscription == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Subscription does not exist");
+            }
+
+            var freeSubscription = await _subscriptionRepository.GetSubscriptionsByName(SubscriptionTypeEnums.Free.ToString());
+
+            if (freeSubscription == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Free Subscription does not exist");
+            }
+
+            var customerFreeSubscription = await _customerSubscriptionRepository.GetCustomerSubscriptionByCustomerIdAndSubscriptionId(currCustomer.CustomerId, freeSubscription.SubscriptionId);
+
+            if (customerFreeSubscription == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Customer Free Subscription does not exist");
+            }
+
+            customerFreeSubscription.IsActive = false;
+
+            await _customerSubscriptionRepository.Update(customerFreeSubscription);
+
+            var currCustomerSubscription = await _customerSubscriptionRepository.GetCustomerSubscriptionByCustomerIdAndSubscriptionId(currCustomer.CustomerId, currSubscription.SubscriptionId);
+
+            if (currCustomerSubscription == null)
+            {
+                CustomerSubscription customerSubscription = new CustomerSubscription
+                {
+                    CustomerId = currCustomer.CustomerId,
+                    SubscriptionId = currSubscription.SubscriptionId,
+                    StartDate = DateTime.Now,
+                    EndDate = DateTime.Now.AddDays((double)currSubscription.DurationInDays),
+                    IsActive = true,
+                };
+
+                await _customerSubscriptionRepository.Add(customerSubscription);
+
+            }else if (currCustomerSubscription != null && currCustomerSubscription.IsActive == false)
+            {
+                currCustomerSubscription.StartDate = DateTime.Now;
+                currCustomerSubscription.EndDate = DateTime.Now.AddDays((double)currSubscription.DurationInDays);
+                currCustomerSubscription.IsActive = true;
+
+                await _customerSubscriptionRepository.Update(currCustomerSubscription);
+            }
         }
     }
 }

@@ -1,6 +1,9 @@
-﻿using BusinessObject.Models.CourseModel.Request;
+﻿using BusinessObject.Entities;
+using BusinessObject.Models.CourseModel.Request;
 using BusinessObject.Models.CourseModel.Response;
 using BusinessObject.Models.CustomerCourseModel.Response;
+using BusinessObject.Models.PaymentModel.Request;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,5 +24,11 @@ namespace Services.CourseServices
         Task<CourseViewDetailsModel> GetCourseDetails(int courseId);
         Task<List<CourseViewListResModel>> GetCourseOfCustomer(string token);
         Task<List<CourseViewListResModel>> SearchCourses(string? token, int? page, int? size, string? searchValue, string? sortBy);
+
+        // Payment
+        Task<int> CreateCustomerCourseTransaction(string token, int courseId);
+        Task<string> GetPaymentUrl(HttpContext context, int paymentId, string redirectUrl);
+        Task<Payment> UpdateCustomerCourseTransaction(PaymentUpdateReqModel paymentUpdateReqModel);
+        Task AddCustomerCourse(string token, int courseId);
     }
 }

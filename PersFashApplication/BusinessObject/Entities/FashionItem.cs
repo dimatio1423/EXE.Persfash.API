@@ -43,6 +43,24 @@ public partial class FashionItem
 
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
 
+    public virtual ICollection<OutfitCombination> OutfitCombinationAccessoriesItems { get; set; } = new List<OutfitCombination>();
+
+    public virtual ICollection<OutfitCombination> OutfitCombinationBottomItems { get; set; } = new List<OutfitCombination>();
+
+    public virtual ICollection<OutfitCombination> OutfitCombinationShoesItems { get; set; } = new List<OutfitCombination>();
+
+    public virtual ICollection<OutfitCombination> OutfitCombinationTopItems { get; set; } = new List<OutfitCombination>();
+
+    public virtual ICollection<OutfitFavorite> OutfitFavoriteAccessoriesItems { get; set; } = new List<OutfitFavorite>();
+
+    public virtual ICollection<OutfitFavorite> OutfitFavoriteBottomItems { get; set; } = new List<OutfitFavorite>();
+
+    public virtual ICollection<OutfitFavorite> OutfitFavoriteDressItems { get; set; } = new List<OutfitFavorite>();
+
+    public virtual ICollection<OutfitFavorite> OutfitFavoriteShoesItems { get; set; } = new List<OutfitFavorite>();
+
+    public virtual ICollection<OutfitFavorite> OutfitFavoriteTopItems { get; set; } = new List<OutfitFavorite>();
+
     public virtual Partner? Partner { get; set; }
 
     public virtual ICollection<Recommendation> Recommendations { get; set; } = new List<Recommendation>();

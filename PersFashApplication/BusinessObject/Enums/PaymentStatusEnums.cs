@@ -6,12 +6,9 @@ using System.Threading.Tasks;
 
 namespace BusinessObject.Enums
 {
-    public enum CategoryEnums
+    public enum PaymentStatusEnums
     {
-        Tops,
-        Bottoms,
-        Accessories,
-        Shoes,
-        Dresses
+        Paid,
+        Unpaid
     }
 }

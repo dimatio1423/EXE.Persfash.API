@@ -6,10 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repositories.PaymentRepos
+namespace Repositories.OutfitFavoriteRepos
 {
-    public interface IPaymentRepository : IGenericRepository<Payment>
-    {
-        Task<int> AddPayment(Payment payment);
+    public interface IOutfitFavoriteRepository : IGenericRepository<OutfitFavorite>
+    { 
     }
 }

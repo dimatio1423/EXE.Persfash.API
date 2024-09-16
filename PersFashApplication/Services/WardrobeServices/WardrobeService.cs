@@ -78,7 +78,7 @@ namespace Services.WardrobeServices
             var currCustomerSubscription = await _customerSubscriptionRepository.GetCustomerSubscriptionByCustomerIdAndSubscriptionId(currCustomer.CustomerId, premiumSubscription.SubscriptionId);
 
 
-            if (currCustomerSubscription == null)
+            if (currCustomerSubscription == null || currCustomerSubscription.IsActive == false)
             {
                 throw new ApiException(HttpStatusCode.Forbidden, "Please subscribe the premium subscription or extend the subscription to perform this function");
             }
@@ -138,7 +138,7 @@ namespace Services.WardrobeServices
             var currCustomerSubscription = await _customerSubscriptionRepository.GetCustomerSubscriptionByCustomerIdAndSubscriptionId(currCustomer.CustomerId, premiumSubscription.SubscriptionId);
 
 
-            if (currCustomerSubscription == null)
+            if (currCustomerSubscription == null || currCustomerSubscription.IsActive == false)
             {
                 throw new ApiException(HttpStatusCode.Forbidden, "Please subscribe the premium subscription or extend the subscription to perform this function");
             }
@@ -180,7 +180,7 @@ namespace Services.WardrobeServices
             var currCustomerSubscription = await _customerSubscriptionRepository.GetCustomerSubscriptionByCustomerIdAndSubscriptionId(currCustomer.CustomerId, premiumSubscription.SubscriptionId);
 
 
-            if (currCustomerSubscription == null)
+            if (currCustomerSubscription == null || currCustomerSubscription.IsActive == false)
             {
                 throw new ApiException(HttpStatusCode.Forbidden, "Please subscribe the premium subscription or extend the subscription to perform this function");
             }
@@ -234,7 +234,7 @@ namespace Services.WardrobeServices
             var currCustomerSubscription = await _customerSubscriptionRepository.GetCustomerSubscriptionByCustomerIdAndSubscriptionId(currCustomer.CustomerId, premiumSubscription.SubscriptionId);
 
 
-            if (currCustomerSubscription == null)
+            if (currCustomerSubscription == null || currCustomerSubscription.IsActive == false)
             {
                 throw new ApiException(HttpStatusCode.Forbidden, "Please subscribe the premium subscription or extend the subscription to perform this function");
             }
@@ -287,7 +287,7 @@ namespace Services.WardrobeServices
             var currCustomerSubscription = await _customerSubscriptionRepository.GetCustomerSubscriptionByCustomerIdAndSubscriptionId(currCustomer.CustomerId, premiumSubscription.SubscriptionId);
 
 
-            if (currCustomerSubscription == null)
+            if (currCustomerSubscription == null || currCustomerSubscription.IsActive == false)
             {
                 throw new ApiException(HttpStatusCode.Forbidden, "Please subscribe the premium subscription or extend the subscription to perform this function");
             }
@@ -335,7 +335,7 @@ namespace Services.WardrobeServices
             var currCustomerSubscription = await _customerSubscriptionRepository.GetCustomerSubscriptionByCustomerIdAndSubscriptionId(currCustomer.CustomerId, premiumSubscription.SubscriptionId);
 
 
-            if (currCustomerSubscription == null)
+            if (currCustomerSubscription == null || currCustomerSubscription.IsActive == false)
             {
                 throw new ApiException(HttpStatusCode.Forbidden, "Please subscribe the premium subscription or extend the subscription to perform this function");
             }
@@ -364,10 +364,13 @@ namespace Services.WardrobeServices
 
             var shoesItem = _mapper.Map<List<WardrobeItemViewListResModel>>(customerWardrobe.Where(x => x.Item.Category.Equals(CategoryEnums.Shoes.ToString())).ToList());
 
+            var DressItem = _mapper.Map<List<WardrobeItemViewListResModel>>(customerWardrobe.Where(x => x.Item.Category.Equals(CategoryEnums.Dresses.ToString())).ToList());
+
             WardrobeItems.Add("Tops", topsItem);
-            WardrobeItems.Add("Bottoms", bottomItems);
+            WardrobeItems.Add("Bottoms", bottomItems); 
             WardrobeItems.Add("Accessories", accessoriesItems);
             WardrobeItems.Add("Shoes", shoesItem);
+            WardrobeItems.Add("Dresses", DressItem);
 
             var detailWardrobe = new WardrobeViewDetailsResModel
             {
@@ -409,7 +412,7 @@ namespace Services.WardrobeServices
             var currCustomerSubscription = await _customerSubscriptionRepository.GetCustomerSubscriptionByCustomerIdAndSubscriptionId(currCustomer.CustomerId, premiumSubscription.SubscriptionId);
 
 
-            if (currCustomerSubscription == null)
+            if (currCustomerSubscription == null || currCustomerSubscription.IsActive == false)
             {
                 throw new ApiException(HttpStatusCode.Forbidden, "Please subscribe the premium subscription or extend the subscription to perform this function");
             }

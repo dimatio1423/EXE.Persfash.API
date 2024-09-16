@@ -6,6 +6,9 @@ using BusinessObject.Models.CourseModel.Request;
 using BusinessObject.Models.CourseModel.Response;
 using BusinessObject.Models.FashionItemsModel.Request;
 using BusinessObject.Models.FashionItemsModel.Response;
+using BusinessObject.Models.PaymentModel.Request;
+using BusinessObject.Models.VnPayModel.Request;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 using Repositories.CourseContentRepos;
 using Repositories.CourseImagesRepos;
@@ -13,6 +16,7 @@ using Repositories.CourseMaterialRepos;
 using Repositories.CourseRepos;
 using Repositories.FashionInfluencerRepos;
 using Repositories.PartnerRepos;
+using Repositories.PaymentRepos;
 using Repositories.SystemAdminRepos;
 using Repositories.UserCourseRepos;
 using Repositories.UserRepos;
@@ -20,6 +24,7 @@ using Services.AWSService;
 using Services.AWSServices;
 using Services.Helper.CustomExceptions;
 using Services.Helpers.Handler.DecodeTokenHandler;
+using Services.VnPayService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +43,9 @@ namespace Services.CourseServices
         private readonly IPartnerRepository _partnerRepository;
         private readonly IAWSService _aWSService;
         private readonly ISystemAdminRepository _systemAdminRepository;
+        private readonly IPaymentRepository _paymentRepository;
         private readonly IMapper _mapper;
+        private readonly IVnPayService _vnPayService;
         private readonly IDecodeTokenHandler _decodeToken;
         private readonly ICourseRepository _courseRepository;
         private readonly ICourseContentRepository _courseContentRepository;
@@ -56,7 +63,9 @@ namespace Services.CourseServices
             IPartnerRepository partnerRepository,
             IAWSService aWSService,
             ICustomerRepository customerRepository,
-            ISystemAdminRepository systemAdminRepository)
+            ISystemAdminRepository systemAdminRepository,
+            IPaymentRepository paymentRepository,
+            IVnPayService vnPayService)
         {
             _courseRepository = courseRepository;
             _courseContentRepository = courseContentRepository;
@@ -68,7 +77,9 @@ namespace Services.CourseServices
             _partnerRepository = partnerRepository;
             _aWSService = aWSService;
             _systemAdminRepository = systemAdminRepository;
+            _paymentRepository = paymentRepository;
             _mapper = mapper;
+            _vnPayService = vnPayService;
             _decodeToken = decodeToken;
 
         }
@@ -459,6 +470,129 @@ namespace Services.CourseServices
             }
 
             return courses;
-        } 
+        }
+
+        public async Task<int> CreateCustomerCourseTransaction(string token, int courseId)
+        {
+            var decodeToken = _decodeToken.decode(token);
+
+            var currCustomer = await _customerRepository.GetCustomerByUsername(decodeToken.username);
+
+            if (currCustomer == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Customer does not exist");
+            }
+
+            var currCourse = await _courseRepository.GetCourseById(courseId);
+
+            if (currCourse == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Course does not exist");
+            }
+
+            var currCustomerCourse = await _customerCourseRepository.GetCustomerCoursesByCustomerId(currCustomer.CustomerId);
+
+            var currCoursesOfCustomer = await _courseRepository.GetCoursesByIds(currCustomerCourse.Select(x => (int)x.CourseId).ToList());
+
+            if (currCoursesOfCustomer.Contains(currCourse))
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Customer has already owned the course");
+            }
+
+            Payment newPayment = new Payment
+            {
+                PayementDate = DateTime.Now,
+                Price = (decimal)currCourse.Price,
+                CustomerId = currCustomer.CustomerId,
+                CourseId = currCourse.CourseId,
+                Status = PaymentStatusEnums.Unpaid.ToString()
+            };
+
+            var paymentId = await _paymentRepository.AddPayment(newPayment);
+
+            return paymentId;
+        }
+
+        public async Task<string> GetPaymentUrl(HttpContext context, int paymentId, string redirectUrl)
+        {
+            var currPayment = await _paymentRepository.Get(paymentId);
+
+            if (currPayment == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Payment does not exist");
+            }
+
+            if (currPayment.Status.Equals(PaymentStatusEnums.Paid.ToString()))
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "The payment has already been paid");
+            }
+
+            VnPayReqModel vnPayReqModel = new VnPayReqModel
+            {
+                OrderId = (int)currPayment.CourseId,
+                PaymentId = currPayment.PaymentId,
+                Amount = currPayment.Price,
+                CreatedDate = currPayment.PayementDate,
+                RedirectUrl = redirectUrl,
+            };
+
+            return _vnPayService.CreatePaymentUrl(context, vnPayReqModel);
+        }
+
+        public async Task<Payment> UpdateCustomerCourseTransaction(PaymentUpdateReqModel paymentUpdateReqModel)
+        {
+            var currPayment = await _paymentRepository.Get(paymentUpdateReqModel.paymentId);
+
+            if (currPayment == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Payment does not exist");
+            }
+
+            if (!currPayment.Status.Equals(PaymentStatusEnums.Unpaid.ToString()))
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "The payment is not in unpaid status");
+            }
+
+            if (!Enum.IsDefined(typeof(PaymentStatusEnums), paymentUpdateReqModel.status))
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Please choose valid status");
+            }
+
+            currPayment.Status = paymentUpdateReqModel.status;
+            currPayment.PayementDate = DateTime.Now;
+            await _paymentRepository.Update(currPayment);
+
+            return currPayment;
+        }
+
+        public async Task AddCustomerCourse(string token, int courseId)
+        {
+            var decodeToken = _decodeToken.decode(token);
+
+            var currCustomer = await _customerRepository.GetCustomerByUsername(decodeToken.username);
+
+            if (currCustomer == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Customer does not exist");
+            }
+
+            var currCourse = await _courseRepository.GetCourseById(courseId);
+
+            if (currCourse == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Course does not exist");
+            }
+
+            CustomerCourse customerCourse = new CustomerCourse
+            {
+                CourseId = currCourse.CourseId,
+                CustomerId = currCustomer.CustomerId,
+                EnrollmentDate = DateTime.Now
+            };
+
+            await _customerCourseRepository.Add(customerCourse);
+
+        }
     }
 }
+
