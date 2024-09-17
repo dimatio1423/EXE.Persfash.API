@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessObject.Models.OutfitModel.Response;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,11 @@ namespace Services.OutfitServices
 {
     public interface IOutfitService
     {
+        Task GenerateOutfitForCustomer(string token);
+        Task<List<OutfitViewListResModel>> ViewRecommendationOutfitForCustomer(string token);
+        Task<OutfitViewDetailsResModel> ViewDetailsOutfit(string token, int outfitId);
+        Task AddOutfitToFavoriteList(string token, int outfitId);
+        Task RemoveOutfitFromFavoriteList(string token, int outfitId);
+        Task<List<OutfitViewListResModel>> ViewFavoriteOutfits(string token);
     }
 }

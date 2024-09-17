@@ -17,11 +17,13 @@ using Repositories.CourseRepos;
 using Repositories.FashionInfluencerRepos;
 using Repositories.PartnerRepos;
 using Repositories.PaymentRepos;
+using Repositories.PaymentTransactionRepos;
 using Repositories.SystemAdminRepos;
 using Repositories.UserCourseRepos;
 using Repositories.UserRepos;
 using Services.AWSService;
 using Services.AWSServices;
+using Services.EmailService;
 using Services.Helper.CustomExceptions;
 using Services.Helpers.Handler.DecodeTokenHandler;
 using Services.VnPayService;
@@ -44,9 +46,11 @@ namespace Services.CourseServices
         private readonly IAWSService _aWSService;
         private readonly ISystemAdminRepository _systemAdminRepository;
         private readonly IPaymentRepository _paymentRepository;
+        private readonly IPaymentTransactionRepository _paymentTransactionRepository;
         private readonly IMapper _mapper;
         private readonly IVnPayService _vnPayService;
         private readonly IDecodeTokenHandler _decodeToken;
+        private readonly IEmailService _emailService;
         private readonly ICourseRepository _courseRepository;
         private readonly ICourseContentRepository _courseContentRepository;
         private readonly ICourseMaterialRepository _courseMaterialRepository;
@@ -65,6 +69,8 @@ namespace Services.CourseServices
             ICustomerRepository customerRepository,
             ISystemAdminRepository systemAdminRepository,
             IPaymentRepository paymentRepository,
+            IPaymentTransactionRepository paymentTransactionRepository,
+            IEmailService emailService, 
             IVnPayService vnPayService)
         {
             _courseRepository = courseRepository;
@@ -78,9 +84,11 @@ namespace Services.CourseServices
             _aWSService = aWSService;
             _systemAdminRepository = systemAdminRepository;
             _paymentRepository = paymentRepository;
+            _paymentTransactionRepository = paymentTransactionRepository;
             _mapper = mapper;
             _vnPayService = vnPayService;
             _decodeToken = decodeToken;
+            _emailService = emailService;
 
         }
 
@@ -501,7 +509,7 @@ namespace Services.CourseServices
 
             Payment newPayment = new Payment
             {
-                PayementDate = DateTime.Now,
+                PaymentDate = DateTime.Now,
                 Price = (decimal)currCourse.Price,
                 CustomerId = currCustomer.CustomerId,
                 CourseId = currCourse.CourseId,
@@ -532,7 +540,7 @@ namespace Services.CourseServices
                 OrderId = (int)currPayment.CourseId,
                 PaymentId = currPayment.PaymentId,
                 Amount = currPayment.Price,
-                CreatedDate = currPayment.PayementDate,
+                CreatedDate = currPayment.PaymentDate,
                 RedirectUrl = redirectUrl,
             };
 
@@ -541,7 +549,7 @@ namespace Services.CourseServices
 
         public async Task<Payment> UpdateCustomerCourseTransaction(PaymentUpdateReqModel paymentUpdateReqModel)
         {
-            var currPayment = await _paymentRepository.Get(paymentUpdateReqModel.paymentId);
+            var currPayment = await _paymentRepository.GetPaymentById(paymentUpdateReqModel.paymentId);
 
             if (currPayment == null)
             {
@@ -559,8 +567,32 @@ namespace Services.CourseServices
             }
 
             currPayment.Status = paymentUpdateReqModel.status;
-            currPayment.PayementDate = DateTime.Now;
+            currPayment.PaymentDate = DateTime.Now;
             await _paymentRepository.Update(currPayment);
+
+            // sau khi thanh toán thành công đổi status bên Payment rồi thêm bên PaymentTransaction để chuyển tiền cho Influencer
+
+            var currCourse = await _courseRepository.GetCourseById((int)currPayment.CourseId);
+
+            if (currCourse == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Course payment does not exist");
+            }
+
+            PaymentTransaction paymentTransaction = new PaymentTransaction
+            {
+                PaymentId = currPayment.PaymentId,
+                InfluencerId = (int)currCourse.InstructorId,
+                OriginalAmount = (decimal)currCourse.Price,
+                ComissionRate = 5,
+                CommissionAmount = (decimal)currCourse.Price * 5 / 100,
+                TransferredAmount = (decimal)currCourse.Price - ((decimal)currCourse.Price * 5 / 100),
+                TransferDate = null,
+                Status = PaymentStatusEnums.Unpaid.ToString(),
+
+            };
+
+            await _paymentTransactionRepository.Add(paymentTransaction);
 
             return currPayment;
         }
@@ -592,6 +624,7 @@ namespace Services.CourseServices
 
             await _customerCourseRepository.Add(customerCourse);
 
+            await _emailService.SendCoursePaymentSuccessEmail(currCustomer.FullName, currCourse.CourseName, currCustomer.Email);
         }
     }
 }

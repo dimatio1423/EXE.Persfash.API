@@ -10,5 +10,9 @@ namespace Repositories.OutfitCombinationRepos
 {
     public interface IOutfitCombinationRepository : IGenericRepository<OutfitCombination>
     {
+        Task<OutfitCombination> GetOutfitCombinationById(int outfitCombinationId);
+        Task GenerateRecommendationOutfits(Customer customer, int numberOfOutfit, List<FashionItem> recommendedFashionItem);
+        Task<List<OutfitCombination>> GetRecommendationOutfitForCustomer(Customer customer);
+
     }
 }

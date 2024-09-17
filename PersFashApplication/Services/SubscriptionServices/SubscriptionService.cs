@@ -12,6 +12,7 @@ using Repositories.SubscriptionRepos;
 using Repositories.SystemAdminRepos;
 using Repositories.UserRepos;
 using Repositories.UserSubscriptionRepos;
+using Services.EmailService;
 using Services.Helper.CustomExceptions;
 using Services.Helpers.Handler.DecodeTokenHandler;
 using Services.VnPayService;
@@ -34,6 +35,7 @@ namespace Services.SubscriptionServices
         private readonly ISystemAdminRepository _systemAdminRepository;
         private readonly IPaymentRepository _paymentRepository;
         private readonly IVnPayService _vnPayService;
+        private readonly IEmailService _emailService;
 
         public SubscriptionService(ISubscriptionRepository subscriptionRepository, 
             IDecodeTokenHandler decodeToken, 
@@ -42,7 +44,8 @@ namespace Services.SubscriptionServices
             ICustomerRepository customerRepository,
             ICustomerSubscriptionRepository customerSubscriptionRepository,
             IPaymentRepository paymentRepository,
-            IVnPayService vnPayService)
+            IVnPayService vnPayService,
+            IEmailService emailService)
         {
             _subscriptionRepository = subscriptionRepository;
             _customerRepository = customerRepository;
@@ -52,6 +55,7 @@ namespace Services.SubscriptionServices
             _systemAdminRepository = systemAdminRepository;
             _paymentRepository = paymentRepository;
             _vnPayService = vnPayService;
+            _emailService = emailService;
         }
 
         public async Task CreateNewSubscription(string token, SubscriptionCreateReqModel subscriptionCreateReqModel)
@@ -144,7 +148,7 @@ namespace Services.SubscriptionServices
 
             Payment newPayment = new Payment
             {
-                PayementDate = DateTime.Now,
+                PaymentDate = DateTime.Now,
                 Price = (decimal)currSubscription.Price,
                 CustomerId = currCustomer.CustomerId,
                 SubscriptionId = currSubscription.SubscriptionId,
@@ -175,7 +179,7 @@ namespace Services.SubscriptionServices
                 OrderId = (int)currPayment.SubscriptionId,
                 PaymentId = currPayment.PaymentId,
                 Amount = currPayment.Price,
-                CreatedDate = currPayment.PayementDate,
+                CreatedDate = currPayment.PaymentDate,
                 RedirectUrl = redirectUrl,
             };
 
@@ -202,7 +206,7 @@ namespace Services.SubscriptionServices
             }
 
             currPayment.Status = paymentUpdateReqModel.status;
-            currPayment.PayementDate = DateTime.Now;
+            currPayment.PaymentDate = DateTime.Now;
             await _paymentRepository.Update(currPayment);
 
             return currPayment;
@@ -392,6 +396,8 @@ namespace Services.SubscriptionServices
 
                 await _customerSubscriptionRepository.Add(customerSubscription);
 
+                await _emailService.SendUpgradeToPremiumEmail(currCustomer.FullName, currCustomer.Email, currSubscription.SubscriptionTitle);
+
             }else if (currCustomerSubscription != null && currCustomerSubscription.IsActive == false)
             {
                 currCustomerSubscription.StartDate = DateTime.Now;
@@ -399,6 +405,8 @@ namespace Services.SubscriptionServices
                 currCustomerSubscription.IsActive = true;
 
                 await _customerSubscriptionRepository.Update(currCustomerSubscription);
+
+                await _emailService.SendUpgradeToPremiumEmail(currCustomer.FullName, currCustomer.Email, currSubscription.SubscriptionTitle);
             }
         }
     }

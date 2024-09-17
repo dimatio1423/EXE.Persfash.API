@@ -17,6 +17,8 @@ public partial class OutfitCombination
 
     public int? AccessoriesItemId { get; set; }
 
+    public int? DressItemId { get; set; }
+
     public DateTime? CreatedDate { get; set; }
 
     public virtual FashionItem? AccessoriesItem { get; set; }
@@ -24,6 +26,8 @@ public partial class OutfitCombination
     public virtual FashionItem? BottomItem { get; set; }
 
     public virtual Customer? Customer { get; set; }
+
+    public virtual FashionItem? DressItem { get; set; }
 
     public virtual FashionItem? ShoesItem { get; set; }
 

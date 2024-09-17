@@ -7,6 +7,7 @@ using BusinessObject.Models.CustomerModels.Response;
 using BusinessObject.Models.CustomerSubscriptionModel.Response;
 using BusinessObject.Models.FashionItemsModel.Response;
 using BusinessObject.Models.InfluencerModel.Response;
+using BusinessObject.Models.OutfitModel.Response;
 using BusinessObject.Models.PartnerModel.Response;
 using BusinessObject.Models.SubscriptionModels.Response;
 using BusinessObject.Models.WardrobeModel.Response;
@@ -74,6 +75,18 @@ namespace Services.Helper.MapperProfiles
 
             //WardrobeItem
             CreateMap<WardrobeItem, WardrobeItemViewListResModel>().ReverseMap();
+
+            //Outfit
+            CreateMap<OutfitCombination, OutfitViewListResModel>().ReverseMap();
+            CreateMap<OutfitCombination, OutfitViewDetailsResModel>().ReverseMap();
+
+            CreateMap<OutfitFavorite, OutfitViewListResModel>()
+                .ForMember(dest => dest.OutfitId, opt => opt.MapFrom(src => src.OutfitFavoriteId))
+                .ReverseMap();
+
+            CreateMap<OutfitFavorite, OutfitViewDetailsResModel>()
+                .ForMember(dest => dest.OutfitId, opt => opt.MapFrom(src => src.OutfitFavoriteId))
+                .ReverseMap();
 
 
 

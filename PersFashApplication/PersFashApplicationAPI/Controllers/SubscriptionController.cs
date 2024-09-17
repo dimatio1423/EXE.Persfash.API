@@ -25,7 +25,7 @@ namespace PersFashApplicationAPI.Controllers
         }
 
         /// <summary>
-        /// View subscriptions
+        /// View all subscriptions
         /// </summary>
         [HttpGet]
         public async Task<IActionResult> ViewSubscriptions(int? page = 1, int? size = 10)

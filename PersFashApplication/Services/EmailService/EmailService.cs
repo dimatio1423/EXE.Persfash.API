@@ -76,16 +76,18 @@ namespace Services.EmailService
              <title>Partner Registration Success</title>
          </head>
          <body style='font-family: Arial, sans-serif; background-color: #dcf343; color: #ffffff;'>
-             <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #4949e9; '>
+             <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #4949e9;'>
                  <h1 style='color: #ffffff;'>Welcome, {fullName}!</h1>
-                 <p style='color: #ffffff;'>We are excited to have you join the PersFash family as an fashion influencer partner. You can now share your fashion insights, host courses, and connect with your audience!</p>
+                 <p style='color: #ffffff;'>We are excited to have you join the PersFash family as a fashion influencer partner. You can now share your fashion insights, host courses, and connect with your audience!</p>
                  <p style='color: #ffffff;'>Start creating your profile and engaging with fashion enthusiasts.</p>
+                 <p style='color: #ffffff; font-weight: bold;'>Please note that for every sale of your course, a fee of 5-10% will be charged to cover platform and service costs.</p>
                  <p style='color: #ffffff;'>Thank you,</p>
                  <p style='color: #ffffff;'>The PersFash Team</p>
              </div>
          </body>
          </html>"
             };
+
 
             using var smtp = new SmtpClient();
             await smtp.ConnectAsync(_config.GetSection("SmtpSettings:Host").Value, 587, MailKit.Security.SecureSocketOptions.StartTls);

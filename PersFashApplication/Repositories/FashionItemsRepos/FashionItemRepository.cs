@@ -222,6 +222,130 @@ namespace Repositories.FashionItemsRepos
 
         }
 
+        public async Task<List<FashionItem>> GetRecommendationFashionItemForCustomer(int customerId)
+        {
+            try
+            {
+
+                var customerProfile = await _context.CustomerProfiles
+                    .Include(x => x.Customer)
+                    .Where(x => x.CustomerId == customerId)
+                    .FirstOrDefaultAsync();
+
+                var fashionItemQuery = await _context.FashionItems
+                    .Include(x => x.Partner).AsQueryable().ToListAsync();
+
+                var allCriteriaMatchItems = fashionItemQuery.AsEnumerable();  // For items matching all criteria
+                var atLeastOneMatchItems = new List<FashionItem>();
+
+
+                // fit type
+                if (!string.IsNullOrEmpty(customerProfile.FitPreferences))
+                {
+                    var preferredFitType = customerProfile.FitPreferences.Split(new[] { ", " }, StringSplitOptions.None).ToList();
+
+                    var fitMatches = fashionItemQuery.Where(item => !string.IsNullOrEmpty(item.FitType) &&
+                    item.FitType.Split(new[] { ", " }, StringSplitOptions.None).Any(fit => preferredFitType.Contains(fit))).ToList();
+
+                    allCriteriaMatchItems = allCriteriaMatchItems.Intersect(fitMatches).ToList();  // Narrow down to match all
+                    atLeastOneMatchItems.AddRange(fitMatches);
+
+                }
+
+                // fashion type
+                if (!string.IsNullOrEmpty(customerProfile.FashionStyle))
+                {
+                    var preferredFashion = customerProfile.FashionStyle.Split(new[] { ", " }, StringSplitOptions.None).ToList();
+
+                    var fashionMatches = fashionItemQuery.Where(item => !string.IsNullOrEmpty(item.FashionTrend) &&
+                    item.FashionTrend.Split(new[] { ", " }, StringSplitOptions.None).Any(fashion => preferredFashion.Contains(fashion))).ToList();
+
+                    allCriteriaMatchItems = allCriteriaMatchItems.Intersect(fashionMatches).ToList();
+                    atLeastOneMatchItems.AddRange(fashionMatches);
+
+                }
+
+
+                // size
+                if (!string.IsNullOrEmpty(customerProfile.PreferredSize))
+                {
+                    var preferredSize = customerProfile.PreferredSize.Split(new[] { ", " }, StringSplitOptions.None).ToList();
+
+                    var sizeMatches = fashionItemQuery.Where(item => !string.IsNullOrEmpty(item.Size) &&
+                    item.Size.Split(new[] { ", " }, StringSplitOptions.None).Any(size => preferredSize.Contains(size))).ToList();
+
+                    allCriteriaMatchItems = allCriteriaMatchItems.Intersect(sizeMatches).ToList();
+                    atLeastOneMatchItems.AddRange(sizeMatches);
+
+                }
+
+
+                // color
+                if (!string.IsNullOrEmpty(customerProfile.PreferredColors))
+                {
+                    var preferredColor = customerProfile.PreferredColors.Split(new[] { ", " }, StringSplitOptions.None).ToList();
+
+                    var colorMatches = fashionItemQuery.Where(item => !string.IsNullOrEmpty(item.Color) &&
+                    item.Color.Split(new[] { ", " }, StringSplitOptions.None).Any(color => preferredColor.Contains(color))).ToList();
+
+                    allCriteriaMatchItems = allCriteriaMatchItems.Intersect(colorMatches).ToList();
+                    atLeastOneMatchItems.AddRange(colorMatches);
+
+                }
+
+
+                // material
+                if (!string.IsNullOrEmpty(customerProfile.PreferredMaterials))
+                {
+                    var preferredMaterial = customerProfile.PreferredMaterials.Split(new[] { ", " }, StringSplitOptions.None).ToList();
+
+                    var materialMatches = fashionItemQuery.Where(item => !string.IsNullOrEmpty(item.Material) &&
+                    item.Material.Split(new[] { ", " }, StringSplitOptions.None).Any(material => preferredMaterial.Contains(material))).ToList();
+
+                    allCriteriaMatchItems = allCriteriaMatchItems.Intersect(materialMatches).ToList();
+                    atLeastOneMatchItems.AddRange(materialMatches);
+
+                }
+
+                //occaion
+
+                if (!string.IsNullOrEmpty(customerProfile.Occasion))
+                {
+                    var preferredOccasion = customerProfile.Occasion.Split(new[] { ", " }, StringSplitOptions.None).ToList();
+
+                    var occasionMatches = fashionItemQuery.Where(item => !string.IsNullOrEmpty(item.Occasion) &&
+                    item.Occasion.Split(new[] { ", " }, StringSplitOptions.None).Any(occaion => preferredOccasion.Contains(occaion))).ToList();
+
+                    allCriteriaMatchItems = allCriteriaMatchItems.Intersect(occasionMatches).ToList();
+                    atLeastOneMatchItems.AddRange(occasionMatches);
+
+                }
+
+
+                var finalItems = allCriteriaMatchItems.Union(atLeastOneMatchItems).Distinct().ToList();
+
+                // gender
+                if (customerProfile.Customer.Gender.Equals(GenderEnums.Male.ToString()))
+                {
+                    finalItems = finalItems.Where(x => x.GenderTarget.Equals(GenderTargertEnums.Men.ToString())
+                    || x.GenderTarget.Equals(GenderTargertEnums.Unisex.ToString())).ToList();
+
+                }
+                else
+                {
+                    finalItems = finalItems.Where(x => x.GenderTarget.Equals(GenderTargertEnums.Women.ToString())
+                    || x.GenderTarget.Equals(GenderTargertEnums.Unisex.ToString())).ToList();
+
+                }
+
+                return finalItems.ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<List<FashionItem>> GetRecommendationFashionItemForCustomerFilter(int customerId, int? page, int? size, string filter)
         {
             try

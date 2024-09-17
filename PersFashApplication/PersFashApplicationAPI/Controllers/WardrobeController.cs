@@ -19,6 +19,9 @@ namespace PersFashApplicationAPI.Controllers
             _wardrobeService = wardrobeService;
         }
 
+        /// <summary>
+        /// View all wardrobes of the current logging customer
+        /// </summary>
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetWardrobe()
@@ -38,6 +41,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// View details wardrobe of the current logging customer
+        /// </summary>
         [HttpGet]
         [Route("{wardrobeId}")]
         [Authorize]
@@ -58,6 +64,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Add new wardrobe for customer
+        /// </summary>
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> AddWardrobe([FromBody] WardrobeCreateReqModel wardrobeCreateReqModel)
@@ -76,6 +85,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Update wardrobe information of the current logging customer
+        /// </summary>
         [HttpPut]
         [Authorize]
         public async Task<IActionResult> UpdateWardrobe([FromBody] WardrobeUpdateReqModel wardrobeUpdateReqModel)
@@ -94,6 +106,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Remove current selecting wardrobe of the current logging customer
+        /// </summary>
         [HttpDelete]
         [Route("{wardrobeId}")]
         [Authorize]
@@ -113,6 +128,10 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+
+        /// <summary>
+        /// Add new item to wardrobe of the current logging customer
+        /// </summary>
         [HttpPost]
         [Route("item")]
         [Authorize]
@@ -132,6 +151,9 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Remove item from wardrobe of the current logging customer
+        /// </summary>
         [HttpDelete]
         [Route("item/{wardrobeItemId}")]
         [Authorize]

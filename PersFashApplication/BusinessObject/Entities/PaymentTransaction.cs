@@ -13,6 +13,8 @@ public partial class PaymentTransaction
 
     public decimal OriginalAmount { get; set; }
 
+    public decimal ComissionRate { get; set; }
+
     public decimal? CommissionAmount { get; set; }
 
     public decimal TransferredAmount { get; set; }

@@ -47,6 +47,7 @@ using Services.Helper.MapperProfiles;
 using Services.Helper.VerifyCode;
 using Services.Helpers.Handler.DecodeTokenHandler;
 using Services.JWTService;
+using Services.OutfitServices;
 using Services.PartnerServices;
 using Services.PaymentServices;
 using Services.RecommendationServices;
@@ -134,6 +135,7 @@ builder.Services.AddScoped<ICustomerSubscriptionService, CustomerSubscriptionSer
 builder.Services.AddScoped<IDecodeTokenHandler, DecodeTokenHandler>();
 builder.Services.AddScoped<IWardrobeService, WardrobeService>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();
+builder.Services.AddScoped<IOutfitService, OutfitService>();
 
 //-----------------------------------------VerificationCodeCache-----------------------------------------
 

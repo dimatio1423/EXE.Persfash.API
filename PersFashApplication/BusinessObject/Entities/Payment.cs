@@ -7,7 +7,7 @@ public partial class Payment
 {
     public int PaymentId { get; set; }
 
-    public DateTime PayementDate { get; set; }
+    public DateTime PaymentDate { get; set; }
 
     public decimal Price { get; set; }
 

@@ -23,7 +23,26 @@ VALUES
 INSERT INTO FashionItems (ItemName, Category, Brand, Price, FitType, GenderTarget, FashionTrend, Size, Color, Material, Occasion, ThumbnailURL, ProductURL, PartnerID, Status)
 VALUES
 ('Slim Fit Blazer', 'Jacket', 'Zara', 150.00, 'Slim', 'Unisex', 'Minimalist' ,'M', 'Gray', 'Wool', 'Business', 'slimfitblazer.jpg', 'www.fashionco.com/slimfitblazer', 1, 'Available'),
-('Summer Dress', 'Dress', 'H&M', 75.00, 'Regular', 'Women', 'Vintage' ,'S', 'Red', 'Cotton', 'Casual', 'summerdress.jpg', 'www.styleworld.com/summerdress', 2, 'Available');
+('Summer Dress', 'Dress', 'H&M', 75.00, 'Regular', 'Women', 'Vintage' ,'S', 'Red', 'Cotton', 'Casual', 'summerdress.jpg', 'www.styleworld.com/summerdress', 2, 'Available'),
+-- Tops
+('V-Neck T-Shirt', 'Tops', 'H&M', 20.00, 'Regular', 'Unisex', 'Casual', 'M', 'White', 'Cotton', 'Casual', 'vneck_tshirt.jpg', 'www.hm.com/vnecktshirt', 1, 'Available'),
+('Button-Down Blouse', 'Tops', 'Zara', 55.00, 'Regular', 'Women', 'Chic', 'S', 'Blue', 'Silk', 'Business', 'buttondown_blouse.jpg', 'www.zara.com/buttondownblouse', 1, 'Available'),
+
+-- Bottoms
+('Straight-Leg Jeans', 'Bottoms', 'Levis', 80.00, 'Regular', 'Men', 'Classic', 'L', 'Dark Blue', 'Denim', 'Casual', 'straightleg_jeans.jpg', 'www.levis.com/straightlegjeans', 2, 'Available'),
+('Pleated Skirt', 'Bottoms', 'H&M', 45.00, 'Regular', 'Women', 'Preppy', 'M', 'Navy', 'Cotton', 'Formal', 'pleated_skirt.jpg', 'www.hm.com/pleatedskirt', 1, 'Available'),
+
+-- Dresses
+('Cocktail Dress', 'Dresses', 'Forever 21', 90.00, 'Slim', 'Women', 'Glam', 'S', 'Black', 'Polyester', 'Party', 'cocktail_dress.jpg', 'www.forever21.com/cocktaildress', 1, 'Available'),
+('Maxi Sundress', 'Dresses', 'Mango', 60.00, 'Regular', 'Women', 'Bohemian', 'M', 'Floral', 'Linen', 'Vacation', 'maxi_sundress.jpg', 'www.mango.com/maxisundress', 1, 'Available'),
+
+-- Shoes
+('Running Shoes', 'Shoes', 'Adidas', 120.00, 'Regular', 'Unisex', 'Athleisure', '9', 'Gray', 'Mesh', 'Sport', 'running_shoes.jpg', 'www.adidas.com/runningshoes', 2, 'Available'),
+('Ankle Boots', 'Shoes', 'Aldo', 130.00, 'Slim', 'Women', 'Chic', '7', 'Brown', 'Leather', 'Casual', 'ankle_boots.jpg', 'www.aldo.com/ankleboots', 2, 'Available'),
+
+-- Accessories
+('Leather Crossbody Bag', 'Accessories', 'Coach', 250.00, 'Regular', 'Women', 'Luxury', 'L', 'Black', 'Leather', 'Formal', 'crossbody_bag.jpg', 'www.coach.com/crossbodybag', 2, 'Available'),
+('Baseball Cap', 'Accessories', 'Nike', 30.00, 'Regular', 'Unisex', 'Sporty', 'One Size', 'Red', 'Cotton', 'Sport', 'baseball_cap.jpg', 'www.nike.com/baseballcap', 2, 'Available');
 
 
 INSERT INTO Recommendations (CustomerID, ItemID, RecommendationType)

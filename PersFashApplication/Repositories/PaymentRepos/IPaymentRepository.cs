@@ -11,5 +11,6 @@ namespace Repositories.PaymentRepos
     public interface IPaymentRepository : IGenericRepository<Payment>
     {
         Task<int> AddPayment(Payment payment);
+        Task<Payment> GetPaymentById(int PaymentId);
     }
 }

@@ -254,7 +254,7 @@ namespace PersFashApplicationAPI.Controllers
         }
 
         /// <summary>
-        /// Update status of payment customer subscription
+        /// Update status of payment customer course
         /// </summary>
         [HttpPut]
         [Route("purchase")]

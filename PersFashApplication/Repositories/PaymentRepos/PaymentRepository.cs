@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Entities;
+using Microsoft.EntityFrameworkCore;
 using Repositories.GenericRepos;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,21 @@ namespace Repositories.PaymentRepos
                 return payment.PaymentId;
             }
             catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<Payment> GetPaymentById(int PaymentId)
+        {
+            try
+            {
+                return await _context.Payments
+                    .Include(x => x.Customer)
+                    .Include(x => x.Course)
+                    .Include(x => x.Subscription)
+                    .Where(x => x.PaymentId == PaymentId).FirstOrDefaultAsync();
+            }catch(Exception ex)
             {
                 throw new Exception(ex.Message);
             }

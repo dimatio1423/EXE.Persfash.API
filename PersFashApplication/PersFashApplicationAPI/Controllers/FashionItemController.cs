@@ -24,7 +24,7 @@ namespace PersFashApplicationAPI.Controllers
 
 
         /// <summary>
-        /// View fashion items
+        /// View all fashion items
         /// </summary>
         [HttpPost]
         [Route("view")]
@@ -109,7 +109,7 @@ namespace PersFashApplicationAPI.Controllers
         }
 
         /// <summary>
-        /// Update fashion items
+        /// Update fashion items for partner
         /// </summary>
         [HttpPut]
         [Authorize(Roles = "Partner")]
@@ -131,7 +131,7 @@ namespace PersFashApplicationAPI.Controllers
 
 
         /// <summary>
-        /// Remove fashion items
+        /// Remove fashion items for partner
         /// </summary>
         [HttpDelete]
         [Route("{itemId}")]
@@ -176,7 +176,7 @@ namespace PersFashApplicationAPI.Controllers
         }
 
         /// <summary>
-        /// View fashion items by partner
+        /// View fashion items by partner for customer to view by store of partner
         /// </summary>
         [HttpGet]
         [Route("partner/{partnerId}")]

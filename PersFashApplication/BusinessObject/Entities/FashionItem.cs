@@ -47,6 +47,8 @@ public partial class FashionItem
 
     public virtual ICollection<OutfitCombination> OutfitCombinationBottomItems { get; set; } = new List<OutfitCombination>();
 
+    public virtual ICollection<OutfitCombination> OutfitCombinationDressItems { get; set; } = new List<OutfitCombination>();
+
     public virtual ICollection<OutfitCombination> OutfitCombinationShoesItems { get; set; } = new List<OutfitCombination>();
 
     public virtual ICollection<OutfitCombination> OutfitCombinationTopItems { get; set; } = new List<OutfitCombination>();

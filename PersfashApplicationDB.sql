@@ -219,7 +219,7 @@ CREATE TABLE CustomerSubscriptions(
 
 CREATE TABLE Payment(
    PaymentID INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
-   PayementDate datetime NOT NULL,
+   PaymentDate datetime NOT NULL,
    Price DECIMAL(10, 2) NOT NULL,
    CustomerID INT NOT NULL,
    SubscriptionID INT,
@@ -235,6 +235,7 @@ CREATE TABLE PaymentTransactions (
     PaymentID INT NOT NULL,  
     InfluencerID INT NOT NULL,  
     OriginalAmount DECIMAL(10, 2) NOT NULL,  
+	ComissionRate DECIMAL NOT NULL,
     CommissionAmount DECIMAL(10, 2), 
     TransferredAmount DECIMAL(10, 2) NOT NULL, 
     TransferDate DATETIME DEFAULT GETDATE(), 
@@ -259,11 +260,13 @@ CREATE TABLE OutfitCombinations (
     BottomItemID INT,  -- The bottom fashion item (pants, skirt, etc.)
     ShoesItemID INT,  -- Shoes for the outfit
     AccessoriesItemID INT,  -- Any accessories for the outfit
+	DressItemID INT, -- For Female customer
     CreatedDate DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (TopItemID) REFERENCES FashionItems(ItemID),
     FOREIGN KEY (BottomItemID) REFERENCES FashionItems(ItemID),
     FOREIGN KEY (ShoesItemID) REFERENCES FashionItems(ItemID),
     FOREIGN KEY (AccessoriesItemID) REFERENCES FashionItems(ItemID),
+	FOREIGN KEY (DressItemID) REFERENCES FashionItems(ItemID),
 	FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
 );
 
@@ -274,7 +277,7 @@ CREATE TABLE OutfitFavorite(
     BottomItemID INT,  -- The bottom fashion item (pants, skirt, etc.)
     ShoesItemID INT,  -- Shoes for the outfit
     AccessoriesItemID INT,  -- Any accessories for the outfit
-	DressItemID INT, -- For Femail customer
+	DressItemID INT, -- For Female customer
     CreatedDate DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (TopItemID) REFERENCES FashionItems(ItemID),
     FOREIGN KEY (BottomItemID) REFERENCES FashionItems(ItemID),
