@@ -35,6 +35,7 @@ CREATE TABLE CustomerProfiles (
     FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
 );
 
+/*
 CREATE TABLE Partners (
     PartnerID INT PRIMARY KEY IDENTITY(1,1),
     PartnerName NVARCHAR(255),
@@ -46,7 +47,7 @@ CREATE TABLE Partners (
     Email VARCHAR(255),
 	Password VARCHAR(255) NOT NULL,
 	Status VARCHAR(50)
-);
+);*/
 
 CREATE TABLE FashionItems (
     ItemID INT PRIMARY KEY IDENTITY(1,1),
@@ -63,10 +64,8 @@ CREATE TABLE FashionItems (
 	ThumbnailURL VARCHAR(255),
     Occasion VARCHAR(MAX),
     ProductURL VARCHAR(255),
-	PartnerID INT,
     DateAdded DATETIME DEFAULT GETDATE(),
 	Status VARCHAR(50),
-	FOREIGN KEY (PartnerID) REFERENCES Partners(PartnerID)
 );
 
 CREATE TABLE FashionItem_Images(
@@ -76,6 +75,7 @@ CREATE TABLE FashionItem_Images(
    FOREIGN KEY (ItemID) REFERENCES FashionItems(ItemID)
 )
 
+/*
 CREATE TABLE Recommendations (
     RecommendationID INT PRIMARY KEY IDENTITY(1,1),
     CustomerID INT,
@@ -84,7 +84,7 @@ CREATE TABLE Recommendations (
     RecommendationDate DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
     FOREIGN KEY (ItemID) REFERENCES FashionItems(ItemID)
-);
+);*/
 
 CREATE TABLE FashionInfluencers (
     InfluencerID INT PRIMARY KEY IDENTITY(1,1),
@@ -189,10 +189,8 @@ CREATE TABLE RefreshToken (
    Token VARCHAR (255) NOT NULL,
    CustomerID INT,
    InfluencerID INT,
-   PartnerID INT,
    AdminID INT,
    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
-   FOREIGN KEY (PartnerID) REFERENCES Partners(PartnerID),
    FOREIGN KEY (InfluencerID) REFERENCES FashionInfluencers(InfluencerID),
    FOREIGN KEY (AdminID) REFERENCES SystemAdmin(AdminID)
 );
