@@ -28,7 +28,6 @@ namespace Services.UserServices
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly ICustomerProfileRepository _customerProfileRepository;
-        private readonly IPartnerRepository _partnerRepository;
         private readonly IFashionInfluencerRepository _fashionInfluencerRepository;
         private readonly ICustomerSubscriptionRepository _customerSubscriptionRepository;
         private readonly IMapper _mapper;
@@ -39,7 +38,6 @@ namespace Services.UserServices
 
         public CustomerService(ICustomerRepository customerRepository, 
             ICustomerProfileRepository customerProfileRepository,
-            IPartnerRepository partnerRepository,
             IFashionInfluencerRepository fashionInfluencerRepository,
             IMapper mapper,
             IDecodeTokenHandler decodeTokenHandler,
@@ -50,7 +48,6 @@ namespace Services.UserServices
         {
             _customerRepository = customerRepository;
             _customerProfileRepository = customerProfileRepository;
-            _partnerRepository = partnerRepository;
             _fashionInfluencerRepository = fashionInfluencerRepository;
             _customerSubscriptionRepository = customerSubscriptionRepository;
             _mapper = mapper;
@@ -296,7 +293,6 @@ namespace Services.UserServices
         public async Task<bool> checkUsernameExisted(string username)
         {
             return (await _customerRepository.IsExistedByUsername(username) ||
-                await _partnerRepository.IsExistedByUsername(username) ||
                 await _fashionInfluencerRepository.IsExistedByUsername(username) ||
                 await _systemAdminRepository.IsExistedByUsername(username));
         }
@@ -304,7 +300,6 @@ namespace Services.UserServices
         public async Task<bool> checkEmailExisted(string email)
         {
             return (await _customerRepository.IsExistedByEmail(email) ||
-                await _partnerRepository.IsExistedByEmail(email) ||
                 await _fashionInfluencerRepository.IsExistedByEmail(email));
         }
 

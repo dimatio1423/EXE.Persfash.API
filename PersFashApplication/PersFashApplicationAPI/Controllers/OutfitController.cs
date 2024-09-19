@@ -134,24 +134,47 @@ namespace PersFashApplicationAPI.Controllers
         /// <summary>
         /// View details outfit for customer
         /// </summary>
-        //[HttpGet]
-        //[Route("{outfitId}")]
-        //[Authorize]
-        //public async Task<IActionResult> ViewFavoriteForCustomer([FromRoute] int outfitId )
-        //{
-        //    var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+        [HttpGet]
+        [Route("favorite/{outfitId}")]
+        [Authorize]
+        public async Task<IActionResult> ViewDetailsFavoriteOutfitForCustomer([FromRoute] int outfitId)
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
 
-        //    var result = await _outfitService.ViewDetailsOutfit(token, outfitId);
+            var result = await _outfitService.ViewDetailsFavoriteOutfit(token, outfitId);
 
-        //    ResultModel response = new ResultModel
-        //    {
-        //        IsSuccess = true,
-        //        Code = (int)HttpStatusCode.OK,
-        //        Message = "View details outfit successfully",
-        //        Data = result
-        //    };
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "View details favorite outfit successfully",
+                Data = result
+            };
 
-        //    return StatusCode(response.Code, response);
-        //}
+            return StatusCode(response.Code, response);
+        }
+
+        /// <summary>
+        /// View details recommendation outfit for customer
+        /// </summary>
+        [HttpGet]
+        [Route("recommendation/{outfitId}")]
+        [Authorize]
+        public async Task<IActionResult> ViewDetailsRecommendationOutfitForCustomer([FromRoute] int outfitId)
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+            var result = await _outfitService.ViewDetailsRecommendationOutfit(token, outfitId);
+
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "View details recommendation outfit successfully",
+                Data = result
+            };
+
+            return StatusCode(response.Code, response);
+        }
     }
 }

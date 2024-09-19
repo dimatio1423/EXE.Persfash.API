@@ -11,7 +11,8 @@ namespace Services.OutfitServices
     {
         Task GenerateOutfitForCustomer(string token);
         Task<List<OutfitViewListResModel>> ViewRecommendationOutfitForCustomer(string token);
-        Task<OutfitViewDetailsResModel> ViewDetailsOutfit(string token, int outfitId);
+        Task<OutfitViewDetailsResModel> ViewDetailsRecommendationOutfit(string token, int outfitId);
+        Task<OutfitViewDetailsResModel> ViewDetailsFavoriteOutfit(string token, int outfitId);
         Task AddOutfitToFavoriteList(string token, int outfitId);
         Task RemoveOutfitFromFavoriteList(string token, int outfitId);
         Task<List<OutfitViewListResModel>> ViewFavoriteOutfits(string token);

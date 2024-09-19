@@ -15,8 +15,6 @@ public partial class RefreshToken
 
     public int? InfluencerId { get; set; }
 
-    public int? PartnerId { get; set; }
-
     public int? AdminId { get; set; }
 
     public virtual SystemAdmin? Admin { get; set; }
@@ -24,6 +22,4 @@ public partial class RefreshToken
     public virtual Customer? Customer { get; set; }
 
     public virtual FashionInfluencer? Influencer { get; set; }
-
-    public virtual Partner? Partner { get; set; }
 }

@@ -23,7 +23,6 @@ namespace Repositories.RefreshTokenRepos
             return await _context.RefreshTokens
                 .Include(x => x.Customer)
                 .Include(x => x.Influencer)
-                .Include(x => x.Partner)
                 .Include(x => x.Admin)
                 .Where(x => x.Token.Equals(refreshToken)).FirstOrDefaultAsync();
         }

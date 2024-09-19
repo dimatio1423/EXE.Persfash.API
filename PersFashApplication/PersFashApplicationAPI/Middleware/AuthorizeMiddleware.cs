@@ -37,19 +37,12 @@ namespace PersFashApplicationAPI.Middleware
                 }
 
                 var customer = await customerRepository.Get((int.Parse(userIdentity.FindFirst("userid").Value)));
-                var partner = await partnerRepository.Get((int.Parse(userIdentity.FindFirst("userid").Value)));
+                //var partner = await partnerRepository.Get((int.Parse(userIdentity.FindFirst("userid").Value)));
                 var influencer = await fashionInfluencerRepository.Get((int.Parse(userIdentity.FindFirst("userid").Value)));
 
                 if (customer != null)
                 {
                     if (customer.Status.Equals(StatusEnums.Inactive.ToString()))
-                    {
-                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                        return;
-                    }
-                }else if (partner != null)
-                {
-                    if (partner.Status.Equals(StatusEnums.Inactive.ToString()))
                     {
                         context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                         return;

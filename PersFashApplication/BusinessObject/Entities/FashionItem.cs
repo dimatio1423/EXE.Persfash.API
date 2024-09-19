@@ -33,8 +33,6 @@ public partial class FashionItem
 
     public string? ProductUrl { get; set; }
 
-    public int? PartnerId { get; set; }
-
     public DateTime? DateAdded { get; set; }
 
     public string? Status { get; set; }
@@ -62,10 +60,6 @@ public partial class FashionItem
     public virtual ICollection<OutfitFavorite> OutfitFavoriteShoesItems { get; set; } = new List<OutfitFavorite>();
 
     public virtual ICollection<OutfitFavorite> OutfitFavoriteTopItems { get; set; } = new List<OutfitFavorite>();
-
-    public virtual Partner? Partner { get; set; }
-
-    public virtual ICollection<Recommendation> Recommendations { get; set; } = new List<Recommendation>();
 
     public virtual ICollection<WardrobeItem> WardrobeItems { get; set; } = new List<WardrobeItem>();
 }

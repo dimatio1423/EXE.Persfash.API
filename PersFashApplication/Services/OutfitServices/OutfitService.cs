@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using BusinessObject.Entities;
+using BusinessObject.Enums;
 using BusinessObject.Models.OutfitModel.Response;
 using Repositories.FashionItemsRepos;
 using Repositories.OutfitCombinationRepos;
 using Repositories.OutfitFavoriteRepos;
 using Repositories.SubscriptionRepos;
 using Repositories.UserRepos;
+using Repositories.UserSubscriptionRepos;
 using Services.Helper.CustomExceptions;
 using Services.Helpers.Handler.DecodeTokenHandler;
 using System;
@@ -24,18 +26,20 @@ namespace Services.OutfitServices
         private readonly IDecodeTokenHandler _decodeToken;
         private readonly IMapper _mapper;
         private readonly ISubscriptionRepository _subscriptionRepository;
+        private readonly ICustomerSubscriptionRepository _customerSubscriptionRepository;
         private readonly ICustomerRepository _customerRepository;
         private readonly IFashionItemRepository _fashionItemRepository;
 
         public OutfitService(IOutfitCombinationRepository outfitCombinationRepository, IOutfitFavoriteRepository outfitFavoriteRepository,
             IDecodeTokenHandler decodeToken, IMapper mapper, ISubscriptionRepository subscriptionRepository,
-            ICustomerRepository customerRepository, IFashionItemRepository fashionItemRepository)
+            ICustomerRepository customerRepository, IFashionItemRepository fashionItemRepository, ICustomerSubscriptionRepository customerSubscriptionRepository)
         {
             _outfitCombinationRepository = outfitCombinationRepository;
             _outfitFavoriteRepository = outfitFavoriteRepository;
             _decodeToken = decodeToken;
             _mapper = mapper;
             _subscriptionRepository = subscriptionRepository;
+            _customerSubscriptionRepository = customerSubscriptionRepository;
             _customerRepository = customerRepository;
             _fashionItemRepository = fashionItemRepository;
         }
@@ -49,6 +53,21 @@ namespace Services.OutfitServices
             if (currCustomer == null)
             {
                 throw new ApiException(HttpStatusCode.NotFound, "Customer does not exist");
+            }
+
+            var premiumSubscription = await _subscriptionRepository.GetSubscriptionsByName(SubscriptionTypeEnums.Premium.ToString());
+
+            if (premiumSubscription == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Premium subscription does not exist");
+            }
+
+            var currCustomerSubscription = await _customerSubscriptionRepository.GetCustomerSubscriptionByCustomerIdAndSubscriptionId(currCustomer.CustomerId, premiumSubscription.SubscriptionId);
+
+
+            if (currCustomerSubscription == null || currCustomerSubscription.IsActive == false)
+            {
+                throw new ApiException(HttpStatusCode.Forbidden, "Please subscribe the premium subscription or extend the subscription to perform this function");
             }
 
             var currOutfitRecommendation = await _outfitCombinationRepository.GetOutfitCombinationById(outfitId);
@@ -98,6 +117,21 @@ namespace Services.OutfitServices
                 throw new ApiException(HttpStatusCode.NotFound, "Customer does not exist");
             }
 
+            var premiumSubscription = await _subscriptionRepository.GetSubscriptionsByName(SubscriptionTypeEnums.Premium.ToString());
+
+            if (premiumSubscription == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Premium subscription does not exist");
+            }
+
+            var currCustomerSubscription = await _customerSubscriptionRepository.GetCustomerSubscriptionByCustomerIdAndSubscriptionId(currCustomer.CustomerId, premiumSubscription.SubscriptionId);
+
+
+            if (currCustomerSubscription == null || currCustomerSubscription.IsActive == false)
+            {
+                throw new ApiException(HttpStatusCode.Forbidden, "Please subscribe the premium subscription or extend the subscription to perform this function");
+            }
+
             var currFavoriteOutfit = await _outfitFavoriteRepository.GetOutfitFavoriteById(outfitId);
 
             if (currFavoriteOutfit == null)
@@ -108,7 +142,7 @@ namespace Services.OutfitServices
             await _outfitFavoriteRepository.Remove(currFavoriteOutfit);
         }
 
-        public async Task<OutfitViewDetailsResModel> ViewDetailsOutfit(string token, int outfitId)
+        public async Task<OutfitViewDetailsResModel> ViewDetailsFavoriteOutfit(string token, int outfitFavoriteId)
         {
             var decodeToken = _decodeToken.decode(token);
 
@@ -119,19 +153,37 @@ namespace Services.OutfitServices
                 throw new ApiException(HttpStatusCode.NotFound, "Customer does not exist");
             }
 
-            var currOutfitRecommendation = await _outfitCombinationRepository.GetOutfitCombinationById(outfitId);
+            var currOutfitFavorite = await _outfitFavoriteRepository.GetOutfitFavoriteById(outfitFavoriteId);
 
-            var currOutfitFavorite = await _outfitFavoriteRepository.GetOutfitFavoriteById(outfitId);
+            if (currOutfitFavorite != null)
+            {
+                return _mapper.Map<OutfitViewDetailsResModel>(currOutfitFavorite);
+            }
+            else
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Favorite Outfit does not exist");
+            }
+        }
+
+        public async Task<OutfitViewDetailsResModel> ViewDetailsRecommendationOutfit(string token, int outfitRecommendationId)
+        {
+            var decodeToken = _decodeToken.decode(token);
+
+            var currCustomer = await _customerRepository.GetCustomerByUsername(decodeToken.username);
+
+            if (currCustomer == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Customer does not exist");
+            }
+
+            var currOutfitRecommendation = await _outfitCombinationRepository.GetOutfitCombinationById(outfitRecommendationId);
 
             if (currOutfitRecommendation != null)
             {
                 return _mapper.Map<OutfitViewDetailsResModel>(currOutfitRecommendation);
-            }else if (currOutfitFavorite != null)
-            {
-                return _mapper.Map<OutfitViewDetailsResModel>(currOutfitFavorite);
             }else
             {
-                throw new ApiException(HttpStatusCode.NotFound, "Outfit does not exist");
+                throw new ApiException(HttpStatusCode.NotFound, "Recommendation Outfit does not exist");
             }
         }
 
@@ -144,6 +196,21 @@ namespace Services.OutfitServices
             if (currCustomer == null)
             {
                 throw new ApiException(HttpStatusCode.NotFound, "Customer does not exist");
+            }
+
+            var premiumSubscription = await _subscriptionRepository.GetSubscriptionsByName(SubscriptionTypeEnums.Premium.ToString());
+
+            if (premiumSubscription == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Premium subscription does not exist");
+            }
+
+            var currCustomerSubscription = await _customerSubscriptionRepository.GetCustomerSubscriptionByCustomerIdAndSubscriptionId(currCustomer.CustomerId, premiumSubscription.SubscriptionId);
+
+
+            if (currCustomerSubscription == null || currCustomerSubscription.IsActive == false)
+            {
+                throw new ApiException(HttpStatusCode.Forbidden, "Please subscribe the premium subscription or extend the subscription to perform this function");
             }
 
             var outfitFavorites = await _outfitFavoriteRepository.GetOutfitFavoriteForCustomer(currCustomer.CustomerId);

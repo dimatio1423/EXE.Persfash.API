@@ -51,7 +51,7 @@ namespace Services.Helper.MapperProfiles
             CreateMap<FashionInfluencer, FashionInfluencerViewResModel>().ReverseMap();
 
             //Partner
-            CreateMap<Partner, PartnerViewModel>().ReverseMap();
+            //CreateMap<Partner, PartnerViewModel>().ReverseMap();
 
             //CustomerProfile
             CreateMap<CustomerProfile, CustomerProfileViewModel>()

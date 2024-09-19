@@ -31,7 +31,6 @@ namespace Services.AuthenticationServices
     public class AuthenticationService : IAuthenticationService
     {
         private readonly ICustomerRepository _customerRepository;
-        private readonly IPartnerRepository _partnerRepository;
         private readonly IFashionInfluencerRepository _fashionInfluencerRepository;
         private readonly ISystemAdminRepository _adminRepository;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
@@ -41,7 +40,6 @@ namespace Services.AuthenticationServices
         private readonly VerificationCodeCache verificationCodeCache;
 
         public AuthenticationService(ICustomerRepository customerRepository, 
-            IPartnerRepository partnerRepository, 
             IFashionInfluencerRepository fashionInfluencerRepository,
             IRefreshTokenRepository refreshTokenRepository,
             ISystemAdminRepository adminRepository,
@@ -54,7 +52,6 @@ namespace Services.AuthenticationServices
              this.verificationCodeCache = verificationCodeCache;
 
             _customerRepository = customerRepository;
-            _partnerRepository = partnerRepository;
             _fashionInfluencerRepository = fashionInfluencerRepository;
             _adminRepository = adminRepository;
             _refreshTokenRepository = refreshTokenRepository;
@@ -69,7 +66,7 @@ namespace Services.AuthenticationServices
 
             var currCustomer = await _customerRepository.GetCustomerByUsername(decode.username);
 
-            var currPartner = await _partnerRepository.GetPartnerByUsername(decode.username);
+            //var currPartner = await _partnerRepository.GetPartnerByUsername(decode.username);
 
             var currInfluencer = await _fashionInfluencerRepository.GetFashionInfluencerByUsername(decode.username);
 
@@ -89,22 +86,6 @@ namespace Services.AuthenticationServices
                 currCustomer.Password = PasswordHasher.HashPassword(changePasswordReqModel.NewPassword);
 
                 await _customerRepository.Update(currCustomer);
-            }
-            else if (currPartner != null)
-            {
-                if (!PasswordHasher.VerifyPassword(changePasswordReqModel.OldPassword, currPartner.Password))
-                {
-                    throw new ApiException(HttpStatusCode.BadRequest, "The old password incorrect");
-                }
-
-                if (changePasswordReqModel.OldPassword.Equals(changePasswordReqModel.NewPassword))
-                {
-                    throw new ApiException(HttpStatusCode.BadRequest, "The new password is the same with old password");
-                }
-
-                currPartner.Password = PasswordHasher.HashPassword(changePasswordReqModel.NewPassword);
-
-                await _partnerRepository.Update(currPartner);
             }
             else if (currInfluencer != null)
             {
@@ -132,7 +113,7 @@ namespace Services.AuthenticationServices
         {
             var currCustomer = await _customerRepository.GetCustomerByEmail(email);
 
-            var currPartner = await _partnerRepository.GetPartnerByEmail(email);
+            //var currPartner = await _partnerRepository.GetPartnerByEmail(email);
 
             var currInfluencer = await _fashionInfluencerRepository.GetFashionInfluencerByEmail(email);
 
@@ -145,14 +126,6 @@ namespace Services.AuthenticationServices
 
                 await _emailService.SendUserResetPassword(currCustomer.FullName, currCustomer.Email, otp);
 
-            }
-            else if (currPartner != null)
-            {
-                var otp = GenerateOTP();
-
-                verificationCodeCache.Put(currPartner.Username, otp, 5);
-
-                await _emailService.SendUserResetPassword(currPartner.PartnerName, currPartner.Email, otp);
             }
             else if (currInfluencer != null)
             {
@@ -174,7 +147,7 @@ namespace Services.AuthenticationServices
 
             var currCustomer = await _customerRepository.GetCustomerByUsername(decode.username);
 
-            var currPartner = await _partnerRepository.GetPartnerByUsername(decode.username);
+            //var currPartner = await _partnerRepository.GetPartnerByUsername(decode.username);
 
             var currInfluencer = await _fashionInfluencerRepository.GetFashionInfluencerByUsername(decode.username);
 
@@ -193,19 +166,8 @@ namespace Services.AuthenticationServices
                 };
 
                 return userInformation;
-            }else if (currPartner != null)
-            {
-                UserInformationModel userInformation = new UserInformationModel
-                {
-                    UserId = currPartner.PartnerId,
-                    Username = currPartner.Username,
-                    Email = currPartner.Email,
-                    ProfileURL = currPartner.PartnerProfilePicture,
-                    Role = RoleEnums.Partner.ToString(),
-                };
-
-                return userInformation;
-            }else if (currInfluencer != null)
+            }
+            else if (currInfluencer != null)
             {
                 UserInformationModel userInformation = new UserInformationModel
                 {
@@ -237,7 +199,7 @@ namespace Services.AuthenticationServices
         public async Task<UserLoginResModel> Login(UserLoginReqModel userLoginReqModel)
         {
             var currentCustomer = await _customerRepository.GetCustomerByUsername(userLoginReqModel.Username);
-            var currentPartner = await _partnerRepository.GetPartnerByUsername(userLoginReqModel.Username);
+            //var currentPartner = await _partnerRepository.GetPartnerByUsername(userLoginReqModel.Username);
             var currentInfluencer = await _fashionInfluencerRepository.GetFashionInfluencerByUsername(userLoginReqModel.Username);
             var currAdmin = await _adminRepository.GetAdminByUsername(userLoginReqModel.Username);
 
@@ -264,40 +226,6 @@ namespace Services.AuthenticationServices
                         Username = currentCustomer.Username,
                         Email = currentCustomer.Email,
                         Role = RoleEnums.Customer.ToString(),
-                        Token = token,
-                        RefreshToken = refreshToken
-                    };
-
-                    return userLoginRes;
-                }
-                else
-                {
-                    throw new ApiException(HttpStatusCode.BadRequest, "Incorrect password");
-
-                }
-            } else if (currentPartner != null)
-            {
-                if (PasswordHasher.VerifyPassword(userLoginReqModel.Password, currentPartner.Password))
-                {
-                    var token = _jWTService.GenerateJWT(currentPartner);
-
-                    var refreshToken = _jWTService.GenerateRefreshToken();
-
-                    var newRefreshToken = new RefreshToken
-                    {
-                        Token = refreshToken,
-                        ExpiredAt = DateTime.Now.AddDays(1),
-                        PartnerId = currentPartner.PartnerId
-                    };
-
-                    await _refreshTokenRepository.Add(newRefreshToken);
-
-                    var userLoginRes = new UserLoginResModel
-                    {
-                        UserId = currentPartner.PartnerId,
-                        Username = currentPartner.Email,
-                        Email = currentPartner.Email,
-                        Role = RoleEnums.Partner.ToString(),
                         Token = token,
                         RefreshToken = refreshToken
                     };
@@ -404,7 +332,7 @@ namespace Services.AuthenticationServices
         {
             var currCustomer = await _customerRepository.GetCustomerByEmail(resetPasswordReqModel.Email);
 
-            var currPartner = await _partnerRepository.GetPartnerByEmail(resetPasswordReqModel.Email);
+            //var currPartner = await _partnerRepository.GetPartnerByEmail(resetPasswordReqModel.Email);
 
             var currInfluencer = await _fashionInfluencerRepository.GetFashionInfluencerByEmail(resetPasswordReqModel.Email);
 
@@ -422,19 +350,6 @@ namespace Services.AuthenticationServices
 
                 await _customerRepository.Update(currCustomer);
 
-            }
-            else if (currPartner != null)
-            {
-                var otp = verificationCodeCache.Get(currPartner.Username);
-
-                if (otp == null || !otp.Equals(resetPasswordReqModel.OTP))
-                {
-                    throw new ApiException(HttpStatusCode.BadRequest, "OTP has expired or invalid OTP");
-                }
-
-                currPartner.Password = PasswordHasher.HashPassword(resetPasswordReqModel.NewPassword);
-
-                await _partnerRepository.Update(currPartner);
             }
             else if (currInfluencer != null)
             {

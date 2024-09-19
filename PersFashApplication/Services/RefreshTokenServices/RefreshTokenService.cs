@@ -37,7 +37,7 @@ namespace Services.RefreshTokenServices
             }
 
             var currCustomer = currRefreshToken.Customer;
-            var currPartner = currRefreshToken.Partner;
+            //var currPartner = currRefreshToken.Partner;
             var currInfluencer = currRefreshToken.Influencer;
             var currAdmin = currRefreshToken.Admin;
 
@@ -56,21 +56,21 @@ namespace Services.RefreshTokenServices
                     AccessToken = token,
                     RefreshToken = newRefreshToken
                 };
-            }else if (currPartner != null)
-            {
-                var token = _jWTService.GenerateJWT(currPartner);
+            //}else if (currPartner != null)
+            //{
+            //    var token = _jWTService.GenerateJWT(currPartner);
 
-                var newRefreshToken = _jWTService.GenerateRefreshToken();
+            //    var newRefreshToken = _jWTService.GenerateRefreshToken();
 
-                currRefreshToken.Token = newRefreshToken;
-                currRefreshToken.ExpiredAt = DateTime.Now.AddDays(1);
-                await _refreshTokenRepository.Update(currRefreshToken);
+            //    currRefreshToken.Token = newRefreshToken;
+            //    currRefreshToken.ExpiredAt = DateTime.Now.AddDays(1);
+            //    await _refreshTokenRepository.Update(currRefreshToken);
 
-                return new RefreshTokenResModel
-                {
-                    AccessToken = token,
-                    RefreshToken = newRefreshToken
-                };
+            //    return new RefreshTokenResModel
+            //    {
+            //        AccessToken = token,
+            //        RefreshToken = newRefreshToken
+            //    };
             }else if (currInfluencer != null)
             {
                 var token = _jWTService.GenerateJWT(currInfluencer);

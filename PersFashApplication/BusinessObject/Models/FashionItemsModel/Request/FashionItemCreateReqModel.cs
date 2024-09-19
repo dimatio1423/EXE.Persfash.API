@@ -14,6 +14,10 @@ namespace BusinessObject.Models.FashionItemsModel.Request
         [StringLength(100, ErrorMessage = "Item name can't be longer than 100 characters.")]
         public string ItemName { get; set; } = null!;
 
+        [Required(ErrorMessage = "Brand is required.")]
+        [StringLength(50, ErrorMessage = "Brand name can't be longer than 50 characters.")]
+        public string Brand { get; set; }
+
         [Required(ErrorMessage = "Category is required.")]
         [StringLength(50, ErrorMessage = "Category can't be longer than 50 characters.")]
         public string Category { get; set; }

@@ -22,7 +22,7 @@ namespace Repositories.WardrobeItemRepos
         {
             try
             {
-                return await _context.WardrobeItems.Include(x => x.Item).ThenInclude(x => x.Partner)
+                return await _context.WardrobeItems.Include(x => x.Item)
                     .Where(x => x.WardrobeId == wardrobeId).ToListAsync();
 
             }

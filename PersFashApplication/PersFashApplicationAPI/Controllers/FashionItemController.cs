@@ -155,46 +155,46 @@ namespace PersFashApplicationAPI.Controllers
         /// <summary>
         /// View fashion items of the current logging partner
         /// </summary>
-        [HttpGet]
-        [Route("partner")]
-        [Authorize(Roles = "Partner")]
-        public async Task<IActionResult> ViewFashionItemsOfCurrentPartner(int? page = 1, int? size = 10)
-        {
-            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+        //[HttpGet]
+        //[Route("partner")]
+        //[Authorize(Roles = "Partner")]
+        //public async Task<IActionResult> ViewFashionItemsOfCurrentPartner(int? page = 1, int? size = 10)
+        //{
+        //    var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
 
-            var result = await _fashionItemService.ViewFashionItemsOfCurrentPartner(token, page, size);
+        //    var result = await _fashionItemService.ViewFashionItemsOfCurrentPartner(token, page, size);
 
-            ResultModel response = new ResultModel
-            {
-                IsSuccess = true,
-                Code = (int)HttpStatusCode.OK,
-                Message = "View fashion items of current partner successfully",
-                Data = result
-            };
+        //    ResultModel response = new ResultModel
+        //    {
+        //        IsSuccess = true,
+        //        Code = (int)HttpStatusCode.OK,
+        //        Message = "View fashion items of current partner successfully",
+        //        Data = result
+        //    };
 
-            return StatusCode(response.Code, response);
-        }
+        //    return StatusCode(response.Code, response);
+        //}
 
         /// <summary>
         /// View fashion items by partner for customer to view by store of partner
         /// </summary>
-        [HttpGet]
-        [Route("partner/{partnerId}")]
-        public async Task<IActionResult> ViewFashionItemsByPartner([FromRoute] int partnerId, int? page = 1, int? size = 10)
-        {
-            //var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+        //[HttpGet]
+        //[Route("partner/{partnerId}")]
+        //public async Task<IActionResult> ViewFashionItemsByPartner([FromRoute] int partnerId, int? page = 1, int? size = 10)
+        //{
+        //    //var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
 
-            var result = await _fashionItemService.ViewFashionItemsByPartnerId(partnerId, page, size);
+        //    var result = await _fashionItemService.ViewFashionItemsByPartnerId(partnerId, page, size);
 
-            ResultModel response = new ResultModel
-            {
-                IsSuccess = true,
-                Code = (int)HttpStatusCode.OK,
-                Message = "View fashion items by partner successfully",
-                Data = result
-            };
+        //    ResultModel response = new ResultModel
+        //    {
+        //        IsSuccess = true,
+        //        Code = (int)HttpStatusCode.OK,
+        //        Message = "View fashion items by partner successfully",
+        //        Data = result
+        //    };
 
-            return StatusCode(response.Code, response);
-        }
+        //    return StatusCode(response.Code, response);
+        //}
     }
 }

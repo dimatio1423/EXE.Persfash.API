@@ -42,7 +42,6 @@ namespace Services.CourseServices
         private readonly ICustomerCourseRepository _customerCourseRepository;
         private readonly ICustomerRepository _customerRepository;
         private readonly ICourseImageRepository _courseImageRepository;
-        private readonly IPartnerRepository _partnerRepository;
         private readonly IAWSService _aWSService;
         private readonly ISystemAdminRepository _systemAdminRepository;
         private readonly IPaymentRepository _paymentRepository;
@@ -64,7 +63,6 @@ namespace Services.CourseServices
             ICourseMaterialRepository courseMaterialRepository,
             ICustomerCourseRepository customerCourseRepository,
             ICourseImageRepository courseImageRepository, 
-            IPartnerRepository partnerRepository,
             IAWSService aWSService,
             ICustomerRepository customerRepository,
             ISystemAdminRepository systemAdminRepository,
@@ -80,7 +78,6 @@ namespace Services.CourseServices
             _customerCourseRepository = customerCourseRepository;
             _customerRepository = customerRepository;
             _courseImageRepository = courseImageRepository;
-            _partnerRepository = partnerRepository;
             _aWSService = aWSService;
             _systemAdminRepository = systemAdminRepository;
             _paymentRepository = paymentRepository;
