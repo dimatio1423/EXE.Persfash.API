@@ -6,6 +6,7 @@ using BusinessObject.Models.CourseModel.Response;
 using BusinessObject.Models.CustomerModels.Response;
 using BusinessObject.Models.CustomerSubscriptionModel.Response;
 using BusinessObject.Models.FashionItemsModel.Response;
+using BusinessObject.Models.FeedbackModel.Response;
 using BusinessObject.Models.InfluencerModel.Response;
 using BusinessObject.Models.OutfitModel.Response;
 using BusinessObject.Models.PartnerModel.Response;
@@ -89,6 +90,8 @@ namespace Services.Helper.MapperProfiles
                 .ReverseMap();
 
 
+            //Feedback
+            CreateMap<Feedback, FeedbackViewResModel>().ReverseMap();
 
         }
     }
