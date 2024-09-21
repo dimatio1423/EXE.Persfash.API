@@ -11,4 +11,9 @@ namespace BusinessObject.Models.UserModels.Request
         public required string Username { get; set; }
         public required string Password { get; set; }
     }
+
+    public class UserLoginGoogleReqModel
+    {
+        public required string Token { get; set; }
+    }
 }

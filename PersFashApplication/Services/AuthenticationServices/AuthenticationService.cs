@@ -21,8 +21,10 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 
@@ -375,6 +377,85 @@ namespace Services.AuthenticationServices
             var otp = new Random().Next(100000, 999999).ToString();
 
             return otp;
+        }
+
+        public async Task<UserLoginResModel> LoginGoogle(UserLoginGoogleReqModel userLoginGoogleReqModel)
+        {
+            string token = userLoginGoogleReqModel.Token;
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                    HttpResponseMessage response = client.GetAsync("https://www.googleapis.com/oauth2/v3/userinfo").Result;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string responseContent = response.Content.ReadAsStringAsync().Result;
+
+                        var jsonData = JsonSerializer.Deserialize<Dictionary<string, object>>(responseContent);
+                        string email = jsonData.ContainsKey("email") ? jsonData["email"].ToString() : string.Empty;
+                        string givenName = jsonData.ContainsKey("given_name") ? jsonData["given_name"].ToString() : string.Empty;
+                        string picture = jsonData.ContainsKey("picture") ? jsonData["picture"].ToString() : string.Empty;
+
+                        var currCustomer = await _customerRepository.GetCustomerByEmail(email);
+                        Customer customer;
+                        if (currCustomer != null)
+                        {
+                            customer = currCustomer;
+                        }
+                        else
+                        {
+                            customer = new Customer
+                            {
+                                Email = email,
+                                Username = email,
+                                FullName = givenName,
+                                ProfilePicture = picture,
+                                Gender = GenderEnums.Male.ToString(), // Default value, this can be dynamic
+                                Password = PasswordHasher.HashPassword(Guid.NewGuid().ToString()), // Random password
+                                Status = StatusEnums.Active.ToString(),
+                            };
+                           await _customerRepository.Add(customer);
+                        }
+
+                        // Authenticate the user and generate tokens
+                        var newToken = _jWTService.GenerateJWT(customer);
+
+                        var refreshToken = _jWTService.GenerateRefreshToken();
+
+                        var newRefreshToken = new RefreshToken
+                        {
+                            Token = refreshToken,
+                            ExpiredAt = DateTime.Now.AddDays(1),
+                            CustomerId = customer.CustomerId
+                        };
+
+                        await _refreshTokenRepository.Add(newRefreshToken);
+
+                        var userLoginRes = new UserLoginResModel
+                        {
+                            UserId = customer.CustomerId,
+                            Username = customer.Username,
+                            Email = customer.Email,
+                            Role = RoleEnums.Customer.ToString(),
+                            Token = newToken,
+                            RefreshToken = refreshToken
+                        };
+
+                        return userLoginRes;
+                    }
+                    else
+                    {
+                        throw new ApiException(HttpStatusCode.Unauthorized, "Invalid Google token");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

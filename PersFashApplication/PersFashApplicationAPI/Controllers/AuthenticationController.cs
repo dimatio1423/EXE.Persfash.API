@@ -37,6 +37,23 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        [HttpPost]
+        [Route("login-google")]
+        public async Task<IActionResult> LoginGoogle([FromBody] UserLoginGoogleReqModel userLoginGoogleReqModel)
+        {
+            var result = await _authenticationService.LoginGoogle(userLoginGoogleReqModel);
+
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "Login google successfully",
+                Data = result,
+            };
+
+            return StatusCode(response.Code, response);
+        }
+
         [HttpGet]
         [Authorize]
         [Route("user-infor")]

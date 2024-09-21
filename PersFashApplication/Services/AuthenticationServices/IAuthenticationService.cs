@@ -12,6 +12,7 @@ namespace Services.AuthenticationServices
 {
     public interface IAuthenticationService
     {
+        Task<UserLoginResModel> LoginGoogle(UserLoginGoogleReqModel userLoginGoogleReqModel);
         Task<UserLoginResModel> Login(UserLoginReqModel userLoginReqModel);
         Task Logout(string refreshToken);
         Task ChangePassword(string token, ChangePasswordReqModel changePasswordReqModel);
