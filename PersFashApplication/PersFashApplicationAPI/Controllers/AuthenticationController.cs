@@ -76,15 +76,15 @@ namespace PersFashApplicationAPI.Controllers
 
         [HttpPost]
         [Route("forgot-password")]
-        public async Task<IActionResult> ForgotPassword(string email)
+        public async Task<IActionResult> ForgotPassword([FromBody]ForgotPasswordReqModel forgotPasswordReqModel)
         {
-            await _authenticationService.ForgotPassword(email);
+            await _authenticationService.ForgotPassword(forgotPasswordReqModel.email);
 
             ResultModel response = new ResultModel
             {
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.OK,
-                Message = $"Send OTP code to {email} successfully",
+                Message = $"Send OTP code to {forgotPasswordReqModel.email} successfully",
             };
 
             return StatusCode(response.Code, response);

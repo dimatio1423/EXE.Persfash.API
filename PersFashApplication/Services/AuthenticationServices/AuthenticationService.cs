@@ -8,8 +8,10 @@ using Microsoft.IdentityModel.Tokens;
 using Repositories.FashionInfluencerRepos;
 using Repositories.PartnerRepos;
 using Repositories.RefreshTokenRepos;
+using Repositories.SubscriptionRepos;
 using Repositories.SystemAdminRepos;
 using Repositories.UserRepos;
+using Repositories.UserSubscriptionRepos;
 using Services.EmailService;
 using Services.Helper.CustomExceptions;
 using Services.Helper.VerifyCode;
@@ -36,6 +38,8 @@ namespace Services.AuthenticationServices
         private readonly IFashionInfluencerRepository _fashionInfluencerRepository;
         private readonly ISystemAdminRepository _adminRepository;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
+        private readonly ICustomerSubscriptionRepository _customerSubscriptionRepository;
+private readonly ISubscriptionRepository _subscriptionRepository;
         private readonly IDecodeTokenHandler _decodeToken;
         private readonly IEmailService _emailService;
         private readonly IJWTService _jWTService;
@@ -48,6 +52,8 @@ namespace Services.AuthenticationServices
             IDecodeTokenHandler decodeToken,
             IEmailService emailService,
             IJWTService jWTService,
+            ICustomerSubscriptionRepository customerSubscriptionRepository,
+            ISubscriptionRepository subscriptionRepository,
             VerificationCodeCache verificationCodeCache
             )
         {
@@ -57,6 +63,8 @@ namespace Services.AuthenticationServices
             _fashionInfluencerRepository = fashionInfluencerRepository;
             _adminRepository = adminRepository;
             _refreshTokenRepository = refreshTokenRepository;
+            _customerSubscriptionRepository = customerSubscriptionRepository;
+            _subscriptionRepository = subscriptionRepository;
             _decodeToken = decodeToken;
             _emailService = emailService;
             _jWTService = jWTService;
@@ -416,8 +424,30 @@ namespace Services.AuthenticationServices
                                 Gender = GenderEnums.Male.ToString(), // Default value, this can be dynamic
                                 Password = PasswordHasher.HashPassword(Guid.NewGuid().ToString()), // Random password
                                 Status = StatusEnums.Active.ToString(),
+                                DateJoined = DateTime.Now
                             };
-                           await _customerRepository.Add(customer);
+
+                            var customerId = await _customerRepository.AddCustomer(customer);
+
+                            var subscription = await _subscriptionRepository.GetSubscriptionsByName(SubscriptionTypeEnums.Free.ToString());
+
+                            if (subscription == null)
+                            {
+                                throw new ApiException(HttpStatusCode.NotFound, "Subscription does not exist");
+                            }
+
+                            CustomerSubscription customerSubscription = new CustomerSubscription
+                            {
+                                SubscriptionId = subscription.SubscriptionId,
+                                CustomerId = customerId,
+                                StartDate = null,
+                                EndDate = null,
+                                IsActive = true,
+                            };
+
+                            await _customerSubscriptionRepository.Add(customerSubscription);
+
+                            await _emailService.SendRegistrationEmail(customer.FullName, customer.Email);
                         }
 
                         // Authenticate the user and generate tokens

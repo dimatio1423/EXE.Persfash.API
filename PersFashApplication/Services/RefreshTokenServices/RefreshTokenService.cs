@@ -53,8 +53,8 @@ namespace Services.RefreshTokenServices
 
                 return new RefreshTokenResModel
                 {
-                    AccessToken = token,
-                    RefreshToken = newRefreshToken
+                    accessToken = token,
+                    newRefreshToken = newRefreshToken
                 };
             //}else if (currPartner != null)
             //{
@@ -83,8 +83,8 @@ namespace Services.RefreshTokenServices
 
                 return new RefreshTokenResModel
                 {
-                    AccessToken = token,
-                    RefreshToken = newRefreshToken
+                    accessToken = token,
+                    newRefreshToken = newRefreshToken
                 };
             }else if (currAdmin != null)
             {
@@ -98,8 +98,8 @@ namespace Services.RefreshTokenServices
 
                 return new RefreshTokenResModel
                 {
-                    AccessToken = token,
-                    RefreshToken = newRefreshToken
+                    accessToken = token,
+                    newRefreshToken = newRefreshToken
                 };
             }
             

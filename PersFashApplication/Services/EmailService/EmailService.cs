@@ -170,7 +170,6 @@ namespace Services.EmailService
             await smtp.AuthenticateAsync(_config.GetSection("SmtpSettings:Username").Value, _config.GetSection("SmtpSettings:Password").Value);
             await smtp.SendAsync(email);
             await smtp.DisconnectAsync(true);
-            throw new NotImplementedException();
         }
 
         public async Task SendUpgradeToPremiumEmail(string fullName, string userEmail, string subscriptionName)
