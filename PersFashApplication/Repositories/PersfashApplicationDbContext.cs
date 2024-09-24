@@ -55,6 +55,10 @@ public partial class PersfashApplicationDbContext : DbContext
 
     public virtual DbSet<Subscription> Subscriptions { get; set; }
 
+    public virtual DbSet<SupportMessage> SupportMessages { get; set; }
+
+    public virtual DbSet<SupportQuestion> SupportQuestions { get; set; }
+
     public virtual DbSet<SystemAdmin> SystemAdmins { get; set; }
 
     public virtual DbSet<Wardrobe> Wardrobes { get; set; }
@@ -537,6 +541,55 @@ public partial class PersfashApplicationDbContext : DbContext
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<SupportMessage>(entity =>
+        {
+            entity.HasKey(e => e.MessageId).HasName("PK__SupportM__C87C037CF0C71B3A");
+
+            entity.ToTable("SupportMessage");
+
+            entity.Property(e => e.MessageId).HasColumnName("MessageID");
+            entity.Property(e => e.AdminId).HasColumnName("AdminID");
+            entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+            entity.Property(e => e.DateSent)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.SupportId).HasColumnName("SupportID");
+
+            entity.HasOne(d => d.Admin).WithMany(p => p.SupportMessages)
+                .HasForeignKey(d => d.AdminId)
+                .HasConstraintName("FK__SupportMe__Admin__1BC821DD");
+
+            entity.HasOne(d => d.Customer).WithMany(p => p.SupportMessages)
+                .HasForeignKey(d => d.CustomerId)
+                .HasConstraintName("FK__SupportMe__Custo__1AD3FDA4");
+
+            entity.HasOne(d => d.Support).WithMany(p => p.SupportMessages)
+                .HasForeignKey(d => d.SupportId)
+                .HasConstraintName("FK__SupportMe__Suppo__1CBC4616");
+        });
+
+        modelBuilder.Entity<SupportQuestion>(entity =>
+        {
+            entity.HasKey(e => e.SupportId).HasName("PK__SupportQ__D82DBC6CF6C068BB");
+
+            entity.ToTable("SupportQuestion");
+
+            entity.Property(e => e.SupportId).HasColumnName("SupportID");
+            entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+            entity.Property(e => e.DateClosed).HasColumnType("datetime");
+            entity.Property(e => e.DateCreated)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Question).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.Customer).WithMany(p => p.SupportQuestions)
+                .HasForeignKey(d => d.CustomerId)
+                .HasConstraintName("FK__SupportQu__Custo__17036CC0");
         });
 
         modelBuilder.Entity<SystemAdmin>(entity =>

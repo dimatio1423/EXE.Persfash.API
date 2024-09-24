@@ -348,5 +348,51 @@ namespace PersFashApplicationAPI.Controllers
 
         //    return StatusCode(response.Code, response);
         //}
+
+        /// <summary>
+        /// Get customer list for ADMIN
+        /// </summary>
+        [HttpGet]
+        [Route("view")]
+        [Authorize]
+        public async Task<IActionResult> GetCustomerForAmin(int? page = 1, int? size = 10)
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+            var result = await _customerService.GetCustomerListForAdmin(page, size);
+
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "Get customer list successfully",
+                Data = result,
+            };
+
+            return StatusCode(response.Code, response);
+        }
+
+        /// <summary>
+        /// Activate-deactivate customer for ADMIN
+        /// </summary>
+        [HttpPut]
+        [Route("activate-deactivate/{customerId}")]
+        [Authorize]
+        public async Task<IActionResult> ActivateDeactivateUser(int customerId)
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+            var result = await _customerService.ActivateDeactivateCustomerForAdmin(token, customerId);
+
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = result ? "Activate customer successfully" : "Deactivate customer successfully",
+                Data = result,
+            };
+
+            return StatusCode(response.Code, response);
+        }
     }
 }

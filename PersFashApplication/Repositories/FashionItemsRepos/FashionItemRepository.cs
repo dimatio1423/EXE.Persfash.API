@@ -208,6 +208,8 @@ namespace Repositories.FashionItemsRepos
 
                 }
 
+                finalItems = finalItems.OrderBy(x => Guid.NewGuid()).ToList();
+
                 return finalItems.Skip((pageIndex - 1) * sizeIndex).Take(sizeIndex).ToList();
 
 

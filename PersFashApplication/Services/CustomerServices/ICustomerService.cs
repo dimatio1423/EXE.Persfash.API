@@ -17,5 +17,7 @@ namespace Services.UserServices
         Task<CustomerInformationViewModel> GetCustomerInformation(int customerId);
         Task UpdateCustomerInformation(string token, CustomerInformationUpdateReqModel customerInformationUpdateReqModel);
         Task<bool> CheckCustomerProfileExisted(string token);
+        Task<List<CustomerInformationViewModel>> GetCustomerListForAdmin(int? page, int? size);
+        Task<bool> ActivateDeactivateCustomerForAdmin(string token, int customerId);
     }
 }

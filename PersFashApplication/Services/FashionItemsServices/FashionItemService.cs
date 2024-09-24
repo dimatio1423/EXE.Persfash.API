@@ -389,9 +389,8 @@ namespace Services.FashionItemsServices
             if (fashionItemFilterReqModel.Category is not null && fashionItemFilterReqModel.Category.Any())
             {
                 fashionItems = fashionItems
-                    .Where(x => !string.IsNullOrEmpty(x.Category) && fashionItemFilterReqModel.Category
-                    .Any(category => new List<string>(x.Category.Split(new[] { ", " }, StringSplitOptions.None))
-                    .Contains(category))).ToList();
+                   .Where(x => fashionItemFilterReqModel.Category
+                   .Contains(x.Category)).ToList();
             }
 
             if (fashionItemFilterReqModel.Brand is not null && fashionItemFilterReqModel.Brand.Any())

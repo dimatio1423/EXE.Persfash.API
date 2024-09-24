@@ -41,5 +41,9 @@ public partial class Customer
 
     public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 
+    public virtual ICollection<SupportMessage> SupportMessages { get; set; } = new List<SupportMessage>();
+
+    public virtual ICollection<SupportQuestion> SupportQuestions { get; set; } = new List<SupportQuestion>();
+
     public virtual ICollection<Wardrobe> Wardrobes { get; set; } = new List<Wardrobe>();
 }

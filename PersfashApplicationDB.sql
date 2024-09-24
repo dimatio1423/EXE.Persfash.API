@@ -284,3 +284,25 @@ CREATE TABLE OutfitFavorite(
 	FOREIGN KEY (DressItemID) REFERENCES FashionItems(ItemID),
 	FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
 )
+
+CREATE TABLE SupportQuestion (
+    SupportID INT PRIMARY KEY IDENTITY(1,1),
+    CustomerID INT,
+    Question NVARCHAR(255),
+    Status VARCHAR(50), -- Open, Answered, Closed
+    DateCreated DATETIME DEFAULT GETDATE(),
+    DateClosed DATETIME, 
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
+
+CREATE TABLE SupportMessage (
+    MessageID INT PRIMARY KEY IDENTITY(1,1),
+    SupportID INT, -- Link to the support thread
+    CustomerID INT, -- ID of the customer or admin
+	AdminID INT,
+    MessageText NVARCHAR(MAX), -- The actual message (question, answer, or reply)
+    DateSent DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
+    FOREIGN KEY (AdminID) REFERENCES SystemAdmin(AdminID),
+    FOREIGN KEY (SupportID) REFERENCES SupportQuestion(SupportID)
+);

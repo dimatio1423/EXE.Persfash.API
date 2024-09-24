@@ -66,93 +66,93 @@ namespace PersFashApplicationAPI.Controllers
         /// <summary>
         /// Get feedbacks by course
         /// </summary>
-        [HttpGet]
-        [Route("course")]
-        public async Task<IActionResult> GetFeedbacksByCourseId(int courseId)
-        {
-            var result = await _feedbackService.GetFeedbackByCourseId(courseId);
+        //[HttpGet]
+        //[Route("course")]
+        //public async Task<IActionResult> GetFeedbacksByCourseId(int courseId)
+        //{
+        //    var result = await _feedbackService.GetFeedbackByCourseId(courseId);
 
-            ResultModel response = new ResultModel
-            {
-                IsSuccess = true,
-                Code = (int)HttpStatusCode.OK,
-                Message = "Get feedback by course successfully",
-                Data = result
-            };
+        //    ResultModel response = new ResultModel
+        //    {
+        //        IsSuccess = true,
+        //        Code = (int)HttpStatusCode.OK,
+        //        Message = "Get feedback by course successfully",
+        //        Data = result
+        //    };
 
-            return StatusCode(response.Code, response);
-        }
+        //    return StatusCode(response.Code, response);
+        //}
 
         /// <summary>
         /// Give feedbacks for course
         /// </summary>
-        [HttpPost]
-        [Route("course")]
-        [Authorize]
-        public async Task<IActionResult> GiveFeedbackForCourse(GiveFeedbackCourseReqModel giveFeedbackCourseReqModel)
-        {
+        //[HttpPost]
+        //[Route("course")]
+        //[Authorize]
+        //public async Task<IActionResult> GiveFeedbackForCourse(GiveFeedbackCourseReqModel giveFeedbackCourseReqModel)
+        //{
 
-            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+        //    var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
 
-            await _feedbackService.GiveFeedbackForCourse(token, giveFeedbackCourseReqModel);
+        //    await _feedbackService.GiveFeedbackForCourse(token, giveFeedbackCourseReqModel);
 
-            ResultModel response = new ResultModel
-            {
-                IsSuccess = true,
-                Code = (int)HttpStatusCode.OK,
-                Message = "Give feedback for course successfully",
-            };
+        //    ResultModel response = new ResultModel
+        //    {
+        //        IsSuccess = true,
+        //        Code = (int)HttpStatusCode.OK,
+        //        Message = "Give feedback for course successfully",
+        //    };
 
-            return StatusCode(response.Code, response);
-        }
+        //    return StatusCode(response.Code, response);
+        //}
 
         /// <summary>
         /// Get feedbacks by fashion influencer
         /// </summary>
-        [HttpGet]
-        [Route("fashion-influencer")]
+        //[HttpGet]
+        //[Route("fashion-influencer")]
         
-        public async Task<IActionResult> GetFeedbacksByInfluencerId(int influencerId)
-        {
-            var result = await _feedbackService.GetFeedbackByFashionInfluenerId(influencerId);
+        //public async Task<IActionResult> GetFeedbacksByInfluencerId(int influencerId)
+        //{
+        //    var result = await _feedbackService.GetFeedbackByFashionInfluenerId(influencerId);
 
-            ResultModel response = new ResultModel
-            {
-                IsSuccess = true,
-                Code = (int)HttpStatusCode.OK,
-                Message = "Get feedback by fashion influencer successfully",
-                Data = result
-            };
+        //    ResultModel response = new ResultModel
+        //    {
+        //        IsSuccess = true,
+        //        Code = (int)HttpStatusCode.OK,
+        //        Message = "Get feedback by fashion influencer successfully",
+        //        Data = result
+        //    };
 
-            return StatusCode(response.Code, response);
-        }
+        //    return StatusCode(response.Code, response);
+        //}
 
 
         /// <summary>
         /// Give feedbacks for fashion influencer
         /// </summary>
-        [HttpPost]
-        [Route("fashion-influencer")]
-        [Authorize]
-        public async Task<IActionResult> GiveFeedbackForFashionInfluencer(GiveFeedbackInfluencerReqModel giveFeedbackInfluencerReq)
-        {
+        //[HttpPost]
+        //[Route("fashion-influencer")]
+        //[Authorize]
+        //public async Task<IActionResult> GiveFeedbackForFashionInfluencer(GiveFeedbackInfluencerReqModel giveFeedbackInfluencerReq)
+        //{
 
-            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+        //    var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
 
-            await _feedbackService.GiveFeedbackForFashionInfluencer(token, giveFeedbackInfluencerReq);
+        //    await _feedbackService.GiveFeedbackForFashionInfluencer(token, giveFeedbackInfluencerReq);
 
-            ResultModel response = new ResultModel
-            {
-                IsSuccess = true,
-                Code = (int)HttpStatusCode.OK,
-                Message = "Give feedback for fashion influencer successfully",
-            };
+        //    ResultModel response = new ResultModel
+        //    {
+        //        IsSuccess = true,
+        //        Code = (int)HttpStatusCode.OK,
+        //        Message = "Give feedback for fashion influencer successfully",
+        //    };
 
-            return StatusCode(response.Code, response);
-        }
+        //    return StatusCode(response.Code, response);
+        //}
 
         /// <summary>
-        /// Remove feedback
+        /// Remove feedback for CUSTOMER, ADMIN
         /// </summary>
         [HttpDelete]
         [Route("{feedbackId}")]
@@ -169,6 +169,29 @@ namespace PersFashApplicationAPI.Controllers
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.OK,
                 Message = "Remove feedback successfully",
+            };
+
+            return StatusCode(response.Code, response);
+        }
+
+        /// <summary>
+        /// Get all feedback for ADMIN
+        /// </summary>
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetAllFeedbacks(int ? page = 1, int? size = 10)
+        {
+
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+            var result = await _feedbackService.GetAllFeedbackForAdmin(page, size);
+
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "Remove feedback successfully",
+                Data = result
             };
 
             return StatusCode(response.Code, response);

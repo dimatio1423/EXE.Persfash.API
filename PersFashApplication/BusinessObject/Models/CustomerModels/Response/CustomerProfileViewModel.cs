@@ -44,4 +44,10 @@ namespace BusinessObject.Models.CustomerModels.Response
         public string Email { get; set; } = null!;
         public string? ProfilePicture { get; set; }
     }
+
+    public class AdminViewModel
+    {
+        public int AdminId { get; set; }
+        public string Username { get; set; } = null!;
+    }
 }

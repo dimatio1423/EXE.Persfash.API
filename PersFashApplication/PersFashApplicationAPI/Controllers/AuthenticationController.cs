@@ -1,6 +1,7 @@
 ﻿using BusinessObject.Models.PasswordModel;
 using BusinessObject.Models.ResultModel;
 using BusinessObject.Models.UserModels.Request;
+using BusinessObjects.Models.RefreshTokenModel.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -120,6 +121,23 @@ namespace PersFashApplicationAPI.Controllers
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.OK,
                 Message = "Reset password successfully",
+            };
+
+            return StatusCode(response.Code, response);
+        }
+
+
+        [HttpPost]
+        [Route("logout")]
+        public async Task<IActionResult> Logout(RefreshTokenReqModel refreshTokenReqModel)
+        {
+            await _authenticationService.Logout(refreshTokenReqModel.RefreshToken);
+
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "Logout successfully",
             };
 
             return StatusCode(response.Code, response);

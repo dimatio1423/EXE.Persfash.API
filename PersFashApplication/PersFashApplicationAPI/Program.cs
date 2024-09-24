@@ -23,6 +23,8 @@ using Repositories.PaymentRepos;
 using Repositories.PaymentTransactionRepos;
 using Repositories.RefreshTokenRepos;
 using Repositories.SubscriptionRepos;
+using Repositories.SupportMessageRepo;
+using Repositories.SupportQuestionRepo;
 using Repositories.SystemAdminRepos;
 using Repositories.UserCourseRepos;
 using Repositories.UserProfilesRepos;
@@ -49,8 +51,11 @@ using Services.JWTService;
 using Services.OutfitServices;
 using Services.PartnerServices;
 using Services.PaymentServices;
+using Services.PayOSService;
 using Services.RefreshTokenServices;
 using Services.SubscriptionServices;
+using Services.SupportMessageServices;
+using Services.SupportQuestionServices;
 using Services.UserCourseServices;
 using Services.UserProfilesServices;
 using Services.UserServices;
@@ -105,6 +110,8 @@ builder.Services.AddScoped<IPaymentTransactionRepository, PaymentTransactionRepo
 builder.Services.AddScoped<IInfluencerPaymentInformationRepository, InfluencerPaymentInformationRepository>();
 builder.Services.AddScoped<IOutfitCombinationRepository, OutfitCombinationRepository>();
 builder.Services.AddScoped<IOutfitFavoriteRepository, OutfitFavoriteRepository>();
+builder.Services.AddScoped<ISupportQuestionRepository, SupportQuestionRepository>();
+builder.Services.AddScoped<ISupportMessageRepository, SupportMessageRepository>();
 
 //-----------------------------------------SERVICES-----------------------------------------
 
@@ -132,6 +139,9 @@ builder.Services.AddScoped<IDecodeTokenHandler, DecodeTokenHandler>();
 builder.Services.AddScoped<IWardrobeService, WardrobeService>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<IOutfitService, OutfitService>();
+builder.Services.AddScoped<ISupportQuestionService, SupportQuestionService>();
+builder.Services.AddScoped<ISupportMessageService, SupportMessageService>();
+builder.Services.AddScoped<IPayOSService, PayOSService>();
 
 //-----------------------------------------VerificationCodeCache-----------------------------------------
 

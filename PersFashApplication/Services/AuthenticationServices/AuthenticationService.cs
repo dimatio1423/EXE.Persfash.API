@@ -215,6 +215,8 @@ private readonly ISubscriptionRepository _subscriptionRepository;
 
             if (currentCustomer != null)
             {
+                if (currentCustomer.Status.Equals(StatusEnums.Inactive.ToString())) throw new ApiException(HttpStatusCode.BadRequest, "This account has been deactivated");
+
                 if (PasswordHasher.VerifyPassword(userLoginReqModel.Password, currentCustomer.Password))
                 {
                     var token = _jWTService.GenerateJWT(currentCustomer);
@@ -283,6 +285,9 @@ private readonly ISubscriptionRepository _subscriptionRepository;
                 }
             }else if (currAdmin != null)
             {
+
+                if (currAdmin.Status.Equals(StatusEnums.Inactive.ToString())) throw new ApiException(HttpStatusCode.BadRequest, "This account has been deactivated");
+
                 if (PasswordHasher.VerifyPassword(userLoginReqModel.Password, currAdmin.Password))
                 {
                     var token = _jWTService.GenerateJWT(currAdmin);
@@ -411,6 +416,8 @@ private readonly ISubscriptionRepository _subscriptionRepository;
                         Customer customer;
                         if (currCustomer != null)
                         {
+                            if (currCustomer.Status.Equals(StatusEnums.Inactive.ToString())) throw new ApiException(HttpStatusCode.BadRequest, "This account has been deactivated");
+
                             customer = currCustomer;
                         }
                         else

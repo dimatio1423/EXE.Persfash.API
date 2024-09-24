@@ -4,6 +4,7 @@ using BusinessObject.Models.CourseModel.Response;
 using BusinessObject.Models.CustomerCourseModel.Response;
 using BusinessObject.Models.PaymentModel.Request;
 using Microsoft.AspNetCore.Http;
+using Net.payOS.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;

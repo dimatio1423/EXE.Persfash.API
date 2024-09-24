@@ -323,5 +323,35 @@ namespace Services.UserServices
 
             return currCustomerProfile != null ? true : false;
         }
+
+        public async Task<List<CustomerInformationViewModel>> GetCustomerListForAdmin(int? page, int? size)
+        {
+            var customers = await _customerRepository.GetAll(page, size);
+
+            return _mapper.Map<List<CustomerInformationViewModel>>(customers);
+        }
+
+        public async Task<bool> ActivateDeactivateCustomerForAdmin(string token, int customerId)
+        {
+            var decodeToken = _decodeTokenHandler.decode(token);
+
+            if (!decodeToken.roleName.Equals(RoleEnums.Admin.ToString()))
+            {
+                throw new ApiException(HttpStatusCode.Forbidden, "You do not have permission to perform this function");
+            }
+
+            var currCustomer = await _customerRepository.Get(customerId);
+
+            if (currCustomer == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Customer does not exist");
+            };
+
+            currCustomer.Status = currCustomer.Status.Equals(StatusEnums.Active.ToString()) ? (StatusEnums.Inactive.ToString()) : (StatusEnums.Active.ToString());
+
+            await _customerRepository.Update(currCustomer);
+
+            return currCustomer.Status.Equals(StatusEnums.Active.ToString()) ? true : false;
+        }
     }
 }

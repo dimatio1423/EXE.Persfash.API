@@ -10,7 +10,10 @@ using BusinessObject.Models.FeedbackModel.Response;
 using BusinessObject.Models.InfluencerModel.Response;
 using BusinessObject.Models.OutfitModel.Response;
 using BusinessObject.Models.PartnerModel.Response;
+using BusinessObject.Models.PaymentModel.Response;
 using BusinessObject.Models.SubscriptionModels.Response;
+using BusinessObject.Models.SupportMessage.Response;
+using BusinessObject.Models.SupportQuestion.Response;
 using BusinessObject.Models.WardrobeModel.Response;
 using System;
 using System.Collections.Generic;
@@ -93,6 +96,18 @@ namespace Services.Helper.MapperProfiles
             //Feedback
             CreateMap<Feedback, FeedbackViewResModel>().ReverseMap();
 
+            //SupportQuestion
+
+            CreateMap<SupportQuestion, SupportQuestionViewListResModel>().ReverseMap();
+
+            //Support Message
+            CreateMap<SupportMessage, SupportMessageViewListResModel>().ReverseMap();
+
+            // Admin
+            CreateMap<SystemAdmin, AdminViewModel>().ReverseMap();
+
+            //Payment
+            CreateMap<Payment, PaymentViewListResModel>().ReverseMap();
         }
     }
 }
