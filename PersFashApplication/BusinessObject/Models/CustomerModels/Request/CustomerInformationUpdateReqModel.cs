@@ -19,5 +19,7 @@ namespace BusinessObject.Models.CustomerModels.Request
         public string? Gender { get; set; }
 
         public DateOnly? DateOfBirth { get; set; }
+
+        public string? ProfilePicture { get; set; }
     }
 }

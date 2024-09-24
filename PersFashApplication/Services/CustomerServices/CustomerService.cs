@@ -281,6 +281,7 @@ namespace Services.UserServices
                 throw new ApiException(HttpStatusCode.BadRequest, "Email has already been used by another user");
             }
 
+            currCustomer.ProfilePicture = !string.IsNullOrEmpty(customerInformationUpdateReqModel.ProfilePicture) ? customerInformationUpdateReqModel.ProfilePicture : currCustomer.ProfilePicture;
             currCustomer.Email = !string.IsNullOrEmpty(customerInformationUpdateReqModel.Email) ? customerInformationUpdateReqModel.Email : currCustomer.Email;
             currCustomer.FullName = !string.IsNullOrEmpty(customerInformationUpdateReqModel.FullName) ? customerInformationUpdateReqModel.FullName : currCustomer.FullName;
             currCustomer.Gender = !string.IsNullOrEmpty(customerInformationUpdateReqModel.Gender) ? customerInformationUpdateReqModel.Gender : currCustomer.Gender;
