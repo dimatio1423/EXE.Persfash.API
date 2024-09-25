@@ -25,5 +25,9 @@ namespace BusinessObject.Models.CustomerModels.Response
         public DateTime? DateJoined { get; set; }
 
         public string? Status { get; set; }
+
+        public List<string>? Subscription { get; set; }
+
+        public bool? IsDoneProfileSetup { get; set; }
     }
 }

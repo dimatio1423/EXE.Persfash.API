@@ -8,5 +8,6 @@ namespace Services.UserSubscriptionServices
 {
     public interface ICustomerSubscriptionService
     {
+        Task<string> AutoUpdatingCustomerSubscriptionStatus();
     }
 }

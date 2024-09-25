@@ -10,6 +10,7 @@ using Repositories.PartnerRepos;
 using Repositories.RefreshTokenRepos;
 using Repositories.SubscriptionRepos;
 using Repositories.SystemAdminRepos;
+using Repositories.UserProfilesRepos;
 using Repositories.UserRepos;
 using Repositories.UserSubscriptionRepos;
 using Services.EmailService;
@@ -40,6 +41,7 @@ namespace Services.AuthenticationServices
         private readonly IRefreshTokenRepository _refreshTokenRepository;
         private readonly ICustomerSubscriptionRepository _customerSubscriptionRepository;
 private readonly ISubscriptionRepository _subscriptionRepository;
+        private readonly ICustomerProfileRepository _customerProfileRepository;
         private readonly IDecodeTokenHandler _decodeToken;
         private readonly IEmailService _emailService;
         private readonly IJWTService _jWTService;
@@ -54,6 +56,7 @@ private readonly ISubscriptionRepository _subscriptionRepository;
             IJWTService jWTService,
             ICustomerSubscriptionRepository customerSubscriptionRepository,
             ISubscriptionRepository subscriptionRepository,
+            ICustomerProfileRepository customerProfileRepository,
             VerificationCodeCache verificationCodeCache
             )
         {
@@ -65,6 +68,7 @@ private readonly ISubscriptionRepository _subscriptionRepository;
             _refreshTokenRepository = refreshTokenRepository;
             _customerSubscriptionRepository = customerSubscriptionRepository;
             _subscriptionRepository = subscriptionRepository;
+            _customerProfileRepository = customerProfileRepository;
             _decodeToken = decodeToken;
             _emailService = emailService;
             _jWTService = jWTService;
@@ -165,6 +169,9 @@ private readonly ISubscriptionRepository _subscriptionRepository;
 
             if (currCustomer != null)
             {
+
+                var currCustomerSubscriptions = await _customerSubscriptionRepository.GetCustomerSubscriptionByCustomerId(currCustomer.CustomerId);
+
                 UserInformationModel userInformation = new UserInformationModel
                 {
                     UserId = currCustomer.CustomerId,
@@ -172,7 +179,9 @@ private readonly ISubscriptionRepository _subscriptionRepository;
                     Email = currCustomer.Email,
                     Role = RoleEnums.Customer.ToString(),
                     ProfileURL = currCustomer.ProfilePicture,
-                    Gender = currCustomer.Gender
+                    Gender = currCustomer.Gender,
+                    Subscription = currCustomerSubscriptions.Select(x => x.Subscription.SubscriptionTitle).ToList(),
+                    IsDoneProfileSetup = await _customerProfileRepository.GetCustomerProfileByCustomerId(currCustomer.CustomerId) != null ? true : false,
                 };
 
                 return userInformation;

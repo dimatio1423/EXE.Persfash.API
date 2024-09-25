@@ -14,5 +14,6 @@ namespace Repositories.UserSubscriptionRepos
         Task<List<CustomerSubscription>> GetCustomerSubscriptionByCustomerId(int customerId);
         Task<CustomerSubscription> GetCustomerSubscription(int customerSubscriptionId);
         Task<CustomerSubscription> GetCustomerSubscriptionByCustomerIdAndSubscriptionId(int customerId, int subscriptionId);
+        Task<List<CustomerSubscription>> GetCustomerSubscriptionWithDateAndStatusActive();
     }
 }

@@ -15,6 +15,7 @@ using BusinessObject.Models.SubscriptionModels.Response;
 using BusinessObject.Models.SupportMessage.Response;
 using BusinessObject.Models.SupportQuestion.Response;
 using BusinessObject.Models.WardrobeModel.Response;
+using Services.Helper.Resolver.CustomerResolver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,7 +71,10 @@ namespace Services.Helper.MapperProfiles
 
             //Customer
             CreateMap<Customer, CustomerViewModel>().ReverseMap();
-            CreateMap<Customer, CustomerInformationViewModel>().ReverseMap();
+            CreateMap<Customer, CustomerInformationViewModel>()
+                .ForMember(dest => dest.Subscription, opt => opt.MapFrom<GetCustomerSubscriptionResolver>())
+                .ForMember(dest => dest.IsDoneProfileSetup, opt => opt.MapFrom<GetCustomerProfileSetup>())
+                .ReverseMap();
 
 
             //Wardrobe

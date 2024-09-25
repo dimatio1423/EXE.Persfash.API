@@ -35,6 +35,7 @@ using Repositories.WardrobeRepos;
 using Services.AuthenticationServices;
 using Services.AWSService;
 using Services.AWSServices;
+using Services.BackgroundServices;
 using Services.CloudinaryService;
 using Services.CourseContentServices;
 using Services.CourseMaterialServices;
@@ -73,6 +74,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
 
 //-----------------------------------------AWS-----------------------------------------
 builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
@@ -159,7 +162,8 @@ builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection(
 builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
 builder.Services.AddAWSService<IAmazonS3>();
 
-
+//-----------------------------------------BGSERVICE-----------------------------------------
+builder.Services.AddHostedService<BGService>();
 
 //-----------------------------------------CORS-----------------------------------------
 

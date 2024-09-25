@@ -74,5 +74,19 @@ namespace Repositories.UserSubscriptionRepos
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<List<CustomerSubscription>> GetCustomerSubscriptionWithDateAndStatusActive()
+        {
+            try
+            {
+
+                return await _context.CustomerSubscriptions
+                    .Where(x => x.StartDate.HasValue && x.EndDate.HasValue && x.IsActive == true).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
