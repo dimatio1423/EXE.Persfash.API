@@ -18,6 +18,6 @@ namespace BusinessObject.Models.SubscriptionModels.Request
         public int? DurationInDays { get; set; }
 
         [StringLength(500, ErrorMessage = "Description can't be longer than 500 characters.")]
-        public string? Description { get; set; }
+        public List<string>? Description { get; set; }
     }
 }

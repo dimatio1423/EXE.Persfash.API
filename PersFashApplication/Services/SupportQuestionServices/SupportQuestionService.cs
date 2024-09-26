@@ -83,8 +83,18 @@ namespace Services.SupportQuestionServices
             await _supportQuestionRepository.Update(currSupportQuestion);
         }
 
-        public async Task<List<SupportQuestionViewListResModel>> ViewSupports(int? page, int? size, string? filterStatus)
+        public async Task<List<SupportQuestionViewListResModel>> ViewSupports(string? token, int? page, int? size, string? filterStatus)
         {
+
+            if (token != null)
+            {
+                var decodeToken = _decodeToken.decode(token);
+                if (decodeToken.roleName.Equals(RoleEnums.Admin.ToString()))
+                {
+                    return _mapper.Map<List<SupportQuestionViewListResModel>>(await _supportQuestionRepository.GetSupportQuestions());
+                }
+            }
+
             var supports = await _supportQuestionRepository.GetSupportQuestions(page, size);
 
             if (!string.IsNullOrEmpty(filterStatus))
@@ -92,7 +102,7 @@ namespace Services.SupportQuestionServices
                 supports = FilterFeature(supports, filterStatus);
             }
 
-            return _mapper.Map<List<SupportQuestionViewListResModel>>(supports);
+            return _mapper.Map<List<SupportQuestionViewListResModel>>(supports.OrderByDescending(x => x.DateCreated).ToList());
         }
 
         public List<SupportQuestion> FilterFeature(List<SupportQuestion> supportQuestion, string filterStatus)

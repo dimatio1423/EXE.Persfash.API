@@ -88,18 +88,18 @@ namespace PersFashApplicationAPI.Controllers
         /// View support question for CUSTOMER, ADMIN/ filter by Open, Answer
         /// </summary>
         [HttpGet]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> ViewSupportQuestion(string? filter, int? page = 1, int? size = 10)
         {
-            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var token = !string.IsNullOrEmpty(Request.Headers["Authorization"].ToString()) ? Request.Headers["Authorization"].ToString().Split(" ")[1] : null;
 
-            var result = await _supportQuestionService.ViewSupports(page, size, filter);
+            var result = await _supportQuestionService.ViewSupports(token, page, size, filter);
 
             ResultModel response = new ResultModel
             {
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.OK,
-                Message = "Remove support question successfully",
+                Message = "View support question successfully",
                 Data = result
             };
 

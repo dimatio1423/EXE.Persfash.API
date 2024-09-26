@@ -1,8 +1,10 @@
-﻿using BusinessObject.Entities;
+﻿using Azure;
+using BusinessObject.Entities;
 using Microsoft.EntityFrameworkCore;
 using Repositories.GenericRepos;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,6 +33,20 @@ namespace Repositories.SupportQuestionRepo
                     .ToListAsync();
             }
             catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<SupportQuestion>> GetSupportQuestions()
+        {
+            try
+            {
+                return await _context.SupportQuestions.Include(x => x.Customer)
+                    .Include(x => x.SupportMessages).ThenInclude(x => x.Admin)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }

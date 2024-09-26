@@ -12,7 +12,7 @@ namespace Services.SupportQuestionServices
     {
         Task CreateNewSupportQuestion(string token, SupportQuestionCreateReqModel supportQuestionCreateReqModel);
         Task UpdateSupportQuestion(string token, SupportQuestionUpdateReqModel supportQuestionUpdateReq);
-        Task<List<SupportQuestionViewListResModel>> ViewSupports(int? page, int? size, string? filterStatus);
+        Task<List<SupportQuestionViewListResModel>> ViewSupports(string? token, int? page, int? size, string? filterStatus);
         Task RemoveSupportQuestion(string token, int supportQuestionId);
     }
 }

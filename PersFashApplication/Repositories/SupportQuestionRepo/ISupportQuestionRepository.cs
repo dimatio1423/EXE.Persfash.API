@@ -11,5 +11,6 @@ namespace Repositories.SupportQuestionRepo
     public interface ISupportQuestionRepository : IGenericRepository<SupportQuestion>
     {
         Task<List<SupportQuestion>> GetSupportQuestions(int? page, int? size);
+        Task<List<SupportQuestion>> GetSupportQuestions();
     }
 }

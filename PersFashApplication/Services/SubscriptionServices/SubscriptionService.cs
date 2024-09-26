@@ -255,7 +255,7 @@ namespace Services.SubscriptionServices
 
             currSubscription.Price = subscriptionUpdateReqModel.Price != null ? subscriptionUpdateReqModel.Price : currSubscription.Price;
             currSubscription.DurationInDays = subscriptionUpdateReqModel.DurationInDays != null ? subscriptionUpdateReqModel.DurationInDays : currSubscription.DurationInDays;
-            currSubscription.Description = !string.IsNullOrEmpty(subscriptionUpdateReqModel.Description) ? subscriptionUpdateReqModel.Description : currSubscription.Description;
+            currSubscription.Description = (subscriptionUpdateReqModel.Description != null && subscriptionUpdateReqModel.Description.Count > 0) ? string.Join(", ", subscriptionUpdateReqModel.Description) : currSubscription.Description;
 
             await _subscriptionRepository.Update(currSubscription);
         }
