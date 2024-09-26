@@ -16,7 +16,7 @@ namespace BusinessObject.Models.SubscriptionModels.Response
 
         public int? DurationInDays { get; set; }
 
-        public string? Description { get; set; }
+        public List<string>? Description { get; set; }
 
         public string? Status { get; set; }
     }

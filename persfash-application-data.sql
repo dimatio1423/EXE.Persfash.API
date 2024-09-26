@@ -88,9 +88,9 @@ VALUES
 
 INSERT INTO Subscriptions (SubscriptionTitle, Price, DurationInDays, Description, Status)
 VALUES
-('Free', null, null, 'Access to basic features and limited courses.', 'Active'),
-('Premium', 99000.00, 60, 'Access to all features and unlimited courses.', 'Active'),
-('Courses', null, null, 'All-access pass including exclusive content and perks.', 'Active');
+('Free', null, null, 'Suggest fashion items, Sugges fashion outfits, 24-hour support response time', 'Active'),
+('Premium', 49000.00, 60, 'Suggest fashion items, Suggest fashion outfits, Support 24/7, Manage your wardrobe, Save your favorite outfits', 'Active');
+
 
 INSERT INTO SystemAdmin (Username, Password, Status)
 VALUES

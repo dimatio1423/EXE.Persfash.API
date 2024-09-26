@@ -180,7 +180,7 @@ private readonly ISubscriptionRepository _subscriptionRepository;
                     Role = RoleEnums.Customer.ToString(),
                     ProfileURL = currCustomer.ProfilePicture,
                     Gender = currCustomer.Gender,
-                    Subscription = currCustomerSubscriptions.Select(x => x.Subscription.SubscriptionTitle).ToList(),
+                    Subscription = currCustomerSubscriptions.Where(x => x.IsActive == true).Select(x => x.Subscription.SubscriptionTitle).ToList(),
                     IsDoneProfileSetup = await _customerProfileRepository.GetCustomerProfileByCustomerId(currCustomer.CustomerId) != null ? true : false,
                 };
 

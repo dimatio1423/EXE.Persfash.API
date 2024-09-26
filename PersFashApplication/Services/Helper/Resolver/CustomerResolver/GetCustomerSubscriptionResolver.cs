@@ -27,7 +27,7 @@ namespace Services.Helper.Resolver.CustomerResolver
 
             var currCustomerSubscriptions = _customerSubscriptionRepository.GetCustomerSubscriptionByCustomerId(currCustomer.CustomerId).GetAwaiter().GetResult();
 
-            return currCustomerSubscriptions.Select(x => x.Subscription.SubscriptionTitle).ToList();
+            return currCustomerSubscriptions.Where(x => x.IsActive == true).Select(x => x.Subscription.SubscriptionTitle).ToList();
         }
     }
 }

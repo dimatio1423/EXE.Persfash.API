@@ -35,12 +35,15 @@ namespace Services.Helper.MapperProfiles
             CreateMap<FashionItem, FashionItemViewListRes>().ReverseMap();
 
             //Subscription
-            CreateMap<Subscription, SubscriptionViewDetailsResModel>().ReverseMap();
+            CreateMap<Subscription, SubscriptionViewDetailsResModel>()
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Description) ? new List<string>(src.Description.Split(new[] {", "}, StringSplitOptions.None)) : null))
+                .ReverseMap();
 
             CreateMap<Subscription, SubscriptionViewListResModel>().ReverseMap();
 
             //CustomerSubscription
-            CreateMap<CustomerSubscription, CustomerSubscriptionViewResModel>().ReverseMap();
+            CreateMap<CustomerSubscription, CustomerSubscriptionViewResModel>()
+                .ReverseMap();
 
             //Course
             CreateMap<Course, CourseViewListResModel>().ReverseMap();
