@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObject.Entities;
 using BusinessObject.Enums;
+using BusinessObject.Models.Pagination;
 using BusinessObject.Models.SupportQuestion.Request;
 using BusinessObject.Models.SupportQuestion.Response;
 using Org.BouncyCastle.Asn1.X509;
@@ -83,26 +84,32 @@ namespace Services.SupportQuestionServices
             await _supportQuestionRepository.Update(currSupportQuestion);
         }
 
-        public async Task<List<SupportQuestionViewListResModel>> ViewSupports(string? token, int? page, int? size, string? filterStatus)
+        public async Task<Pagination<SupportQuestionViewListResModel>> ViewSupports(string? token, int? page, int? size, string? filterStatus)
         {
+          
+            var totalSupport = await _supportQuestionRepository.GetAll();
 
-            if (token != null)
-            {
-                var decodeToken = _decodeToken.decode(token);
-                if (decodeToken.roleName.Equals(RoleEnums.Admin.ToString()))
-                {
-                    return _mapper.Map<List<SupportQuestionViewListResModel>>(await _supportQuestionRepository.GetSupportQuestions());
-                }
-            }
+            var supports = totalSupport;
 
-            var supports = await _supportQuestionRepository.GetSupportQuestions(page, size);
+            var supportCount = totalSupport.Count;
 
             if (!string.IsNullOrEmpty(filterStatus))
             {
                 supports = FilterFeature(supports, filterStatus);
             }
 
-            return _mapper.Map<List<SupportQuestionViewListResModel>>(supports.OrderByDescending(x => x.DateCreated).ToList());
+            supportCount = supports.Count;
+
+            supports = supports.Skip(((page ?? 1) - 1) * (size ?? 10))
+                    .Take(size ?? 10).ToList();
+
+            return new Pagination<SupportQuestionViewListResModel>
+            {
+                TotalItems = supportCount,
+                PageSize = size ?? 10,
+                CurrentPage = page ?? 1,
+                Data = _mapper.Map<List<SupportQuestionViewListResModel>>(supports.OrderByDescending(x => x.DateCreated).ToList())
+            };
         }
 
         public List<SupportQuestion> FilterFeature(List<SupportQuestion> supportQuestion, string filterStatus)

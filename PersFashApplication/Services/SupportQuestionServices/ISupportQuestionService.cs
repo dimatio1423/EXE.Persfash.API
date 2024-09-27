@@ -1,4 +1,5 @@
-﻿using BusinessObject.Models.SupportQuestion.Request;
+﻿using BusinessObject.Models.Pagination;
+using BusinessObject.Models.SupportQuestion.Request;
 using BusinessObject.Models.SupportQuestion.Response;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace Services.SupportQuestionServices
     {
         Task CreateNewSupportQuestion(string token, SupportQuestionCreateReqModel supportQuestionCreateReqModel);
         Task UpdateSupportQuestion(string token, SupportQuestionUpdateReqModel supportQuestionUpdateReq);
-        Task<List<SupportQuestionViewListResModel>> ViewSupports(string? token, int? page, int? size, string? filterStatus);
+        Task<Pagination<SupportQuestionViewListResModel>> ViewSupports(string? token, int? page, int? size, string? filterStatus);
         Task RemoveSupportQuestion(string token, int supportQuestionId);
     }
 }

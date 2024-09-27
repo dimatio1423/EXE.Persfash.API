@@ -4,6 +4,7 @@ using BusinessObject.Enums;
 using BusinessObject.Models.CustomerModels.Request;
 using BusinessObject.Models.CustomerModels.Response;
 using BusinessObject.Models.FashionItemsModel.Request;
+using BusinessObject.Models.Pagination;
 using Repositories.FashionInfluencerRepos;
 using Repositories.PartnerRepos;
 using Repositories.SubscriptionRepos;
@@ -325,11 +326,19 @@ namespace Services.UserServices
             return currCustomerProfile != null ? true : false;
         }
 
-        public async Task<List<CustomerInformationViewModel>> GetCustomerListForAdmin(int? page, int? size)
+        public async Task<Pagination<CustomerInformationViewModel>> GetCustomerListForAdmin(int? page, int? size)
         {
             var customers = await _customerRepository.GetAll(page, size);
 
-            return _mapper.Map<List<CustomerInformationViewModel>>(customers);
+            var totalCustomer = await _customerRepository.GetAll();
+
+            return new Pagination<CustomerInformationViewModel>
+            {
+                TotalItems = totalCustomer.Count,
+                PageSize = size ?? 10,
+                CurrentPage = page ?? 1,
+                Data = _mapper.Map<List<CustomerInformationViewModel>>(customers),
+            };
         }
 
         public async Task<bool> ActivateDeactivateCustomerForAdmin(string token, int customerId)

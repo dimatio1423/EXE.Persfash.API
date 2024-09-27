@@ -3,6 +3,7 @@ using BusinessObject.Entities;
 using BusinessObject.Enums;
 using BusinessObject.Models.FashionItemsModel.Request;
 using BusinessObject.Models.FashionItemsModel.Response;
+using BusinessObject.Models.Pagination;
 using Newtonsoft.Json.Linq;
 using Repositories.FashionItemImageRepos;
 using Repositories.FashionItemsRepos;
@@ -162,14 +163,22 @@ namespace Services.FashionItemsServices
             await _fashionItemRepository.Update(currItem);
         }
 
-        public async Task<List<FashionItemViewListRes>> SearchFashionItems(int? page, int? size, FashionItemFilterReqModel? fashionItemFilterReqModel, string? sortBy, string? searchValue)
+        public async Task<Pagination<FashionItemViewListRes>> SearchFashionItems(int? page, int? size, FashionItemFilterReqModel? fashionItemFilterReqModel, string? sortBy, string? searchValue)
         {
-            var fashionItems = await _fashionItemRepository.GetFashionItems(page, size);
+            var allItems = await _fashionItemRepository.GetFashionItems(page, size);
 
+            var fashionItems = allItems;
+
+            int totalItemCount;
 
             if (!string.IsNullOrEmpty(searchValue))
             {
                 fashionItems = fashionItems.Where(x => x.ItemName.ToLower().Contains(searchValue.Trim().ToLower())).ToList();
+
+                totalItemCount = fashionItems.Count;
+            }else
+            {
+                totalItemCount = allItems.Count;
             }
 
             if (fashionItemFilterReqModel != null)
@@ -177,11 +186,23 @@ namespace Services.FashionItemsServices
                 fashionItems = filterFashionItem(fashionItems, fashionItemFilterReqModel);
             }
 
+            totalItemCount = fashionItems.Count;
+
             if (!string.IsNullOrEmpty(sortBy))
             {
                 fashionItems = sortFashionItem(fashionItems, sortBy);
             }
-            return _mapper.Map<List<FashionItemViewListRes>>(fashionItems);
+
+            var pagedItem = fashionItems.Skip(((page ?? 1) - 1) * (size ?? 10))
+                    .Take(size ?? 10).ToList();
+
+            return new Pagination<FashionItemViewListRes>
+            {
+                TotalItems = totalItemCount,
+                PageSize = size ?? 10,
+                CurrentPage = page ?? 1,
+                Data = _mapper.Map<List<FashionItemViewListRes>>(pagedItem)
+            };
         }
 
         public async Task UpdateFashionItem(string token, FashionItemUpdateReqModel fashionItemUpdateReqModel)
@@ -332,9 +353,11 @@ namespace Services.FashionItemsServices
             return fashionItemDetails;
         }
 
-        public async Task<List<FashionItemViewListRes>> ViewFashionItems(int? page, int? size, FashionItemFilterReqModel? fashionItemFilterReqModel, string? sortBy)
+        public async Task<Pagination<FashionItemViewListRes>> ViewFashionItems(int? page, int? size, FashionItemFilterReqModel? fashionItemFilterReqModel, string? sortBy)
         {
-            var fashionItems = await _fashionItemRepository.GetFashionItems(page, size);
+            var allFashionItems = await _fashionItemRepository.GetAll();
+
+            var fashionItems = allFashionItems;
 
             if (fashionItemFilterReqModel != null)
             {
@@ -344,7 +367,20 @@ namespace Services.FashionItemsServices
             if (!string.IsNullOrEmpty(sortBy)) {
                 fashionItems = sortFashionItem(fashionItems, sortBy);
             }
-            return _mapper.Map<List<FashionItemViewListRes>>(fashionItems);
+
+            int totalItemsCount = fashionItems.Count;
+
+            var pagedItems = fashionItems.Skip(((page ?? 1) - 1) * (size ?? 10))
+                    .Take(size ?? 10).ToList();
+
+
+            return new Pagination<FashionItemViewListRes>
+            {
+                TotalItems = totalItemsCount,
+                PageSize = size ?? 10,
+                CurrentPage = page ?? 1,
+                Data = _mapper.Map<List<FashionItemViewListRes>>(pagedItems)
+            };
         }
 
         //public async Task<List<FashionItemViewListRes>> ViewFashionItemsByPartnerId(int partnerId, int? page, int? size)

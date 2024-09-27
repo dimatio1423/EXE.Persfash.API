@@ -1,4 +1,5 @@
-﻿using BusinessObject.Models.PaymentModel.Response;
+﻿using BusinessObject.Models.Pagination;
+using BusinessObject.Models.PaymentModel.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace Services.PaymentServices
 {
     public interface IPaymentService
     {
-        Task<List<PaymentViewListResModel>> ViewPaymentForAdmin(int? page, int? size);
+        Task<Pagination<PaymentViewListResModel>> ViewPaymentForAdmin(int? page, int? size);
     }
 }

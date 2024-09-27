@@ -2,6 +2,8 @@
 using BusinessObject.Entities;
 using BusinessObject.Enums;
 using BusinessObject.Models.CustomerModels.Response;
+using BusinessObject.Models.FashionItemsModel.Response;
+using BusinessObject.Models.Pagination;
 using BusinessObject.Models.WardrobeModel.Request;
 using BusinessObject.Models.WardrobeModel.Response;
 using Newtonsoft.Json.Linq;
@@ -101,6 +103,10 @@ namespace Services.WardrobeServices
             {
                 throw new ApiException(HttpStatusCode.NotFound, "Fashion item does not exist");
             }
+
+            var currWardrobeItem = await _wardrobeItemRepository.GetWardrobeItemsByWardrobeIdAndItemId(currWardrobe.WardrobeId, currFashionItem.ItemId);
+
+            if (currWardrobeItem != null) throw new ApiException(HttpStatusCode.BadRequest, "You already added it to the wardrobe");
 
             WardrobeItem wardrobeItem = new WardrobeItem
             {
@@ -384,6 +390,150 @@ namespace Services.WardrobeServices
             detailWardrobe.WardrobeItems = WardrobeItems;
 
             return detailWardrobe;
+        }
+
+        public async Task<Pagination<FashionItemViewListRes>> ViewDetailsWardrobeOfCustomerFilter(string token, int wardrobeId, string filter, int?page, int? size)
+        {
+            var decodeToken = _decodeTokenHandler.decode(token);
+
+            if (!decodeToken.roleName.Equals(RoleEnums.Customer.ToString()))
+            {
+                throw new ApiException(HttpStatusCode.Forbidden, "You do not have permission to perform this function");
+            }
+
+            var currCustomer = await _customerRepository.GetCustomerByUsername(decodeToken.username);
+
+            if (currCustomer == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Customer does not exist");
+            }
+
+            var premiumSubscription = await _subscriptionRepository.GetSubscriptionsByName(SubscriptionTypeEnums.Premium.ToString());
+
+            if (premiumSubscription == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Premium subscription does not exist");
+            }
+
+            var currCustomerSubscription = await _customerSubscriptionRepository.GetCustomerSubscriptionByCustomerIdAndSubscriptionId(currCustomer.CustomerId, premiumSubscription.SubscriptionId);
+
+
+            if (currCustomerSubscription == null || currCustomerSubscription.IsActive == false)
+            {
+                throw new ApiException(HttpStatusCode.Forbidden, "Please subscribe the premium subscription or extend the subscription to perform this function");
+            }
+
+            var currWardrobe = await _wardrobeRepository.GetWardrobeById(wardrobeId);
+
+            if (currWardrobe == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Wardrobe of the customer does not exist");
+            }
+
+            if (currCustomer.CustomerId != currWardrobe.CustomerId)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Can not view other customers wardrobe");
+            }
+
+            var customerWardrobe = await _wardrobeItemRepository.GetWardrobeItemsByWardrobeId(currWardrobe.WardrobeId);
+
+            switch(filter)
+            {
+                case "tops":
+                    var topsItemIds = customerWardrobe.Where(x => x.Item.Category.Equals(CategoryEnums.Tops.ToString())).Select(x => x.ItemId).ToList();
+
+                    var topsItems = _mapper.Map<List<FashionItemViewListRes>>(await _fashionItemRepository.GetFashionItemsByIds(topsItemIds));
+
+                    var tops = topsItems.Skip(((page ?? 1) - 1) * (size ?? 10))
+                    .Take(size ?? 10).ToList();
+
+                    return new Pagination<FashionItemViewListRes>
+                    {
+                        TotalItems = topsItems.Count,
+                        PageSize = size ?? 10,
+                        CurrentPage = page ?? 1,
+                        Data = tops
+                    };
+
+                case "bottoms":
+                    var bottomItemsIds = customerWardrobe.Where(x => x.Item.Category.Equals(CategoryEnums.Bottoms.ToString())).Select(x => x.ItemId).ToList();
+
+                    var bottomItems = _mapper.Map<List<FashionItemViewListRes>>(await _fashionItemRepository.GetFashionItemsByIds(bottomItemsIds));
+
+                    var bottoms = bottomItems.Skip(((page ?? 1) - 1) * (size ?? 10))
+                    .Take(size ?? 10).ToList();
+
+                    return new Pagination<FashionItemViewListRes>
+                    {
+                        TotalItems = bottomItems.Count,
+                        PageSize = size ?? 10,
+                        CurrentPage = page ?? 1,
+                        Data = bottoms
+                    };
+
+                case "accessories":
+                    var accessoriesItemIds = customerWardrobe.Where(x => x.Item.Category.Equals(CategoryEnums.Accessories.ToString())).Select(x => x.ItemId).ToList();
+
+                    var accessoriesItem = _mapper.Map<List<FashionItemViewListRes>>(await _fashionItemRepository.GetFashionItemsByIds(accessoriesItemIds));
+
+                    var accessories = accessoriesItem.Skip(((page ?? 1) - 1) * (size ?? 10))
+                    .Take(size ?? 10).ToList();
+
+                    return new Pagination<FashionItemViewListRes>
+                    {
+                        TotalItems = accessoriesItem.Count,
+                        PageSize = size ?? 10,
+                        CurrentPage = page ?? 1,
+                        Data = accessories
+                    };
+
+                case "shoes":
+                    var shoesItemId = customerWardrobe.Where(x => x.Item.Category.Equals(CategoryEnums.Shoes.ToString())).Select(x => x.ItemId).ToList();
+
+                    var shoesItem = _mapper.Map<List<FashionItemViewListRes>>(await _fashionItemRepository.GetFashionItemsByIds(shoesItemId));
+
+                    var shoes = shoesItem.Skip(((page ?? 1) - 1) * (size ?? 10))
+                    .Take(size ?? 10).ToList();
+
+                    return new Pagination<FashionItemViewListRes>
+                    {
+                        TotalItems = shoesItem.Count,
+                        PageSize = size ?? 10,
+                        CurrentPage = page ?? 1,
+                        Data = shoes
+                    };
+
+                case "dresses":
+                    var dressItemIds = customerWardrobe.Where(x => x.Item.Category.Equals(CategoryEnums.Dresses.ToString())).Select(x => x.ItemId).ToList();
+
+                    var dressItems = _mapper.Map<List<FashionItemViewListRes>>(await _fashionItemRepository.GetFashionItemsByIds(dressItemIds));
+
+                    var dresses = dressItems.Skip(((page ?? 1) - 1) * (size ?? 10))
+                    .Take(size ?? 10).ToList();
+
+                    return new Pagination<FashionItemViewListRes>
+                    {
+                        TotalItems = dressItems.Count,
+                        PageSize = size ?? 10,
+                        CurrentPage = page ?? 1,
+                        Data = dresses
+                    };
+                default:
+                     topsItemIds = customerWardrobe.Where(x => x.Item.Category.Equals(CategoryEnums.Tops.ToString())).Select(x => x.ItemId).ToList();
+
+                     topsItems = _mapper.Map<List<FashionItemViewListRes>>(await _fashionItemRepository.GetFashionItemsByIds(topsItemIds));
+
+                     tops = topsItems.Skip(((page ?? 1) - 1) * (size ?? 10))
+                    .Take(size ?? 10).ToList();
+
+                    return new Pagination<FashionItemViewListRes>
+                    {
+                        TotalItems = topsItems.Count,
+                        PageSize = size ?? 10,
+                        CurrentPage = page ?? 1,
+                        Data = tops
+                    };
+            }
         }
 
         public async Task<List<WardrobeViewListResModel>> ViewWardrobeOfCustomer(string token)

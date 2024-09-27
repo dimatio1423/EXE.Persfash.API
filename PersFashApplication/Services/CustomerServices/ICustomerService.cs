@@ -1,5 +1,6 @@
 ﻿using BusinessObject.Models.CustomerModels.Request;
 using BusinessObject.Models.CustomerModels.Response;
+using BusinessObject.Models.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace Services.UserServices
         Task<CustomerInformationViewModel> GetCustomerInformation(int customerId);
         Task UpdateCustomerInformation(string token, CustomerInformationUpdateReqModel customerInformationUpdateReqModel);
         Task<bool> CheckCustomerProfileExisted(string token);
-        Task<List<CustomerInformationViewModel>> GetCustomerListForAdmin(int? page, int? size);
+        Task<Pagination<CustomerInformationViewModel>> GetCustomerListForAdmin(int? page, int? size);
         Task<bool> ActivateDeactivateCustomerForAdmin(string token, int customerId);
     }
 }

@@ -22,8 +22,8 @@ VALUES
 
 INSERT INTO FashionItems (ItemName, Category, Brand, Price, FitType, GenderTarget, FashionTrend, Size, Color, Material, Occasion, ThumbnailURL, ProductURL, Status)
 VALUES
-('Slim Fit Blazer', 'Jacket', 'Zara', 150.00, 'Slim', 'Unisex', 'Minimalist' ,'M', 'Gray', 'Wool', 'Business', 'slimfitblazer.jpg', 'www.fashionco.com/slimfitblazer', 'Available'),
-('Summer Dress', 'Dress', 'H&M', 75.00, 'Regular', 'Women', 'Vintage' ,'S', 'Red', 'Cotton', 'Casual', 'summerdress.jpg', 'www.styleworld.com/summerdress', 'Available'),
+('Slim Fit Blazer', 'Tops', 'Zara', 150.00, 'Slim', 'Unisex', 'Minimalist' ,'M', 'Gray', 'Wool', 'Business', 'slimfitblazer.jpg', 'www.fashionco.com/slimfitblazer', 'Available'),
+('Summer Dress', 'Dresses', 'H&M', 75.00, 'Regular', 'Women', 'Vintage' ,'S', 'Red', 'Cotton', 'Casual', 'summerdress.jpg', 'www.styleworld.com/summerdress', 'Available'),
 -- Tops
 ('V-Neck T-Shirt', 'Tops', 'H&M', 20.00, 'Regular', 'Unisex', 'Casual', 'M', 'White', 'Cotton', 'Casual', 'vneck_tshirt.jpg', 'www.hm.com/vnecktshirt', 'Available'),
 ('Button-Down Blouse', 'Tops', 'Zara', 55.00, 'Regular', 'Women', 'Chic', 'S', 'Blue', 'Silk', 'Business', 'buttondown_blouse.jpg', 'www.zara.com/buttondownblouse', 'Available'),

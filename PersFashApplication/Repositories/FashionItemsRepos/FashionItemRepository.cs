@@ -70,13 +70,28 @@ namespace Repositories.FashionItemsRepos
             }
         }
 
+        public async Task<List<FashionItem>> GetFashionItemsByIds(List<int?> itemIds)
+        {
+            try
+            {
+                return await _context.FashionItems
+                .Where(x => itemIds.Contains(x.ItemId))
+                    .ToListAsync();
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         //public async Task<List<FashionItem>> GetFashionItemsByPartner(int partnerId, int? page, int? size)
         //{
         //    try
         //    {
         //        var pageIndex = (page.HasValue && page > 0) ? page.Value : 1;
         //        var sizeIndex = (size.HasValue && size > 0) ? size.Value : 10;
-                
+
         //        return await _context.FashionItems
         //            .Where(x => x.PartnerId == partnerId)
         //            .Skip((pageIndex - 1) * sizeIndex)
