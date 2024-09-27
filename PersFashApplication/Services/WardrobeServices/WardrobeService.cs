@@ -149,6 +149,13 @@ namespace Services.WardrobeServices
                 throw new ApiException(HttpStatusCode.Forbidden, "Please subscribe the premium subscription or extend the subscription to perform this function");
             }
 
+            var totalWardrobeOfCustomer = await _wardrobeRepository.GetWardrobesByCustomerId(currCustomer.CustomerId);
+
+            if (totalWardrobeOfCustomer.Count == 10)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "You have reach the limit for wardrobe, \nPlease remove unused wardrobe to use this feature");
+            }
+
             Wardrobe wardrobe = new Wardrobe
             {
                 CustomerId = currCustomer.CustomerId,

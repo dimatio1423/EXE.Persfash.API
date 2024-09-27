@@ -87,7 +87,7 @@ namespace Services.SupportQuestionServices
         public async Task<Pagination<SupportQuestionViewListResModel>> ViewSupports(string? token, int? page, int? size, string? filterStatus)
         {
           
-            var totalSupport = await _supportQuestionRepository.GetAll();
+            var totalSupport = await _supportQuestionRepository.GetSupportQuestions();
 
             var supports = totalSupport;
 
