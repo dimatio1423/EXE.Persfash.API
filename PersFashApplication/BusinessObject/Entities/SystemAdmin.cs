@@ -14,4 +14,6 @@ public partial class SystemAdmin
     public string? Status { get; set; }
 
     public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+
+    public virtual ICollection<SupportMessage> SupportMessages { get; set; } = new List<SupportMessage>();
 }

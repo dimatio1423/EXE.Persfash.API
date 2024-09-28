@@ -22,8 +22,22 @@ namespace Repositories.WardrobeItemRepos
         {
             try
             {
-                return await _context.WardrobeItems.Include(x => x.Item).ThenInclude(x => x.Partner)
+                return await _context.WardrobeItems.Include(x => x.Item)
                     .Where(x => x.WardrobeId == wardrobeId).ToListAsync();
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<WardrobeItem> GetWardrobeItemsByWardrobeIdAndItemId(int wardrobeId, int itemId)
+        {
+            try
+            {
+                return await _context.WardrobeItems.Include(x => x.Item)
+                    .Where(x => x.WardrobeId == wardrobeId && x.ItemId == itemId).FirstOrDefaultAsync();
 
             }
             catch (Exception ex)

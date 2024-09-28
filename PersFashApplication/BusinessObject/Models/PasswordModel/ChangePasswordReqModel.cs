@@ -14,7 +14,7 @@ namespace BusinessObject.Models.PasswordModel
 
         [Required(ErrorMessage = "New password is required")]
         [RegularExpression("^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*])[A-Za-z\\d!@#$%^&*]{6,12}$",
-           ErrorMessage = "Password must be 8-12 characters with at least \" +\r\n            \"one uppercase letter, one number, and one special character (!@#$%^&*)")]
+           ErrorMessage = "Password must be 6-12 characters with at least \" +\r\n            \"one uppercase letter, one number, and one special character (!@#$%^&*)")]
         [MinLength(6, ErrorMessage = "Password must be at least 6 characters long")]
         public string NewPassword { get; set; }
     }

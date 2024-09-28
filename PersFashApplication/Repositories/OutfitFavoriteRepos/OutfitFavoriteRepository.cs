@@ -25,11 +25,11 @@ namespace Repositories.OutfitFavoriteRepos
 
                 return await _context.OutfitFavorites
                     .Include(x => x.Customer)
-                    .Include(x => x.TopItem).ThenInclude(x => x.Partner)
-                    .Include(x => x.BottomItem).ThenInclude(x => x.Partner)
-                    .Include(x => x.AccessoriesItem).ThenInclude(x => x.Partner)
-                    .Include(x => x.ShoesItem).ThenInclude(x => x.Partner)
-                    .Include(x => x.DressItem).ThenInclude(x => x.Partner)
+                    .Include(x => x.TopItem)
+                    .Include(x => x.BottomItem)
+                    .Include(x => x.AccessoriesItem)
+                    .Include(x => x.ShoesItem)
+                    .Include(x => x.DressItem)
                     .Where(x => x.OutfitFavoriteId == outfitFavoriteId).FirstOrDefaultAsync();
 
             }
@@ -46,11 +46,11 @@ namespace Repositories.OutfitFavoriteRepos
 
                 return await _context.OutfitFavorites
                     .Include(x => x.Customer)
-                    .Include(x => x.TopItem).ThenInclude(x => x.Partner)
-                    .Include(x => x.BottomItem).ThenInclude(x => x.Partner)
-                    .Include(x => x.AccessoriesItem).ThenInclude(x => x.Partner)
-                    .Include(x => x.ShoesItem).ThenInclude(x => x.Partner)
-                    .Include(x => x.DressItem).ThenInclude(x => x.Partner)
+                    .Include(x => x.TopItem)
+                    .Include(x => x.BottomItem)
+                    .Include(x => x.AccessoriesItem)
+                    .Include(x => x.ShoesItem)
+                    .Include(x => x.DressItem)
                     .Where(x => x.CustomerId == customerId).ToListAsync();
 
             }catch (Exception ex)

@@ -27,6 +27,7 @@
     <Folder Include="Models\InfluencerModel\Request\" />
     <Folder Include="Models\OutfitModel\Request\" />
     <Folder Include="Models\PartnerModel\Request\" />
+    <Folder Include="Models\PayOSModel\Response\" />
   </ItemGroup>
 
 </Project>

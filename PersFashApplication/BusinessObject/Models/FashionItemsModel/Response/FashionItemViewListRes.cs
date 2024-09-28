@@ -12,6 +12,6 @@ namespace BusinessObject.Models.FashionItemsModel.Response
         public int ItemId { get; set; }
         public string ItemName { get; set; } = null!;
         public string ThumbnailURL { get; set; }
-        public PartnerViewModel Partner { get; set; }
+        //public PartnerViewModel Partner { get; set; }
     }
 }

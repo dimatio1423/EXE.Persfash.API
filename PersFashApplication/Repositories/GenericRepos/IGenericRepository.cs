@@ -18,6 +18,7 @@ namespace Repositories.GenericRepos
 
         Task<T?> Get(int id);
         Task<List<T>> GetAll(int? page, int? size);
+        Task<List<T>> GetAll();
         Task Add(T entity);
         Task Update(T entity);
         Task Remove(T entity);

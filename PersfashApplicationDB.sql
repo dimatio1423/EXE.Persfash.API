@@ -20,14 +20,14 @@ CREATE TABLE Customers (
 CREATE TABLE CustomerProfiles (
     ProfileID INT PRIMARY KEY IDENTITY(1,1),
     CustomerID INT UNIQUE,
-    BodyType VARCHAR(MAX),
-    FashionStyle VARCHAR(MAX),
-	FitPreferences VARCHAR(MAX),
-	PreferredSize VARCHAR (MAX),
-    PreferredColors VARCHAR(MAX),
-    PreferredMaterials VARCHAR(MAX),
-    Occasion VARCHAR(255),
-    Lifestyle TEXT,
+    BodyType NVARCHAR(MAX),
+    FashionStyle NVARCHAR(MAX),
+	FitPreferences NVARCHAR(MAX),
+	PreferredSize NVARCHAR (MAX),
+    PreferredColors NVARCHAR(MAX),
+    PreferredMaterials NVARCHAR(MAX),
+    Occasion NVARCHAR(255),
+    Lifestyle NVARCHAR(MAX),
     FacebookLink NVARCHAR(MAX),
     InstagramLink NVARCHAR(MAX),
     TikTokLink NVARCHAR(MAX),
@@ -35,6 +35,7 @@ CREATE TABLE CustomerProfiles (
     FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
 );
 
+/*
 CREATE TABLE Partners (
     PartnerID INT PRIMARY KEY IDENTITY(1,1),
     PartnerName NVARCHAR(255),
@@ -46,7 +47,7 @@ CREATE TABLE Partners (
     Email VARCHAR(255),
 	Password VARCHAR(255) NOT NULL,
 	Status VARCHAR(50)
-);
+);*/
 
 CREATE TABLE FashionItems (
     ItemID INT PRIMARY KEY IDENTITY(1,1),
@@ -54,28 +55,27 @@ CREATE TABLE FashionItems (
     Category VARCHAR(100),
     Brand NVARCHAR(100),
     Price DECIMAL(10, 2),
-	FitType VARCHAR(MAX),
-	GenderTarget VARCHAR(MAX),
-	FashionTrend VARCHAR(MAX),
-    Size VARCHAR(50),
-    Color VARCHAR(MAX),
-    Material VARCHAR(MAX),
-	ThumbnailURL VARCHAR(255),
-    Occasion VARCHAR(MAX),
-    ProductURL VARCHAR(255),
-	PartnerID INT,
+	FitType NVARCHAR(MAX),
+	GenderTarget NVARCHAR(MAX),
+	FashionTrend NVARCHAR(MAX),
+    Size NVARCHAR(50),
+    Color NVARCHAR(MAX),
+    Material NVARCHAR(MAX),
+	ThumbnailURL NVARCHAR(255),
+    Occasion NVARCHAR(MAX),
+    ProductURL NVARCHAR(255),
     DateAdded DATETIME DEFAULT GETDATE(),
 	Status VARCHAR(50),
-	FOREIGN KEY (PartnerID) REFERENCES Partners(PartnerID)
 );
 
 CREATE TABLE FashionItem_Images(
    ItemImageID INT PRIMARY KEY IDENTITY(1,1),
    ItemID INT,
-   ImageURL VARCHAR(255),
+   ImageURL NVARCHAR(255),
    FOREIGN KEY (ItemID) REFERENCES FashionItems(ItemID)
 )
 
+/*
 CREATE TABLE Recommendations (
     RecommendationID INT PRIMARY KEY IDENTITY(1,1),
     CustomerID INT,
@@ -84,7 +84,7 @@ CREATE TABLE Recommendations (
     RecommendationDate DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
     FOREIGN KEY (ItemID) REFERENCES FashionItems(ItemID)
-);
+);*/
 
 CREATE TABLE FashionInfluencers (
     InfluencerID INT PRIMARY KEY IDENTITY(1,1),
@@ -104,7 +104,7 @@ CREATE TABLE FashionInfluencers (
 CREATE TABLE Courses (
     CourseID INT PRIMARY KEY IDENTITY(1,1),
     CourseName NVARCHAR(255),
-    Description TEXT,
+    Description NVARCHAR(MAX),
     Price DECIMAL(10, 2),
     InstructorID INT,
 	ThumbnailURL VARCHAR(255),
@@ -152,7 +152,7 @@ CREATE TABLE Feedback (
 	CourseID INT,
 	InfluencerID INT,
     Rating INT CHECK(Rating >= 1 AND Rating <= 5),
-    Comment TEXT,
+    Comment NVARCHAR(MAX),
     DateGiven DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
     FOREIGN KEY (ItemID) REFERENCES FashionItems(ItemID),
@@ -171,7 +171,7 @@ CREATE TABLE Wardrobe (
     WardrobeID INT PRIMARY KEY IDENTITY(1,1),
     CustomerID INT,
     DateAdded DATETIME DEFAULT GETDATE(),
-    Notes TEXT,
+    Notes NVARCHAR(MAX),
     FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
 );
 
@@ -189,10 +189,8 @@ CREATE TABLE RefreshToken (
    Token VARCHAR (255) NOT NULL,
    CustomerID INT,
    InfluencerID INT,
-   PartnerID INT,
    AdminID INT,
    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
-   FOREIGN KEY (PartnerID) REFERENCES Partners(PartnerID),
    FOREIGN KEY (InfluencerID) REFERENCES FashionInfluencers(InfluencerID),
    FOREIGN KEY (AdminID) REFERENCES SystemAdmin(AdminID)
 );
@@ -248,7 +246,7 @@ CREATE TABLE InfluencerPaymentInformation (
    PaymentInformationID INT PRIMARY KEY IDENTITY (1,1),
    InfluencerID INT NOT NULL,  
    BankName NVARCHAR (MAX) NOT NULL,
-   BankAccountNumber VARCHAR(MAX) NOT NULL,
+   BankAccountNumber NVARCHAR(MAX) NOT NULL,
    BankAccountName NVARCHAR(MAX) NOT NULL,
    FOREIGN KEY (InfluencerID) REFERENCES FashionInfluencers(InfluencerID)
 )
@@ -286,3 +284,25 @@ CREATE TABLE OutfitFavorite(
 	FOREIGN KEY (DressItemID) REFERENCES FashionItems(ItemID),
 	FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
 )
+
+CREATE TABLE SupportQuestion (
+    SupportID INT PRIMARY KEY IDENTITY(1,1),
+    CustomerID INT,
+    Question NVARCHAR(255),
+    Status VARCHAR(50), -- Open, Answered, Closed
+    DateCreated DATETIME DEFAULT GETDATE(),
+    DateClosed DATETIME, 
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
+
+CREATE TABLE SupportMessage (
+    MessageID INT PRIMARY KEY IDENTITY(1,1),
+    SupportID INT, -- Link to the support thread
+    CustomerID INT, -- ID of the customer or admin
+	AdminID INT,
+    MessageText NVARCHAR(MAX), -- The actual message (question, answer, or reply)
+    DateSent DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
+    FOREIGN KEY (AdminID) REFERENCES SystemAdmin(AdminID),
+    FOREIGN KEY (SupportID) REFERENCES SupportQuestion(SupportID)
+);

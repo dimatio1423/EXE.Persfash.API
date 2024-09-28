@@ -13,43 +13,43 @@ VALUES
 (3, 'Inverted Triangle', 'Athleisure','Loose', 'L, XL', 'Gray, Green', 'Polyester, Nylon', 'Sport, Casual', 'Gym lover, Adventure seeker', 'http://linkedin.com/in/michael', 1),
 (4, 'Pear', 'Bohemian', 'Regular', 'M' , 'Purple, Yellow', 'Linen, Cotton', 'Vacation, Wedding', 'Art enthusiast, Yoga practitioner', 'http://facebook.com/emilyjohnson', 1);
 
-
+/*
 INSERT INTO Partners (PartnerName, PartnerProfilePicture, WebsiteURL, ContactEmail, ContactPhone, Email, Password, Username, Status)
 VALUES
 ('FashionWorld', 'profileURL.png','http://fashionworld.com', 'contact@fashionworld.com', '123-456-7890', 'partner1@fashionworld.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'partner1', 'Active'),
 ('StyleHub', 'profileURL2.png','http://stylehub.com', 'support@stylehub.com', '098-765-4321', 'partner2@stylehub.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'partner2', 'Active');
+*/
 
-
-INSERT INTO FashionItems (ItemName, Category, Brand, Price, FitType, GenderTarget, FashionTrend, Size, Color, Material, Occasion, ThumbnailURL, ProductURL, PartnerID, Status)
+INSERT INTO FashionItems (ItemName, Category, Brand, Price, FitType, GenderTarget, FashionTrend, Size, Color, Material, Occasion, ThumbnailURL, ProductURL, Status)
 VALUES
-('Slim Fit Blazer', 'Jacket', 'Zara', 150.00, 'Slim', 'Unisex', 'Minimalist' ,'M', 'Gray', 'Wool', 'Business', 'slimfitblazer.jpg', 'www.fashionco.com/slimfitblazer', 1, 'Available'),
-('Summer Dress', 'Dress', 'H&M', 75.00, 'Regular', 'Women', 'Vintage' ,'S', 'Red', 'Cotton', 'Casual', 'summerdress.jpg', 'www.styleworld.com/summerdress', 2, 'Available'),
+('Slim Fit Blazer', 'Tops', 'Zara', 150.00, 'Slim', 'Unisex', 'Minimalist' ,'M', 'Gray', 'Wool', 'Business', 'slimfitblazer.jpg', 'www.fashionco.com/slimfitblazer', 'Available'),
+('Summer Dress', 'Dresses', 'H&M', 75.00, 'Regular', 'Women', 'Vintage' ,'S', 'Red', 'Cotton', 'Casual', 'summerdress.jpg', 'www.styleworld.com/summerdress', 'Available'),
 -- Tops
-('V-Neck T-Shirt', 'Tops', 'H&M', 20.00, 'Regular', 'Unisex', 'Casual', 'M', 'White', 'Cotton', 'Casual', 'vneck_tshirt.jpg', 'www.hm.com/vnecktshirt', 1, 'Available'),
-('Button-Down Blouse', 'Tops', 'Zara', 55.00, 'Regular', 'Women', 'Chic', 'S', 'Blue', 'Silk', 'Business', 'buttondown_blouse.jpg', 'www.zara.com/buttondownblouse', 1, 'Available'),
+('V-Neck T-Shirt', 'Tops', 'H&M', 20.00, 'Regular', 'Unisex', 'Casual', 'M', 'White', 'Cotton', 'Casual', 'vneck_tshirt.jpg', 'www.hm.com/vnecktshirt', 'Available'),
+('Button-Down Blouse', 'Tops', 'Zara', 55.00, 'Regular', 'Women', 'Chic', 'S', 'Blue', 'Silk', 'Business', 'buttondown_blouse.jpg', 'www.zara.com/buttondownblouse', 'Available'),
 
 -- Bottoms
-('Straight-Leg Jeans', 'Bottoms', 'Levis', 80.00, 'Regular', 'Men', 'Classic', 'L', 'Dark Blue', 'Denim', 'Casual', 'straightleg_jeans.jpg', 'www.levis.com/straightlegjeans', 2, 'Available'),
-('Pleated Skirt', 'Bottoms', 'H&M', 45.00, 'Regular', 'Women', 'Preppy', 'M', 'Navy', 'Cotton', 'Formal', 'pleated_skirt.jpg', 'www.hm.com/pleatedskirt', 1, 'Available'),
+('Straight-Leg Jeans', 'Bottoms', 'Levis', 80.00, 'Regular', 'Men', 'Classic', 'L', 'Dark Blue', 'Denim', 'Casual', 'straightleg_jeans.jpg', 'www.levis.com/straightlegjeans', 'Available'),
+('Pleated Skirt', 'Bottoms', 'H&M', 45.00, 'Regular', 'Women', 'Preppy', 'M', 'Navy', 'Cotton', 'Formal', 'pleated_skirt.jpg', 'www.hm.com/pleatedskirt', 'Available'),
 
 -- Dresses
-('Cocktail Dress', 'Dresses', 'Forever 21', 90.00, 'Slim', 'Women', 'Glam', 'S', 'Black', 'Polyester', 'Party', 'cocktail_dress.jpg', 'www.forever21.com/cocktaildress', 1, 'Available'),
-('Maxi Sundress', 'Dresses', 'Mango', 60.00, 'Regular', 'Women', 'Bohemian', 'M', 'Floral', 'Linen', 'Vacation', 'maxi_sundress.jpg', 'www.mango.com/maxisundress', 1, 'Available'),
+('Cocktail Dress', 'Dresses', 'Forever 21', 90.00, 'Slim', 'Women', 'Glam', 'S', 'Black', 'Polyester', 'Party', 'cocktail_dress.jpg', 'www.forever21.com/cocktaildress', 'Available'),
+('Maxi Sundress', 'Dresses', 'Mango', 60.00, 'Regular', 'Women', 'Bohemian', 'M', 'Floral', 'Linen', 'Vacation', 'maxi_sundress.jpg', 'www.mango.com/maxisundress', 'Available'),
 
 -- Shoes
-('Running Shoes', 'Shoes', 'Adidas', 120.00, 'Regular', 'Unisex', 'Athleisure', '9', 'Gray', 'Mesh', 'Sport', 'running_shoes.jpg', 'www.adidas.com/runningshoes', 2, 'Available'),
-('Ankle Boots', 'Shoes', 'Aldo', 130.00, 'Slim', 'Women', 'Chic', '7', 'Brown', 'Leather', 'Casual', 'ankle_boots.jpg', 'www.aldo.com/ankleboots', 2, 'Available'),
+('Running Shoes', 'Shoes', 'Adidas', 120.00, 'Regular', 'Unisex', 'Athleisure', '9', 'Gray', 'Mesh', 'Sport', 'running_shoes.jpg', 'www.adidas.com/runningshoes', 'Available'),
+('Ankle Boots', 'Shoes', 'Aldo', 130.00, 'Slim', 'Women', 'Chic', '7', 'Brown', 'Leather', 'Casual', 'ankle_boots.jpg', 'www.aldo.com/ankleboots', 'Available'),
 
 -- Accessories
-('Leather Crossbody Bag', 'Accessories', 'Coach', 250.00, 'Regular', 'Women', 'Luxury', 'L', 'Black', 'Leather', 'Formal', 'crossbody_bag.jpg', 'www.coach.com/crossbodybag', 2, 'Available'),
-('Baseball Cap', 'Accessories', 'Nike', 30.00, 'Regular', 'Unisex', 'Sporty', 'One Size', 'Red', 'Cotton', 'Sport', 'baseball_cap.jpg', 'www.nike.com/baseballcap', 2, 'Available');
+('Leather Crossbody Bag', 'Accessories', 'Coach', 250.00, 'Regular', 'Women', 'Luxury', 'L', 'Black', 'Leather', 'Formal', 'crossbody_bag.jpg', 'www.coach.com/crossbodybag', 'Available'),
+('Baseball Cap', 'Accessories', 'Nike', 30.00, 'Regular', 'Unisex', 'Sporty', 'One Size', 'Red', 'Cotton', 'Sport', 'baseball_cap.jpg', 'www.nike.com/baseballcap', 'Available');
 
-
+/*
 INSERT INTO Recommendations (CustomerID, ItemID, RecommendationType)
 VALUES
 (1, 1, 'Personalized'),
 (2, 2, 'Trending');
-
+*/
 
 INSERT INTO FashionInfluencers (FullName, Username, Email, Password, Specialty, ProfilePicture, FacebookLink, Status)
 VALUES
@@ -88,9 +88,9 @@ VALUES
 
 INSERT INTO Subscriptions (SubscriptionTitle, Price, DurationInDays, Description, Status)
 VALUES
-('Free', null, null, 'Access to basic features and limited courses.', 'Active'),
-('Premium', 99000.00, 60, 'Access to all features and unlimited courses.', 'Active'),
-('Courses', null, null, 'All-access pass including exclusive content and perks.', 'Active');
+('Free', null, null, 'Suggest fashion items, Sugges fashion outfits, 24-hour support response time', 'Active'),
+('Premium', 49000.00, 60, 'Suggest fashion items, Suggest fashion outfits, Support 24/7, Manage your wardrobe, Save your favorite outfits', 'Active');
+
 
 INSERT INTO SystemAdmin (Username, Password, Status)
 VALUES

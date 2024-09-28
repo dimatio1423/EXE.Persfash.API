@@ -96,41 +96,41 @@ namespace Services.EmailService
             await smtp.DisconnectAsync(true);
         }
 
-        public async Task SendPartnerRegistrationEmail(string partnerName, string partnerEmail)
-        {
-            var email = new MimeMessage();
-            email.From.Add(MailboxAddress.Parse(_config.GetSection("SmtpSettings:Username").Value));
-            email.To.Add(MailboxAddress.Parse(partnerEmail));
-            email.Subject = "[PersFash Application] - Store Partner Registration Success";
+        //public async Task SendPartnerRegistrationEmail(string partnerName, string partnerEmail)
+        //{
+        //    var email = new MimeMessage();
+        //    email.From.Add(MailboxAddress.Parse(_config.GetSection("SmtpSettings:Username").Value));
+        //    email.To.Add(MailboxAddress.Parse(partnerEmail));
+        //    email.Subject = "[PersFash Application] - Store Partner Registration Success";
 
-            email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
-            {
-                Text = $@"
-         <!DOCTYPE html>
-         <html lang='en'>
-         <head>
-             <meta charset='UTF-8'>
-             <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-             <title>Partner Registration Success</title>
-         </head>
-         <body style='font-family: Arial, sans-serif; background-color: #dcf343; color: #ffffff;'>
-             <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #4949e9;'>
-                 <h1 style='color: #ffffff;'>Welcome, {partnerName}!</h1>
-                 <p style='color: #ffffff;'>We are thrilled to have your store as a partner with PersFash. Now, you can showcase your products and reach a wide audience of fashion enthusiasts.</p>
-                 <p style='color: #ffffff;'>Start managing your store and connecting with customers!</p>
-                 <p style='color: #ffffff;'>Thank you,</p>
-                 <p style='color: #ffffff;'>The PersFash Team</p>
-             </div>
-         </body>
-         </html>"
-            };
+        //    email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+        //    {
+        //        Text = $@"
+        // <!DOCTYPE html>
+        // <html lang='en'>
+        // <head>
+        //     <meta charset='UTF-8'>
+        //     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        //     <title>Partner Registration Success</title>
+        // </head>
+        // <body style='font-family: Arial, sans-serif; background-color: #dcf343; color: #ffffff;'>
+        //     <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #4949e9;'>
+        //         <h1 style='color: #ffffff;'>Welcome, {partnerName}!</h1>
+        //         <p style='color: #ffffff;'>We are thrilled to have your store as a partner with PersFash. Now, you can showcase your products and reach a wide audience of fashion enthusiasts.</p>
+        //         <p style='color: #ffffff;'>Start managing your store and connecting with customers!</p>
+        //         <p style='color: #ffffff;'>Thank you,</p>
+        //         <p style='color: #ffffff;'>The PersFash Team</p>
+        //     </div>
+        // </body>
+        // </html>"
+        //    };
 
-            using var smtp = new SmtpClient();
-            await smtp.ConnectAsync(_config.GetSection("SmtpSettings:Host").Value, 587, MailKit.Security.SecureSocketOptions.StartTls);
-            await smtp.AuthenticateAsync(_config.GetSection("SmtpSettings:Username").Value, _config.GetSection("SmtpSettings:Password").Value);
-            await smtp.SendAsync(email);
-            await smtp.DisconnectAsync(true);
-        }
+        //    using var smtp = new SmtpClient();
+        //    await smtp.ConnectAsync(_config.GetSection("SmtpSettings:Host").Value, 587, MailKit.Security.SecureSocketOptions.StartTls);
+        //    await smtp.AuthenticateAsync(_config.GetSection("SmtpSettings:Username").Value, _config.GetSection("SmtpSettings:Password").Value);
+        //    await smtp.SendAsync(email);
+        //    await smtp.DisconnectAsync(true);
+        //}
 
         // Gửi lúc đăng ký thành công
         public async Task SendRegistrationEmail(string fullName, string userEmail)
@@ -153,7 +153,9 @@ namespace Services.EmailService
                          <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #4949e9; '>
                              <h1 style='color: #ffffff;'>Welcome to PersFash!</h1>
                              <p style='color: #ffffff;'>Hi {fullName},</p>
-                             <p style='color: #ffffff;'>Thank you for registering with PersFash. We're excited to have you on board! Explore our platform for the latest in fashion, style advice, and personalized recommendations.</p>
+                             <p style='color: #ffffff;'>Thank you for registering with PersFash. We're excited to have you on board! Explore our platform for the latest in fashion, style advice, and personalized 
+
+.</p>
                              <p style='color: #ffffff;'>We hope you enjoy the experience!</p>
                              <p style='color: #ffffff;'>Thank you,</p>
                              <p style='color: #ffffff;'>The PersFash Team</p>
@@ -168,7 +170,6 @@ namespace Services.EmailService
             await smtp.AuthenticateAsync(_config.GetSection("SmtpSettings:Username").Value, _config.GetSection("SmtpSettings:Password").Value);
             await smtp.SendAsync(email);
             await smtp.DisconnectAsync(true);
-            throw new NotImplementedException();
         }
 
         public async Task SendUpgradeToPremiumEmail(string fullName, string userEmail, string subscriptionName)

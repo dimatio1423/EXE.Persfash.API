@@ -7,8 +7,11 @@ using BusinessObject.Models.CourseModel.Response;
 using BusinessObject.Models.FashionItemsModel.Request;
 using BusinessObject.Models.FashionItemsModel.Response;
 using BusinessObject.Models.PaymentModel.Request;
+using BusinessObject.Models.PayOSModel.Request;
 using BusinessObject.Models.VnPayModel.Request;
+using CloudinaryDotNet;
 using Microsoft.AspNetCore.Http;
+using Net.payOS.Types;
 using Newtonsoft.Json.Linq;
 using Repositories.CourseContentRepos;
 using Repositories.CourseImagesRepos;
@@ -26,6 +29,7 @@ using Services.AWSServices;
 using Services.EmailService;
 using Services.Helper.CustomExceptions;
 using Services.Helpers.Handler.DecodeTokenHandler;
+using Services.PayOSService;
 using Services.VnPayService;
 using System;
 using System.Collections.Generic;
@@ -42,7 +46,6 @@ namespace Services.CourseServices
         private readonly ICustomerCourseRepository _customerCourseRepository;
         private readonly ICustomerRepository _customerRepository;
         private readonly ICourseImageRepository _courseImageRepository;
-        private readonly IPartnerRepository _partnerRepository;
         private readonly IAWSService _aWSService;
         private readonly ISystemAdminRepository _systemAdminRepository;
         private readonly IPaymentRepository _paymentRepository;
@@ -51,6 +54,7 @@ namespace Services.CourseServices
         private readonly IVnPayService _vnPayService;
         private readonly IDecodeTokenHandler _decodeToken;
         private readonly IEmailService _emailService;
+        private readonly IPayOSService _payOSService;
         private readonly ICourseRepository _courseRepository;
         private readonly ICourseContentRepository _courseContentRepository;
         private readonly ICourseMaterialRepository _courseMaterialRepository;
@@ -64,14 +68,14 @@ namespace Services.CourseServices
             ICourseMaterialRepository courseMaterialRepository,
             ICustomerCourseRepository customerCourseRepository,
             ICourseImageRepository courseImageRepository, 
-            IPartnerRepository partnerRepository,
             IAWSService aWSService,
             ICustomerRepository customerRepository,
             ISystemAdminRepository systemAdminRepository,
             IPaymentRepository paymentRepository,
             IPaymentTransactionRepository paymentTransactionRepository,
             IEmailService emailService, 
-            IVnPayService vnPayService)
+            IVnPayService vnPayService,
+            IPayOSService payOSService)
         {
             _courseRepository = courseRepository;
             _courseContentRepository = courseContentRepository;
@@ -80,7 +84,6 @@ namespace Services.CourseServices
             _customerCourseRepository = customerCourseRepository;
             _customerRepository = customerRepository;
             _courseImageRepository = courseImageRepository;
-            _partnerRepository = partnerRepository;
             _aWSService = aWSService;
             _systemAdminRepository = systemAdminRepository;
             _paymentRepository = paymentRepository;
@@ -89,6 +92,7 @@ namespace Services.CourseServices
             _vnPayService = vnPayService;
             _decodeToken = decodeToken;
             _emailService = emailService;
+            _payOSService = payOSService;
 
         }
 
@@ -523,7 +527,7 @@ namespace Services.CourseServices
 
         public async Task<string> GetPaymentUrl(HttpContext context, int paymentId, string redirectUrl)
         {
-            var currPayment = await _paymentRepository.Get(paymentId);
+            var currPayment = await _paymentRepository.GetPaymentById(paymentId);
 
             if (currPayment == null)
             {
@@ -544,7 +548,20 @@ namespace Services.CourseServices
                 RedirectUrl = redirectUrl,
             };
 
-            return _vnPayService.CreatePaymentUrl(context, vnPayReqModel);
+            PayOSReqModel payOSReqModel = new PayOSReqModel
+            {
+                OrderId = currPayment.PaymentId,
+                productName = currPayment.Course.CourseName,
+                Amount = currPayment.Price,
+                RedirectUrl = redirectUrl,
+                CancelUrl = redirectUrl
+            };
+
+            var result = await _payOSService.createPaymentUrl(payOSReqModel);
+
+            return result.checkoutUrl;
+
+            //return _vnPayService.CreatePaymentUrl(context, vnPayReqModel);
         }
 
         public async Task<Payment> UpdateCustomerCourseTransaction(PaymentUpdateReqModel paymentUpdateReqModel)

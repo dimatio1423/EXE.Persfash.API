@@ -21,9 +21,10 @@ using Repositories.OutfitFavoriteRepos;
 using Repositories.PartnerRepos;
 using Repositories.PaymentRepos;
 using Repositories.PaymentTransactionRepos;
-using Repositories.RecommendationRepos;
 using Repositories.RefreshTokenRepos;
 using Repositories.SubscriptionRepos;
+using Repositories.SupportMessageRepo;
+using Repositories.SupportQuestionRepo;
 using Repositories.SystemAdminRepos;
 using Repositories.UserCourseRepos;
 using Repositories.UserProfilesRepos;
@@ -34,6 +35,7 @@ using Repositories.WardrobeRepos;
 using Services.AuthenticationServices;
 using Services.AWSService;
 using Services.AWSServices;
+using Services.BackgroundServices;
 using Services.CloudinaryService;
 using Services.CourseContentServices;
 using Services.CourseMaterialServices;
@@ -50,9 +52,11 @@ using Services.JWTService;
 using Services.OutfitServices;
 using Services.PartnerServices;
 using Services.PaymentServices;
-using Services.RecommendationServices;
+using Services.PayOSService;
 using Services.RefreshTokenServices;
 using Services.SubscriptionServices;
+using Services.SupportMessageServices;
+using Services.SupportQuestionServices;
 using Services.UserCourseServices;
 using Services.UserProfilesServices;
 using Services.UserServices;
@@ -70,6 +74,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
 
 //-----------------------------------------AWS-----------------------------------------
 builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
@@ -90,9 +96,8 @@ builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<IFashionInfluencerRepository, FashionInfluencerRepository>();
 builder.Services.AddScoped<IFashionItemRepository, FashionItemRepository>();
 builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
-builder.Services.AddScoped<IPartnerRepository, PartnerRepository>();
+//builder.Services.AddScoped<IPartnerRepository, PartnerRepository>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
-builder.Services.AddScoped<IRecommnedationRepository, RecommendationRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 builder.Services.AddScoped<ICustomerProfileRepository, CustomerProfileRepository>();
@@ -108,6 +113,8 @@ builder.Services.AddScoped<IPaymentTransactionRepository, PaymentTransactionRepo
 builder.Services.AddScoped<IInfluencerPaymentInformationRepository, InfluencerPaymentInformationRepository>();
 builder.Services.AddScoped<IOutfitCombinationRepository, OutfitCombinationRepository>();
 builder.Services.AddScoped<IOutfitFavoriteRepository, OutfitFavoriteRepository>();
+builder.Services.AddScoped<ISupportQuestionRepository, SupportQuestionRepository>();
+builder.Services.AddScoped<ISupportMessageRepository, SupportMessageRepository>();
 
 //-----------------------------------------SERVICES-----------------------------------------
 
@@ -123,9 +130,8 @@ builder.Services.AddScoped<IFashionInfluencerService, FashionInfluencerService>(
 builder.Services.AddScoped<IFashionItemService, FashionItemService>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IFileService, FileService>();
-builder.Services.AddScoped<IPartnerService, PartnerService>();
+//builder.Services.AddScoped<IPartnerService, PartnerService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
-builder.Services.AddScoped<IRecommendationService, RecommendationService>();
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 builder.Services.AddScoped<ICustomerCourseService, CustomerCourseService>();
@@ -136,6 +142,9 @@ builder.Services.AddScoped<IDecodeTokenHandler, DecodeTokenHandler>();
 builder.Services.AddScoped<IWardrobeService, WardrobeService>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<IOutfitService, OutfitService>();
+builder.Services.AddScoped<ISupportQuestionService, SupportQuestionService>();
+builder.Services.AddScoped<ISupportMessageService, SupportMessageService>();
+builder.Services.AddScoped<IPayOSService, PayOSService>();
 
 //-----------------------------------------VerificationCodeCache-----------------------------------------
 
@@ -153,7 +162,8 @@ builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection(
 builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
 builder.Services.AddAWSService<IAmazonS3>();
 
-
+//-----------------------------------------BGSERVICE-----------------------------------------
+builder.Services.AddHostedService<BGService>();
 
 //-----------------------------------------CORS-----------------------------------------
 

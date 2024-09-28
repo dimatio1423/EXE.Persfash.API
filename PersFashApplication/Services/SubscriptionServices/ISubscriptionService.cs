@@ -15,6 +15,7 @@ namespace Services.SubscriptionServices
     public interface ISubscriptionService
     {
         Task<List<SubscriptionViewDetailsResModel>> ViewSubscriptions(int? page, int? size);
+        Task<List<SubscriptionViewDetailsResModel>> ViewSubscriptionsForAdmin(int? page, int? size);
         Task<SubscriptionViewDetailsResModel> ViewDetailsSubsription(int subscriptionId);
         Task CreateNewSubscription(string token, SubscriptionCreateReqModel subscriptionCreateReqModel);
         Task UpdateSubscription(string token, SubscriptionUpdateReqModel subscriptionUpdateReqModel);

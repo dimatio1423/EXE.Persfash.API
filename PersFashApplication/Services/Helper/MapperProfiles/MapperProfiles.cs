@@ -6,11 +6,16 @@ using BusinessObject.Models.CourseModel.Response;
 using BusinessObject.Models.CustomerModels.Response;
 using BusinessObject.Models.CustomerSubscriptionModel.Response;
 using BusinessObject.Models.FashionItemsModel.Response;
+using BusinessObject.Models.FeedbackModel.Response;
 using BusinessObject.Models.InfluencerModel.Response;
 using BusinessObject.Models.OutfitModel.Response;
 using BusinessObject.Models.PartnerModel.Response;
+using BusinessObject.Models.PaymentModel.Response;
 using BusinessObject.Models.SubscriptionModels.Response;
+using BusinessObject.Models.SupportMessage.Response;
+using BusinessObject.Models.SupportQuestion.Response;
 using BusinessObject.Models.WardrobeModel.Response;
+using Services.Helper.Resolver.CustomerResolver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,12 +35,15 @@ namespace Services.Helper.MapperProfiles
             CreateMap<FashionItem, FashionItemViewListRes>().ReverseMap();
 
             //Subscription
-            CreateMap<Subscription, SubscriptionViewDetailsResModel>().ReverseMap();
+            CreateMap<Subscription, SubscriptionViewDetailsResModel>()
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Description) ? new List<string>(src.Description.Split(new[] {", "}, StringSplitOptions.None)) : null))
+                .ReverseMap();
 
             CreateMap<Subscription, SubscriptionViewListResModel>().ReverseMap();
 
             //CustomerSubscription
-            CreateMap<CustomerSubscription, CustomerSubscriptionViewResModel>().ReverseMap();
+            CreateMap<CustomerSubscription, CustomerSubscriptionViewResModel>()
+                .ReverseMap();
 
             //Course
             CreateMap<Course, CourseViewListResModel>().ReverseMap();
@@ -51,7 +59,7 @@ namespace Services.Helper.MapperProfiles
             CreateMap<FashionInfluencer, FashionInfluencerViewResModel>().ReverseMap();
 
             //Partner
-            CreateMap<Partner, PartnerViewModel>().ReverseMap();
+            //CreateMap<Partner, PartnerViewModel>().ReverseMap();
 
             //CustomerProfile
             CreateMap<CustomerProfile, CustomerProfileViewModel>()
@@ -66,7 +74,10 @@ namespace Services.Helper.MapperProfiles
 
             //Customer
             CreateMap<Customer, CustomerViewModel>().ReverseMap();
-            CreateMap<Customer, CustomerInformationViewModel>().ReverseMap();
+            CreateMap<Customer, CustomerInformationViewModel>()
+                .ForMember(dest => dest.Subscription, opt => opt.MapFrom<GetCustomerSubscriptionResolver>())
+                .ForMember(dest => dest.IsDoneProfileSetup, opt => opt.MapFrom<GetCustomerProfileSetup>())
+                .ReverseMap();
 
 
             //Wardrobe
@@ -89,7 +100,21 @@ namespace Services.Helper.MapperProfiles
                 .ReverseMap();
 
 
+            //Feedback
+            CreateMap<Feedback, FeedbackViewResModel>().ReverseMap();
 
+            //SupportQuestion
+
+            CreateMap<SupportQuestion, SupportQuestionViewListResModel>().ReverseMap();
+
+            //Support Message
+            CreateMap<SupportMessage, SupportMessageViewListResModel>().ReverseMap();
+
+            // Admin
+            CreateMap<SystemAdmin, AdminViewModel>().ReverseMap();
+
+            //Payment
+            CreateMap<Payment, PaymentViewListResModel>().ReverseMap();
         }
     }
 }

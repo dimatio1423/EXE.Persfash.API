@@ -9,6 +9,6 @@ namespace Services.PartnerServices
 {
     public interface IPartnerService 
     {
-        Task<List<PartnerViewModel>> RecommendPartnerForCustomer(string token, int? page, int? size);
+        //Task<List<PartnerViewModel>> RecommendPartnerForCustomer(string token, int? page, int? size);
     }
 }

@@ -4,6 +4,7 @@ using BusinessObject.Enums;
 using BusinessObject.Models.CustomerModels.Request;
 using BusinessObject.Models.CustomerModels.Response;
 using BusinessObject.Models.FashionItemsModel.Request;
+using BusinessObject.Models.Pagination;
 using Repositories.FashionInfluencerRepos;
 using Repositories.PartnerRepos;
 using Repositories.SubscriptionRepos;
@@ -28,7 +29,6 @@ namespace Services.UserServices
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly ICustomerProfileRepository _customerProfileRepository;
-        private readonly IPartnerRepository _partnerRepository;
         private readonly IFashionInfluencerRepository _fashionInfluencerRepository;
         private readonly ICustomerSubscriptionRepository _customerSubscriptionRepository;
         private readonly IMapper _mapper;
@@ -39,7 +39,6 @@ namespace Services.UserServices
 
         public CustomerService(ICustomerRepository customerRepository, 
             ICustomerProfileRepository customerProfileRepository,
-            IPartnerRepository partnerRepository,
             IFashionInfluencerRepository fashionInfluencerRepository,
             IMapper mapper,
             IDecodeTokenHandler decodeTokenHandler,
@@ -50,7 +49,6 @@ namespace Services.UserServices
         {
             _customerRepository = customerRepository;
             _customerProfileRepository = customerProfileRepository;
-            _partnerRepository = partnerRepository;
             _fashionInfluencerRepository = fashionInfluencerRepository;
             _customerSubscriptionRepository = customerSubscriptionRepository;
             _mapper = mapper;
@@ -284,6 +282,7 @@ namespace Services.UserServices
                 throw new ApiException(HttpStatusCode.BadRequest, "Email has already been used by another user");
             }
 
+            currCustomer.ProfilePicture = !string.IsNullOrEmpty(customerInformationUpdateReqModel.ProfilePicture) ? customerInformationUpdateReqModel.ProfilePicture : currCustomer.ProfilePicture;
             currCustomer.Email = !string.IsNullOrEmpty(customerInformationUpdateReqModel.Email) ? customerInformationUpdateReqModel.Email : currCustomer.Email;
             currCustomer.FullName = !string.IsNullOrEmpty(customerInformationUpdateReqModel.FullName) ? customerInformationUpdateReqModel.FullName : currCustomer.FullName;
             currCustomer.Gender = !string.IsNullOrEmpty(customerInformationUpdateReqModel.Gender) ? customerInformationUpdateReqModel.Gender : currCustomer.Gender;
@@ -296,7 +295,6 @@ namespace Services.UserServices
         public async Task<bool> checkUsernameExisted(string username)
         {
             return (await _customerRepository.IsExistedByUsername(username) ||
-                await _partnerRepository.IsExistedByUsername(username) ||
                 await _fashionInfluencerRepository.IsExistedByUsername(username) ||
                 await _systemAdminRepository.IsExistedByUsername(username));
         }
@@ -304,7 +302,6 @@ namespace Services.UserServices
         public async Task<bool> checkEmailExisted(string email)
         {
             return (await _customerRepository.IsExistedByEmail(email) ||
-                await _partnerRepository.IsExistedByEmail(email) ||
                 await _fashionInfluencerRepository.IsExistedByEmail(email));
         }
 
@@ -327,6 +324,44 @@ namespace Services.UserServices
             var currCustomerProfile = await _customerProfileRepository.GetCustomerProfileByCustomerId(currCustomer.CustomerId);
 
             return currCustomerProfile != null ? true : false;
+        }
+
+        public async Task<Pagination<CustomerInformationViewModel>> GetCustomerListForAdmin(int? page, int? size)
+        {
+            var customers = await _customerRepository.GetAll(page, size);
+
+            var totalCustomer = await _customerRepository.GetAll();
+
+            return new Pagination<CustomerInformationViewModel>
+            {
+                TotalItems = totalCustomer.Count,
+                PageSize = size ?? 10,
+                CurrentPage = page ?? 1,
+                Data = _mapper.Map<List<CustomerInformationViewModel>>(customers),
+            };
+        }
+
+        public async Task<bool> ActivateDeactivateCustomerForAdmin(string token, int customerId)
+        {
+            var decodeToken = _decodeTokenHandler.decode(token);
+
+            if (!decodeToken.roleName.Equals(RoleEnums.Admin.ToString()))
+            {
+                throw new ApiException(HttpStatusCode.Forbidden, "You do not have permission to perform this function");
+            }
+
+            var currCustomer = await _customerRepository.Get(customerId);
+
+            if (currCustomer == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Customer does not exist");
+            };
+
+            currCustomer.Status = currCustomer.Status.Equals(StatusEnums.Active.ToString()) ? (StatusEnums.Inactive.ToString()) : (StatusEnums.Active.ToString());
+
+            await _customerRepository.Update(currCustomer);
+
+            return currCustomer.Status.Equals(StatusEnums.Active.ToString()) ? true : false;
         }
     }
 }

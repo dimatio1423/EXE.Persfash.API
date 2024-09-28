@@ -44,45 +44,45 @@ namespace Services.PartnerServices
             _emailService = emailService;
             _mapper = mapper;
         }
-        public async Task<List<PartnerViewModel>> RecommendPartnerForCustomer(string token, int? page, int? size)
-        {
+        //public async Task<List<PartnerViewModel>> RecommendPartnerForCustomer(string token, int? page, int? size)
+        //{
 
-            List<int> partnerIds = new List<int>();
+        //    List<int> partnerIds = new List<int>();
 
-            var decodedToken = _decodeToken.decode(token);
+        //    var decodedToken = _decodeToken.decode(token);
 
-            if (!decodedToken.roleName.Equals(RoleEnums.Customer.ToString()))
-            {
-                throw new ApiException(HttpStatusCode.Forbidden, "You do not have permission to perform this function");
-            }
+        //    if (!decodedToken.roleName.Equals(RoleEnums.Customer.ToString()))
+        //    {
+        //        throw new ApiException(HttpStatusCode.Forbidden, "You do not have permission to perform this function");
+        //    }
 
-            var currCustomer = await _customerRepository.GetCustomerByUsername(decodedToken.username);
+        //    var currCustomer = await _customerRepository.GetCustomerByUsername(decodedToken.username);
 
-            if (currCustomer == null)
-            {
-                throw new ApiException(HttpStatusCode.NotFound, "Customer does not exist");
-            }
+        //    if (currCustomer == null)
+        //    {
+        //        throw new ApiException(HttpStatusCode.NotFound, "Customer does not exist");
+        //    }
 
-            var currCustomerProfile = await _customerProfileRepository.GetCustomerProfileByCustomerId(currCustomer.CustomerId);
+        //    var currCustomerProfile = await _customerProfileRepository.GetCustomerProfileByCustomerId(currCustomer.CustomerId);
 
-            if (currCustomerProfile == null)
-            {
-                throw new ApiException(HttpStatusCode.BadRequest, "Please complete the profile setup");
-            }
+        //    if (currCustomerProfile == null)
+        //    {
+        //        throw new ApiException(HttpStatusCode.BadRequest, "Please complete the profile setup");
+        //    }
 
-            var items = await _fashionItemRepository.GetRecommendationFashionItemForCustomer(currCustomer.CustomerId, page, size);
+        //    var items = await _fashionItemRepository.GetRecommendationFashionItemForCustomer(currCustomer.CustomerId, page, size);
 
-            foreach (var item in items)
-            {
-                if (!partnerIds.Contains((int)item.PartnerId))
-                {
-                    partnerIds.Add((int)item.PartnerId);
-                }
-            }
+        //    foreach (var item in items)
+        //    {
+        //        if (!partnerIds.Contains((int)item.PartnerId))
+        //        {
+        //            partnerIds.Add((int)item.PartnerId);
+        //        }
+        //    }
 
-            var partners = await _partnerRepository.GetPartnersByIds(partnerIds);
+        //    var partners = await _partnerRepository.GetPartnersByIds(partnerIds);
 
-            return _mapper.Map<List<PartnerViewModel>>(partners);
-        }
+        //    return _mapper.Map<List<PartnerViewModel>>(partners);
+        //}
     }
 }

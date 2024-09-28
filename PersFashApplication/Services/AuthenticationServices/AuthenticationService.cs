@@ -8,8 +8,11 @@ using Microsoft.IdentityModel.Tokens;
 using Repositories.FashionInfluencerRepos;
 using Repositories.PartnerRepos;
 using Repositories.RefreshTokenRepos;
+using Repositories.SubscriptionRepos;
 using Repositories.SystemAdminRepos;
+using Repositories.UserProfilesRepos;
 using Repositories.UserRepos;
+using Repositories.UserSubscriptionRepos;
 using Services.EmailService;
 using Services.Helper.CustomExceptions;
 using Services.Helper.VerifyCode;
@@ -21,8 +24,10 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 
@@ -31,33 +36,39 @@ namespace Services.AuthenticationServices
     public class AuthenticationService : IAuthenticationService
     {
         private readonly ICustomerRepository _customerRepository;
-        private readonly IPartnerRepository _partnerRepository;
         private readonly IFashionInfluencerRepository _fashionInfluencerRepository;
         private readonly ISystemAdminRepository _adminRepository;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
+        private readonly ICustomerSubscriptionRepository _customerSubscriptionRepository;
+private readonly ISubscriptionRepository _subscriptionRepository;
+        private readonly ICustomerProfileRepository _customerProfileRepository;
         private readonly IDecodeTokenHandler _decodeToken;
         private readonly IEmailService _emailService;
         private readonly IJWTService _jWTService;
         private readonly VerificationCodeCache verificationCodeCache;
 
         public AuthenticationService(ICustomerRepository customerRepository, 
-            IPartnerRepository partnerRepository, 
             IFashionInfluencerRepository fashionInfluencerRepository,
             IRefreshTokenRepository refreshTokenRepository,
             ISystemAdminRepository adminRepository,
             IDecodeTokenHandler decodeToken,
             IEmailService emailService,
             IJWTService jWTService,
+            ICustomerSubscriptionRepository customerSubscriptionRepository,
+            ISubscriptionRepository subscriptionRepository,
+            ICustomerProfileRepository customerProfileRepository,
             VerificationCodeCache verificationCodeCache
             )
         {
              this.verificationCodeCache = verificationCodeCache;
 
             _customerRepository = customerRepository;
-            _partnerRepository = partnerRepository;
             _fashionInfluencerRepository = fashionInfluencerRepository;
             _adminRepository = adminRepository;
             _refreshTokenRepository = refreshTokenRepository;
+            _customerSubscriptionRepository = customerSubscriptionRepository;
+            _subscriptionRepository = subscriptionRepository;
+            _customerProfileRepository = customerProfileRepository;
             _decodeToken = decodeToken;
             _emailService = emailService;
             _jWTService = jWTService;
@@ -69,7 +80,7 @@ namespace Services.AuthenticationServices
 
             var currCustomer = await _customerRepository.GetCustomerByUsername(decode.username);
 
-            var currPartner = await _partnerRepository.GetPartnerByUsername(decode.username);
+            //var currPartner = await _partnerRepository.GetPartnerByUsername(decode.username);
 
             var currInfluencer = await _fashionInfluencerRepository.GetFashionInfluencerByUsername(decode.username);
 
@@ -89,22 +100,6 @@ namespace Services.AuthenticationServices
                 currCustomer.Password = PasswordHasher.HashPassword(changePasswordReqModel.NewPassword);
 
                 await _customerRepository.Update(currCustomer);
-            }
-            else if (currPartner != null)
-            {
-                if (!PasswordHasher.VerifyPassword(changePasswordReqModel.OldPassword, currPartner.Password))
-                {
-                    throw new ApiException(HttpStatusCode.BadRequest, "The old password incorrect");
-                }
-
-                if (changePasswordReqModel.OldPassword.Equals(changePasswordReqModel.NewPassword))
-                {
-                    throw new ApiException(HttpStatusCode.BadRequest, "The new password is the same with old password");
-                }
-
-                currPartner.Password = PasswordHasher.HashPassword(changePasswordReqModel.NewPassword);
-
-                await _partnerRepository.Update(currPartner);
             }
             else if (currInfluencer != null)
             {
@@ -132,7 +127,7 @@ namespace Services.AuthenticationServices
         {
             var currCustomer = await _customerRepository.GetCustomerByEmail(email);
 
-            var currPartner = await _partnerRepository.GetPartnerByEmail(email);
+            //var currPartner = await _partnerRepository.GetPartnerByEmail(email);
 
             var currInfluencer = await _fashionInfluencerRepository.GetFashionInfluencerByEmail(email);
 
@@ -145,14 +140,6 @@ namespace Services.AuthenticationServices
 
                 await _emailService.SendUserResetPassword(currCustomer.FullName, currCustomer.Email, otp);
 
-            }
-            else if (currPartner != null)
-            {
-                var otp = GenerateOTP();
-
-                verificationCodeCache.Put(currPartner.Username, otp, 5);
-
-                await _emailService.SendUserResetPassword(currPartner.PartnerName, currPartner.Email, otp);
             }
             else if (currInfluencer != null)
             {
@@ -174,7 +161,7 @@ namespace Services.AuthenticationServices
 
             var currCustomer = await _customerRepository.GetCustomerByUsername(decode.username);
 
-            var currPartner = await _partnerRepository.GetPartnerByUsername(decode.username);
+            //var currPartner = await _partnerRepository.GetPartnerByUsername(decode.username);
 
             var currInfluencer = await _fashionInfluencerRepository.GetFashionInfluencerByUsername(decode.username);
 
@@ -182,6 +169,9 @@ namespace Services.AuthenticationServices
 
             if (currCustomer != null)
             {
+
+                var currCustomerSubscriptions = await _customerSubscriptionRepository.GetCustomerSubscriptionByCustomerId(currCustomer.CustomerId);
+
                 UserInformationModel userInformation = new UserInformationModel
                 {
                     UserId = currCustomer.CustomerId,
@@ -189,23 +179,14 @@ namespace Services.AuthenticationServices
                     Email = currCustomer.Email,
                     Role = RoleEnums.Customer.ToString(),
                     ProfileURL = currCustomer.ProfilePicture,
-                    Gender = currCustomer.Gender
+                    Gender = currCustomer.Gender,
+                    Subscription = currCustomerSubscriptions.Where(x => x.IsActive == true).Select(x => x.Subscription.SubscriptionTitle).ToList(),
+                    IsDoneProfileSetup = await _customerProfileRepository.GetCustomerProfileByCustomerId(currCustomer.CustomerId) != null ? true : false,
                 };
 
                 return userInformation;
-            }else if (currPartner != null)
-            {
-                UserInformationModel userInformation = new UserInformationModel
-                {
-                    UserId = currPartner.PartnerId,
-                    Username = currPartner.Username,
-                    Email = currPartner.Email,
-                    ProfileURL = currPartner.PartnerProfilePicture,
-                    Role = RoleEnums.Partner.ToString(),
-                };
-
-                return userInformation;
-            }else if (currInfluencer != null)
+            }
+            else if (currInfluencer != null)
             {
                 UserInformationModel userInformation = new UserInformationModel
                 {
@@ -237,12 +218,14 @@ namespace Services.AuthenticationServices
         public async Task<UserLoginResModel> Login(UserLoginReqModel userLoginReqModel)
         {
             var currentCustomer = await _customerRepository.GetCustomerByUsername(userLoginReqModel.Username);
-            var currentPartner = await _partnerRepository.GetPartnerByUsername(userLoginReqModel.Username);
+            //var currentPartner = await _partnerRepository.GetPartnerByUsername(userLoginReqModel.Username);
             var currentInfluencer = await _fashionInfluencerRepository.GetFashionInfluencerByUsername(userLoginReqModel.Username);
             var currAdmin = await _adminRepository.GetAdminByUsername(userLoginReqModel.Username);
 
             if (currentCustomer != null)
             {
+                if (currentCustomer.Status.Equals(StatusEnums.Inactive.ToString())) throw new ApiException(HttpStatusCode.BadRequest, "This account has been deactivated");
+
                 if (PasswordHasher.VerifyPassword(userLoginReqModel.Password, currentCustomer.Password))
                 {
                     var token = _jWTService.GenerateJWT(currentCustomer);
@@ -264,40 +247,6 @@ namespace Services.AuthenticationServices
                         Username = currentCustomer.Username,
                         Email = currentCustomer.Email,
                         Role = RoleEnums.Customer.ToString(),
-                        Token = token,
-                        RefreshToken = refreshToken
-                    };
-
-                    return userLoginRes;
-                }
-                else
-                {
-                    throw new ApiException(HttpStatusCode.BadRequest, "Incorrect password");
-
-                }
-            } else if (currentPartner != null)
-            {
-                if (PasswordHasher.VerifyPassword(userLoginReqModel.Password, currentPartner.Password))
-                {
-                    var token = _jWTService.GenerateJWT(currentPartner);
-
-                    var refreshToken = _jWTService.GenerateRefreshToken();
-
-                    var newRefreshToken = new RefreshToken
-                    {
-                        Token = refreshToken,
-                        ExpiredAt = DateTime.Now.AddDays(1),
-                        PartnerId = currentPartner.PartnerId
-                    };
-
-                    await _refreshTokenRepository.Add(newRefreshToken);
-
-                    var userLoginRes = new UserLoginResModel
-                    {
-                        UserId = currentPartner.PartnerId,
-                        Username = currentPartner.Email,
-                        Email = currentPartner.Email,
-                        Role = RoleEnums.Partner.ToString(),
                         Token = token,
                         RefreshToken = refreshToken
                     };
@@ -345,6 +294,9 @@ namespace Services.AuthenticationServices
                 }
             }else if (currAdmin != null)
             {
+
+                if (currAdmin.Status.Equals(StatusEnums.Inactive.ToString())) throw new ApiException(HttpStatusCode.BadRequest, "This account has been deactivated");
+
                 if (PasswordHasher.VerifyPassword(userLoginReqModel.Password, currAdmin.Password))
                 {
                     var token = _jWTService.GenerateJWT(currAdmin);
@@ -404,7 +356,7 @@ namespace Services.AuthenticationServices
         {
             var currCustomer = await _customerRepository.GetCustomerByEmail(resetPasswordReqModel.Email);
 
-            var currPartner = await _partnerRepository.GetPartnerByEmail(resetPasswordReqModel.Email);
+            //var currPartner = await _partnerRepository.GetPartnerByEmail(resetPasswordReqModel.Email);
 
             var currInfluencer = await _fashionInfluencerRepository.GetFashionInfluencerByEmail(resetPasswordReqModel.Email);
 
@@ -422,19 +374,6 @@ namespace Services.AuthenticationServices
 
                 await _customerRepository.Update(currCustomer);
 
-            }
-            else if (currPartner != null)
-            {
-                var otp = verificationCodeCache.Get(currPartner.Username);
-
-                if (otp == null || !otp.Equals(resetPasswordReqModel.OTP))
-                {
-                    throw new ApiException(HttpStatusCode.BadRequest, "OTP has expired or invalid OTP");
-                }
-
-                currPartner.Password = PasswordHasher.HashPassword(resetPasswordReqModel.NewPassword);
-
-                await _partnerRepository.Update(currPartner);
             }
             else if (currInfluencer != null)
             {
@@ -460,6 +399,109 @@ namespace Services.AuthenticationServices
             var otp = new Random().Next(100000, 999999).ToString();
 
             return otp;
+        }
+
+        public async Task<UserLoginResModel> LoginGoogle(UserLoginGoogleReqModel userLoginGoogleReqModel)
+        {
+            string token = userLoginGoogleReqModel.Token;
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                    HttpResponseMessage response = client.GetAsync("https://www.googleapis.com/oauth2/v3/userinfo").Result;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string responseContent = response.Content.ReadAsStringAsync().Result;
+
+                        var jsonData = JsonSerializer.Deserialize<Dictionary<string, object>>(responseContent);
+                        string email = jsonData.ContainsKey("email") ? jsonData["email"].ToString() : string.Empty;
+                        string givenName = jsonData.ContainsKey("given_name") ? jsonData["given_name"].ToString() : string.Empty;
+                        string picture = jsonData.ContainsKey("picture") ? jsonData["picture"].ToString() : string.Empty;
+
+                        var currCustomer = await _customerRepository.GetCustomerByEmail(email);
+                        Customer customer;
+                        if (currCustomer != null)
+                        {
+                            if (currCustomer.Status.Equals(StatusEnums.Inactive.ToString())) throw new ApiException(HttpStatusCode.BadRequest, "This account has been deactivated");
+
+                            customer = currCustomer;
+                        }
+                        else
+                        {
+                            customer = new Customer
+                            {
+                                Email = email,
+                                Username = email,
+                                FullName = givenName,
+                                ProfilePicture = picture,
+                                Gender = GenderEnums.Male.ToString(), // Default value, this can be dynamic
+                                Password = PasswordHasher.HashPassword(Guid.NewGuid().ToString()), // Random password
+                                Status = StatusEnums.Active.ToString(),
+                                DateJoined = DateTime.Now
+                            };
+
+                            var customerId = await _customerRepository.AddCustomer(customer);
+
+                            var subscription = await _subscriptionRepository.GetSubscriptionsByName(SubscriptionTypeEnums.Free.ToString());
+
+                            if (subscription == null)
+                            {
+                                throw new ApiException(HttpStatusCode.NotFound, "Subscription does not exist");
+                            }
+
+                            CustomerSubscription customerSubscription = new CustomerSubscription
+                            {
+                                SubscriptionId = subscription.SubscriptionId,
+                                CustomerId = customerId,
+                                StartDate = null,
+                                EndDate = null,
+                                IsActive = true,
+                            };
+
+                            await _customerSubscriptionRepository.Add(customerSubscription);
+
+                            await _emailService.SendRegistrationEmail(customer.FullName, customer.Email);
+                        }
+
+                        // Authenticate the user and generate tokens
+                        var newToken = _jWTService.GenerateJWT(customer);
+
+                        var refreshToken = _jWTService.GenerateRefreshToken();
+
+                        var newRefreshToken = new RefreshToken
+                        {
+                            Token = refreshToken,
+                            ExpiredAt = DateTime.Now.AddDays(1),
+                            CustomerId = customer.CustomerId
+                        };
+
+                        await _refreshTokenRepository.Add(newRefreshToken);
+
+                        var userLoginRes = new UserLoginResModel
+                        {
+                            UserId = customer.CustomerId,
+                            Username = customer.Username,
+                            Email = customer.Email,
+                            Role = RoleEnums.Customer.ToString(),
+                            Token = newToken,
+                            RefreshToken = refreshToken
+                        };
+
+                        return userLoginRes;
+                    }
+                    else
+                    {
+                        throw new ApiException(HttpStatusCode.Unauthorized, "Invalid Google token");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

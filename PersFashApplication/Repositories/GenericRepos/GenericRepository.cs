@@ -1,7 +1,9 @@
 ﻿
+using Azure;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -171,6 +173,18 @@ namespace Repositories.GenericRepos
             }
 
             return await query.ToListAsync();
+        }
+
+        public async Task<List<T>> GetAll()
+        {
+            try
+            {
+                return await _entities.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

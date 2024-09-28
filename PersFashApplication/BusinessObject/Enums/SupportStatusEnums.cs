@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.RecommendationServices
+namespace BusinessObject.Enums
 {
-    public interface IRecommendationService
+    public enum SupportStatusEnums
     {
+        Open,
+        Answered
     }
 }

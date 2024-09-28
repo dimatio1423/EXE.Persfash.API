@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Services.FashionItemsServices;
+using System.Drawing;
 using System.Net;
 
 namespace PersFashApplicationAPI.Controllers
@@ -24,15 +25,15 @@ namespace PersFashApplicationAPI.Controllers
 
 
         /// <summary>
-        /// View all fashion items
+        /// View all fashion items for CUSTOMER, ADMIN
         /// </summary>
-        [HttpPost]
+        [HttpGet]
         [Route("view")]
-        public async Task<IActionResult> ViewFashionItems(FashionItemFilterReqModel? fashionItemFilterReqModel, int? page = 1, int? size = 10
+        public async Task<IActionResult> ViewFashionItems([FromQuery]FashionItemFilterReqModel? fashionItemFilterReqModel, int? pageIndex = 1, int? sizeIndex = 10
             , string? sortBy = "name_asc")
         {
 
-            var result = await _fashionItemService.ViewFashionItems(page, size, fashionItemFilterReqModel, sortBy);
+            var result = await _fashionItemService.ViewFashionItems(pageIndex, sizeIndex, fashionItemFilterReqModel, sortBy);
 
             ResultModel response = new ResultModel
             {
@@ -46,15 +47,15 @@ namespace PersFashApplicationAPI.Controllers
         }
 
         /// <summary>
-        /// Search fashion items
+        /// Search fashion items CUSTOMER, ADMIN
         /// </summary>
-        [HttpPost]
+        [HttpGet]
         [Route("search")]
-        public async Task<IActionResult> SearchFashionItems(FashionItemFilterReqModel? fashionItemFilterReqModel, string? searchValue, int? page = 1, int? size = 10
+        public async Task<IActionResult> SearchFashionItems([FromQuery]FashionItemFilterReqModel? fashionItemFilterReqModel, string? searchValue, int? pageIndex = 1, int? sizeIndex = 10
             , string? sortBy = "name_asc")
         {
 
-            var result = await _fashionItemService.SearchFashionItems(page, size, fashionItemFilterReqModel, sortBy, searchValue);
+            var result = await _fashionItemService.SearchFashionItems(pageIndex, sizeIndex, fashionItemFilterReqModel, sortBy, searchValue);
 
             ResultModel response = new ResultModel
             {
@@ -91,7 +92,7 @@ namespace PersFashApplicationAPI.Controllers
         /// Create new fashion item for partner
         /// </summary>
         [HttpPost]
-        [Authorize(Roles = "Partner")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateNewFashionItem([FromBody] FashionItemCreateReqModel fashionItemCreateReqModel)
         {
             var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
@@ -112,7 +113,7 @@ namespace PersFashApplicationAPI.Controllers
         /// Update fashion items for partner
         /// </summary>
         [HttpPut]
-        [Authorize(Roles = "Partner")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateFashionItem([FromBody] FashionItemUpdateReqModel fashionItemUpdateReqModel)
         {
             var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
@@ -135,7 +136,7 @@ namespace PersFashApplicationAPI.Controllers
         /// </summary>
         [HttpDelete]
         [Route("{itemId}")]
-        [Authorize(Roles ="Partner")]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> RemoveFashionItem(int itemId)
         {
             var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
@@ -155,46 +156,46 @@ namespace PersFashApplicationAPI.Controllers
         /// <summary>
         /// View fashion items of the current logging partner
         /// </summary>
-        [HttpGet]
-        [Route("partner")]
-        [Authorize(Roles = "Partner")]
-        public async Task<IActionResult> ViewFashionItemsOfCurrentPartner(int? page = 1, int? size = 10)
-        {
-            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+        //[HttpGet]
+        //[Route("partner")]
+        //[Authorize(Roles = "Partner")]
+        //public async Task<IActionResult> ViewFashionItemsOfCurrentPartner(int? page = 1, int? size = 10)
+        //{
+        //    var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
 
-            var result = await _fashionItemService.ViewFashionItemsOfCurrentPartner(token, page, size);
+        //    var result = await _fashionItemService.ViewFashionItemsOfCurrentPartner(token, page, size);
 
-            ResultModel response = new ResultModel
-            {
-                IsSuccess = true,
-                Code = (int)HttpStatusCode.OK,
-                Message = "View fashion items of current partner successfully",
-                Data = result
-            };
+        //    ResultModel response = new ResultModel
+        //    {
+        //        IsSuccess = true,
+        //        Code = (int)HttpStatusCode.OK,
+        //        Message = "View fashion items of current partner successfully",
+        //        Data = result
+        //    };
 
-            return StatusCode(response.Code, response);
-        }
+        //    return StatusCode(response.Code, response);
+        //}
 
         /// <summary>
         /// View fashion items by partner for customer to view by store of partner
         /// </summary>
-        [HttpGet]
-        [Route("partner/{partnerId}")]
-        public async Task<IActionResult> ViewFashionItemsByPartner([FromRoute] int partnerId, int? page = 1, int? size = 10)
-        {
-            //var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+        //[HttpGet]
+        //[Route("partner/{partnerId}")]
+        //public async Task<IActionResult> ViewFashionItemsByPartner([FromRoute] int partnerId, int? page = 1, int? size = 10)
+        //{
+        //    //var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
 
-            var result = await _fashionItemService.ViewFashionItemsByPartnerId(partnerId, page, size);
+        //    var result = await _fashionItemService.ViewFashionItemsByPartnerId(partnerId, page, size);
 
-            ResultModel response = new ResultModel
-            {
-                IsSuccess = true,
-                Code = (int)HttpStatusCode.OK,
-                Message = "View fashion items by partner successfully",
-                Data = result
-            };
+        //    ResultModel response = new ResultModel
+        //    {
+        //        IsSuccess = true,
+        //        Code = (int)HttpStatusCode.OK,
+        //        Message = "View fashion items by partner successfully",
+        //        Data = result
+        //    };
 
-            return StatusCode(response.Code, response);
-        }
+        //    return StatusCode(response.Code, response);
+        //}
     }
 }

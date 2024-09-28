@@ -65,6 +65,29 @@ namespace PersFashApplicationAPI.Controllers
         }
 
         /// <summary>
+        /// View details wardrobe of the current logging customer
+        /// </summary>
+        [HttpGet]
+        [Route("{wardrobeId}/{filter}")]
+        [Authorize]
+        public async Task<IActionResult> ViewDetailsWardrobeFilter([FromRoute] int wardrobeId, [FromRoute] string filter = "tops", int? page = 1, int? size = 10)
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+            var result = await _wardrobeService.ViewDetailsWardrobeOfCustomerFilter(token, wardrobeId, filter, page, size);
+
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "View details wardrobe by filter of customer successfully",
+                Data = result
+            };
+
+            return StatusCode(response.Code, response);
+        }
+
+        /// <summary>
         /// Add new wardrobe for customer
         /// </summary>
         [HttpPost]

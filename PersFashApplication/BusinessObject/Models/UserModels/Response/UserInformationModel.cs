@@ -19,5 +19,9 @@ namespace BusinessObject.Models.UserModels.Response
         public string? ProfileURL { get; set; }
 
         public string? Role { get; set; }
+
+        public List<string>? Subscription { get; set; }
+
+        public bool? IsDoneProfileSetup { get; set; }
     }
 }

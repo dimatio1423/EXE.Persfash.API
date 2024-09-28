@@ -3,6 +3,7 @@ using BusinessObject.Entities;
 using BusinessObject.Enums;
 using BusinessObject.Models.FashionItemsModel.Request;
 using BusinessObject.Models.FashionItemsModel.Response;
+using BusinessObject.Models.Pagination;
 using Newtonsoft.Json.Linq;
 using Repositories.FashionItemImageRepos;
 using Repositories.FashionItemsRepos;
@@ -28,7 +29,6 @@ namespace Services.FashionItemsServices
     {
         private readonly IFashionItemRepository _fashionItemRepository;
         private readonly IFashionItemImageRepository _fashionItemImageRepository;
-        private readonly IPartnerRepository _partnerRepository;
         private readonly ICustomerRepository _customerRepository;
         private readonly ICustomerProfileRepository _customerProfileRepository;
         private readonly IFileService _fileService;
@@ -39,7 +39,6 @@ namespace Services.FashionItemsServices
         public FashionItemService(IDecodeTokenHandler decodeToken, 
             IFashionItemRepository fashionItemRepository,
             IFashionItemImageRepository fashionItemImageRepository,
-            IPartnerRepository partnerRepository,
             ICustomerRepository customerRepository,
             ICustomerProfileRepository customerProfileRepository,
             IFileService fileService,
@@ -48,7 +47,6 @@ namespace Services.FashionItemsServices
         {
             _fashionItemRepository = fashionItemRepository;
             _fashionItemImageRepository = fashionItemImageRepository;
-            _partnerRepository = partnerRepository;
             _customerRepository = customerRepository;
             _customerProfileRepository = customerProfileRepository;
             _fileService = fileService;
@@ -60,18 +58,17 @@ namespace Services.FashionItemsServices
         {
             var decodedToken = _decodeToken.decode(token);
 
-            if (!decodedToken.roleName.Equals(RoleEnums.Partner.ToString()))
+            if (!decodedToken.roleName.Equals(RoleEnums.Admin.ToString()))
             {
                 throw new ApiException(System.Net.HttpStatusCode.Forbidden, "You do not have permission to perform this function");
             }
 
-            var currPartner = await _partnerRepository.GetPartnerByUsername(decodedToken.username);
+            //var currPartner = await _partnerRepository.GetPartnerByUsername(decodedToken.username);
 
-            if (currPartner == null)
-            {
-                throw new ApiException(System.Net.HttpStatusCode.NotFound, "Partner does not exist");
-
-            }
+            //if (currPartner == null)
+            //{
+            //    throw new ApiException(System.Net.HttpStatusCode.NotFound, "Partner does not exist");
+            //}
 
             //_fileService.CheckImageFile(fashionItemCreateReqModel.Thumbnail);
 
@@ -102,7 +99,7 @@ namespace Services.FashionItemsServices
             {
                 ItemName = fashionItemCreateReqModel.ItemName,
                 Category = fashionItemCreateReqModel.Category,
-                Brand = currPartner.PartnerName,
+                Brand = fashionItemCreateReqModel.Brand,
                 Price = fashionItemCreateReqModel.Price,
                 FitType = fashionItemCreateReqModel.FitType,
                 GenderTarget = fashionItemCreateReqModel.GenderTarget,
@@ -113,7 +110,6 @@ namespace Services.FashionItemsServices
                 Occasion = string.Join(", ", fashionItemCreateReqModel.Occasion),
                 ThumbnailUrl = fashionItemCreateReqModel.Thumbnail,
                 ProductUrl = fashionItemCreateReqModel.ProductUrl,
-                PartnerId = currPartner.PartnerId,
                 DateAdded = DateTime.Now,
                 Status = StatusEnums.Available.ToString(),
             };
@@ -138,18 +134,18 @@ namespace Services.FashionItemsServices
         {
             var decodedToken = _decodeToken.decode(token);
 
-            if (!decodedToken.roleName.Equals(RoleEnums.Partner.ToString()))
+            if (!decodedToken.roleName.Equals(RoleEnums.Admin.ToString()))
             {
                 throw new ApiException(System.Net.HttpStatusCode.Forbidden, "You do not have permission to perform this function");
             }
 
-            var currPartner = await _partnerRepository.GetPartnerByUsername(decodedToken.username);
+            //var currPartner = await _partnerRepository.GetPartnerByUsername(decodedToken.username);
 
-            if (currPartner == null)
-            {
-                throw new ApiException(System.Net.HttpStatusCode.NotFound, "Partner does not exist");
+            //if (currPartner == null)
+            //{
+            //    throw new ApiException(System.Net.HttpStatusCode.NotFound, "Partner does not exist");
 
-            }
+            //}
 
             var currItem = await _fashionItemRepository.Get(fashionItemId);
             if (currItem == null)
@@ -157,24 +153,32 @@ namespace Services.FashionItemsServices
                 throw new ApiException(System.Net.HttpStatusCode.NotFound, "Fashion item does not exist");
             }
 
-            if (currPartner.PartnerId != currItem.PartnerId)
-            {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Can not delete other partners' fashion items");
-            }
+            //if (currPartner.PartnerId != currItem.PartnerId)
+            //{
+            //    throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Can not delete other partners' fashion items");
+            //}
 
             currItem.Status = StatusEnums.Unavailable.ToString();
 
             await _fashionItemRepository.Update(currItem);
         }
 
-        public async Task<List<FashionItemViewListRes>> SearchFashionItems(int? page, int? size, FashionItemFilterReqModel? fashionItemFilterReqModel, string? sortBy, string? searchValue)
+        public async Task<Pagination<FashionItemViewListRes>> SearchFashionItems(int? page, int? size, FashionItemFilterReqModel? fashionItemFilterReqModel, string? sortBy, string? searchValue)
         {
-            var fashionItems = await _fashionItemRepository.GetFashionItems(page, size);
+            var allItems = await _fashionItemRepository.GetFashionItems(page, size);
 
+            var fashionItems = allItems;
+
+            int totalItemCount;
 
             if (!string.IsNullOrEmpty(searchValue))
             {
                 fashionItems = fashionItems.Where(x => x.ItemName.ToLower().Contains(searchValue.Trim().ToLower())).ToList();
+
+                totalItemCount = fashionItems.Count;
+            }else
+            {
+                totalItemCount = allItems.Count;
             }
 
             if (fashionItemFilterReqModel != null)
@@ -182,29 +186,41 @@ namespace Services.FashionItemsServices
                 fashionItems = filterFashionItem(fashionItems, fashionItemFilterReqModel);
             }
 
+            totalItemCount = fashionItems.Count;
+
             if (!string.IsNullOrEmpty(sortBy))
             {
                 fashionItems = sortFashionItem(fashionItems, sortBy);
             }
-            return _mapper.Map<List<FashionItemViewListRes>>(fashionItems);
+
+            var pagedItem = fashionItems.Skip(((page ?? 1) - 1) * (size ?? 10))
+                    .Take(size ?? 10).ToList();
+
+            return new Pagination<FashionItemViewListRes>
+            {
+                TotalItems = totalItemCount,
+                PageSize = size ?? 10,
+                CurrentPage = page ?? 1,
+                Data = _mapper.Map<List<FashionItemViewListRes>>(pagedItem)
+            };
         }
 
         public async Task UpdateFashionItem(string token, FashionItemUpdateReqModel fashionItemUpdateReqModel)
         {
             var decodedToken = _decodeToken.decode(token);
 
-            if (!decodedToken.roleName.Equals(RoleEnums.Partner.ToString()))
+            if (!decodedToken.roleName.Equals(RoleEnums.Admin.ToString()))
             {
                 throw new ApiException(System.Net.HttpStatusCode.Forbidden, "You do not have permission to perform this function");
             }
 
-            var currPartner = await _partnerRepository.GetPartnerByUsername(decodedToken.username);
+            //var currPartner = await _partnerRepository.GetPartnerByUsername(decodedToken.username);
 
-            if (currPartner == null)
-            {
-                throw new ApiException(System.Net.HttpStatusCode.NotFound, "Partner does not exist");
+            //if (currPartner == null)
+            //{
+            //    throw new ApiException(System.Net.HttpStatusCode.NotFound, "Partner does not exist");
 
-            }
+            //}
 
             var currItem = await _fashionItemRepository.Get(fashionItemUpdateReqModel.itemId);
 
@@ -214,11 +230,11 @@ namespace Services.FashionItemsServices
 
             }
 
-            if (currPartner.PartnerId != currItem.PartnerId)
-            {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Can not modify other partners' fashion items");
+            //if (currPartner.PartnerId != currItem.PartnerId)
+            //{
+            //    throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Can not modify other partners' fashion items");
 
-            }
+            //}
 
             //if (fashionItemUpdateReqModel.Thumbnail != null)
             //{
@@ -261,6 +277,7 @@ namespace Services.FashionItemsServices
             //var thumbnailLink = fashionItemUpdateReqModel.Thumbnail != null ? await _aWSService.UploadFile(fashionItemUpdateReqModel.Thumbnail, "persfash-application", null) : null;
 
             currItem.ItemName = !string.IsNullOrEmpty(fashionItemUpdateReqModel.ItemName) ? fashionItemUpdateReqModel.ItemName : currItem.ItemName;
+            currItem.Brand = !string.IsNullOrEmpty(fashionItemUpdateReqModel.Brand) ? fashionItemUpdateReqModel.Brand : currItem.Brand;
             currItem.Category = !string.IsNullOrEmpty(fashionItemUpdateReqModel.Category) ? fashionItemUpdateReqModel.Category : currItem.Category; ;
             currItem.Price = fashionItemUpdateReqModel.Price != null ? fashionItemUpdateReqModel.Price : currItem.Price;
             currItem.FitType = !string.IsNullOrEmpty(fashionItemUpdateReqModel.FitType) ? fashionItemUpdateReqModel.FitType : currItem.FitType;
@@ -336,9 +353,11 @@ namespace Services.FashionItemsServices
             return fashionItemDetails;
         }
 
-        public async Task<List<FashionItemViewListRes>> ViewFashionItems(int? page, int? size, FashionItemFilterReqModel? fashionItemFilterReqModel, string? sortBy)
+        public async Task<Pagination<FashionItemViewListRes>> ViewFashionItems(int? page, int? size, FashionItemFilterReqModel? fashionItemFilterReqModel, string? sortBy)
         {
-            var fashionItems = await _fashionItemRepository.GetFashionItems(page, size);
+            var allFashionItems = await _fashionItemRepository.GetAll();
+
+            var fashionItems = allFashionItems;
 
             if (fashionItemFilterReqModel != null)
             {
@@ -348,54 +367,66 @@ namespace Services.FashionItemsServices
             if (!string.IsNullOrEmpty(sortBy)) {
                 fashionItems = sortFashionItem(fashionItems, sortBy);
             }
-            return _mapper.Map<List<FashionItemViewListRes>>(fashionItems);
+
+            int totalItemsCount = fashionItems.Count;
+
+            var pagedItems = fashionItems.Skip(((page ?? 1) - 1) * (size ?? 10))
+                    .Take(size ?? 10).ToList();
+
+
+            return new Pagination<FashionItemViewListRes>
+            {
+                TotalItems = totalItemsCount,
+                PageSize = size ?? 10,
+                CurrentPage = page ?? 1,
+                Data = _mapper.Map<List<FashionItemViewListRes>>(pagedItems)
+            };
         }
 
-        public async Task<List<FashionItemViewListRes>> ViewFashionItemsByPartnerId(int partnerId, int? page, int? size)
-        {
-            var currPartner = await _partnerRepository.Get(partnerId);
+        //public async Task<List<FashionItemViewListRes>> ViewFashionItemsByPartnerId(int partnerId, int? page, int? size)
+        //{
+        //    var currPartner = await _partnerRepository.Get(partnerId);
 
-            if (currPartner == null)
-            {
-                throw new ApiException(HttpStatusCode.NotFound, "Partner does not exist");
+        //    if (currPartner == null)
+        //    {
+        //        throw new ApiException(HttpStatusCode.NotFound, "Partner does not exist");
 
-            }
+        //    }
 
-            var fashionItems = await _fashionItemRepository.GetFashionItemsByPartner(currPartner.PartnerId, page, size);
+        //    var fashionItems = await _fashionItemRepository.GetFashionItemsByPartner(currPartner.PartnerId, page, size);
 
-            return _mapper.Map<List<FashionItemViewListRes>>(fashionItems.Where(x => x.Status.Equals(StatusEnums.Available.ToString())).ToList());
-        }
+        //    return _mapper.Map<List<FashionItemViewListRes>>(fashionItems.Where(x => x.Status.Equals(StatusEnums.Available.ToString())).ToList());
+        //}
 
-        public async Task<List<FashionItemViewListRes>> ViewFashionItemsOfCurrentPartner(string token, int? page, int? size)
-        {
-            var decodedToken = _decodeToken.decode(token);
+        //public async Task<List<FashionItemViewListRes>> ViewFashionItemsOfCurrentPartner(string token, int? page, int? size)
+        //{
+        //    var decodedToken = _decodeToken.decode(token);
 
-            if (!decodedToken.roleName.Equals(RoleEnums.Partner.ToString()))
-            {
-                throw new ApiException(HttpStatusCode.Forbidden, "You do not have permission to perform this function");
-            }
+        //    if (!decodedToken.roleName.Equals(RoleEnums.Partner.ToString()))
+        //    {
+        //        throw new ApiException(HttpStatusCode.Forbidden, "You do not have permission to perform this function");
+        //    }
 
-            var currPartner = await _partnerRepository.GetPartnerByUsername(decodedToken.username);
+        //    var currPartner = await _partnerRepository.GetPartnerByUsername(decodedToken.username);
 
-            if (currPartner == null)
-            {
-                throw new ApiException(HttpStatusCode.NotFound, "Partner does not exist");
+        //    if (currPartner == null)
+        //    {
+        //        throw new ApiException(HttpStatusCode.NotFound, "Partner does not exist");
 
-            }
+        //    }
 
-            var fashionItems = await _fashionItemRepository.GetFashionItemsByPartner(currPartner.PartnerId, page, size);
+        //    var fashionItems = await _fashionItemRepository.GetFashionItemsByPartner(currPartner.PartnerId, page, size);
 
-            return _mapper.Map<List<FashionItemViewListRes>>(fashionItems);
-        }
+        //    return _mapper.Map<List<FashionItemViewListRes>>(fashionItems);
+        //}
 
         public List<FashionItem> filterFashionItem(List<FashionItem> fashionItems, FashionItemFilterReqModel fashionItemFilterReqModel)
         {
             if (fashionItemFilterReqModel.Category is not null && fashionItemFilterReqModel.Category.Any())
             {
                 fashionItems = fashionItems
-                    .Where(x => !string.IsNullOrEmpty(x.Category) && fashionItemFilterReqModel.Category
-                    .Any(category => new List<string>(x.Category.Split(new[] { ", " }, StringSplitOptions.None))
-                    .Contains(category))).ToList();
+                   .Where(x => fashionItemFilterReqModel.Category
+                   .Contains(x.Category)).ToList();
             }
 
             if (fashionItemFilterReqModel.Brand is not null && fashionItemFilterReqModel.Brand.Any())

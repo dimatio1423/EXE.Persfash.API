@@ -47,5 +47,23 @@ namespace Repositories.PaymentRepos
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<List<Payment>> GetPayments(int? page, int? size)
+        {
+            try
+            {
+                var pageIndex = (page.HasValue && page > 0) ? page.Value : 1;
+                var sizeIndex = (size.HasValue && size > 0) ? size.Value : 10;
+
+                return await _context.Payments
+                    .Include(x => x.Customer)
+                    .Include(x => x.Subscription)
+                    .ToListAsync();
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

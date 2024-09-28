@@ -1,6 +1,7 @@
 ﻿using BusinessObject.Models.PasswordModel;
 using BusinessObject.Models.ResultModel;
 using BusinessObject.Models.UserModels.Request;
+using BusinessObjects.Models.RefreshTokenModel.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -37,6 +38,23 @@ namespace PersFashApplicationAPI.Controllers
             return StatusCode(response.Code, response);
         }
 
+        [HttpPost]
+        [Route("login-google")]
+        public async Task<IActionResult> LoginGoogle([FromBody] UserLoginGoogleReqModel userLoginGoogleReqModel)
+        {
+            var result = await _authenticationService.LoginGoogle(userLoginGoogleReqModel);
+
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "Login google successfully",
+                Data = result,
+            };
+
+            return StatusCode(response.Code, response);
+        }
+
         [HttpGet]
         [Authorize]
         [Route("user-infor")]
@@ -59,15 +77,15 @@ namespace PersFashApplicationAPI.Controllers
 
         [HttpPost]
         [Route("forgot-password")]
-        public async Task<IActionResult> ForgotPassword(string email)
+        public async Task<IActionResult> ForgotPassword([FromBody]ForgotPasswordReqModel forgotPasswordReqModel)
         {
-            await _authenticationService.ForgotPassword(email);
+            await _authenticationService.ForgotPassword(forgotPasswordReqModel.email);
 
             ResultModel response = new ResultModel
             {
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.OK,
-                Message = $"Send OTP code to {email} successfully",
+                Message = $"Send OTP code to {forgotPasswordReqModel.email} successfully",
             };
 
             return StatusCode(response.Code, response);
@@ -103,6 +121,23 @@ namespace PersFashApplicationAPI.Controllers
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.OK,
                 Message = "Reset password successfully",
+            };
+
+            return StatusCode(response.Code, response);
+        }
+
+
+        [HttpPost]
+        [Route("logout")]
+        public async Task<IActionResult> Logout(RefreshTokenReqModel refreshTokenReqModel)
+        {
+            await _authenticationService.Logout(refreshTokenReqModel.RefreshToken);
+
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "Logout successfully",
             };
 
             return StatusCode(response.Code, response);

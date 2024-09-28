@@ -3,6 +3,7 @@ using BusinessObject.Entities;
 using BusinessObject.Enums;
 using BusinessObject.Models.CustomerSubscriptionModel.Response;
 using BusinessObject.Models.PaymentModel.Request;
+using BusinessObject.Models.PayOSModel.Request;
 using BusinessObject.Models.SubscriptionModels.Request;
 using BusinessObject.Models.SubscriptionModels.Response;
 using BusinessObject.Models.VnPayModel.Request;
@@ -15,6 +16,7 @@ using Repositories.UserSubscriptionRepos;
 using Services.EmailService;
 using Services.Helper.CustomExceptions;
 using Services.Helpers.Handler.DecodeTokenHandler;
+using Services.PayOSService;
 using Services.VnPayService;
 using System;
 using System.Collections.Generic;
@@ -35,6 +37,7 @@ namespace Services.SubscriptionServices
         private readonly ISystemAdminRepository _systemAdminRepository;
         private readonly IPaymentRepository _paymentRepository;
         private readonly IVnPayService _vnPayService;
+        private readonly IPayOSService _payOSService;
         private readonly IEmailService _emailService;
 
         public SubscriptionService(ISubscriptionRepository subscriptionRepository, 
@@ -45,7 +48,8 @@ namespace Services.SubscriptionServices
             ICustomerSubscriptionRepository customerSubscriptionRepository,
             IPaymentRepository paymentRepository,
             IVnPayService vnPayService,
-            IEmailService emailService)
+            IEmailService emailService,
+            IPayOSService payOSService)
         {
             _subscriptionRepository = subscriptionRepository;
             _customerRepository = customerRepository;
@@ -55,6 +59,7 @@ namespace Services.SubscriptionServices
             _systemAdminRepository = systemAdminRepository;
             _paymentRepository = paymentRepository;
             _vnPayService = vnPayService;
+            _payOSService = payOSService;
             _emailService = emailService;
         }
 
@@ -174,16 +179,29 @@ namespace Services.SubscriptionServices
                 throw new ApiException(HttpStatusCode.BadRequest, "The payment has already been paid");
             }
 
-            VnPayReqModel vnPayReqModel = new VnPayReqModel
+            //VnPayReqModel vnPayReqModel = new VnPayReqModel
+            //{
+            //    OrderId = (int)currPayment.SubscriptionId,
+            //    PaymentId = currPayment.PaymentId,
+            //    Amount = currPayment.Price,
+            //    CreatedDate = currPayment.PaymentDate,
+            //    RedirectUrl = redirectUrl,
+            //};
+
+            PayOSReqModel payOSReqModel = new PayOSReqModel
             {
-                OrderId = (int)currPayment.SubscriptionId,
-                PaymentId = currPayment.PaymentId,
+                OrderId = currPayment.PaymentId,
+                productName = currPayment.Subscription.SubscriptionTitle,
                 Amount = currPayment.Price,
-                CreatedDate = currPayment.PaymentDate,
                 RedirectUrl = redirectUrl,
+                CancelUrl = redirectUrl
             };
 
-            return _vnPayService.CreatePaymentUrl(context, vnPayReqModel);
+            var result = await _payOSService.createPaymentUrl(payOSReqModel);
+
+            return result.checkoutUrl;
+
+            //return _vnPayService.CreatePaymentUrl(context, vnPayReqModel);
         }
 
         public async Task<Payment> UpdateCustomerSubscriptionTransaction(PaymentUpdateReqModel paymentUpdateReqModel)
@@ -237,7 +255,7 @@ namespace Services.SubscriptionServices
 
             currSubscription.Price = subscriptionUpdateReqModel.Price != null ? subscriptionUpdateReqModel.Price : currSubscription.Price;
             currSubscription.DurationInDays = subscriptionUpdateReqModel.DurationInDays != null ? subscriptionUpdateReqModel.DurationInDays : currSubscription.DurationInDays;
-            currSubscription.Description = !string.IsNullOrEmpty(subscriptionUpdateReqModel.Description) ? subscriptionUpdateReqModel.Description : currSubscription.Description;
+            currSubscription.Description = (subscriptionUpdateReqModel.Description != null && subscriptionUpdateReqModel.Description.Count > 0) ? string.Join(", ", subscriptionUpdateReqModel.Description) : currSubscription.Description;
 
             await _subscriptionRepository.Update(currSubscription);
         }
@@ -408,6 +426,13 @@ namespace Services.SubscriptionServices
 
                 await _emailService.SendUpgradeToPremiumEmail(currCustomer.FullName, currCustomer.Email, currSubscription.SubscriptionTitle);
             }
+        }
+
+        public async Task<List<SubscriptionViewDetailsResModel>> ViewSubscriptionsForAdmin(int? page, int? size)
+        {
+            var subscriptions = await _subscriptionRepository.GetAll(page, size);
+
+            return _mapper.Map<List<SubscriptionViewDetailsResModel>>(subscriptions);
         }
     }
 }

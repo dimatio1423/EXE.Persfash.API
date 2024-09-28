@@ -44,7 +44,6 @@ namespace Repositories.FashionItemsRepos
                 var sizeIndex = (size.HasValue && size > 0) ? size.Value : 10;
 
                 return await _context.FashionItems
-                    .Include(x => x.Partner)
                     .Skip((pageIndex - 1) * sizeIndex)
                     .Take(sizeIndex)
                     .ToListAsync();
@@ -60,7 +59,7 @@ namespace Repositories.FashionItemsRepos
         {
             try
             {
-                return await _context.FashionItems.Include(x => x.Partner)
+                return await _context.FashionItems
                 .Where(x => x.ItemId == itemId)
                     .FirstOrDefaultAsync();
 
@@ -71,18 +70,12 @@ namespace Repositories.FashionItemsRepos
             }
         }
 
-        public async Task<List<FashionItem>> GetFashionItemsByPartner(int partnerId, int? page, int? size)
+        public async Task<List<FashionItem>> GetFashionItemsByIds(List<int?> itemIds)
         {
             try
             {
-                var pageIndex = (page.HasValue && page > 0) ? page.Value : 1;
-                var sizeIndex = (size.HasValue && size > 0) ? size.Value : 10;
-                
                 return await _context.FashionItems
-                    .Include(x => x.Partner)
-                    .Where(x => x.PartnerId == partnerId)
-                    .Skip((pageIndex - 1) * sizeIndex)
-                    .Take(sizeIndex)
+                .Where(x => itemIds.Contains(x.ItemId))
                     .ToListAsync();
 
             }
@@ -91,6 +84,26 @@ namespace Repositories.FashionItemsRepos
                 throw new Exception(ex.Message);
             }
         }
+
+        //public async Task<List<FashionItem>> GetFashionItemsByPartner(int partnerId, int? page, int? size)
+        //{
+        //    try
+        //    {
+        //        var pageIndex = (page.HasValue && page > 0) ? page.Value : 1;
+        //        var sizeIndex = (size.HasValue && size > 0) ? size.Value : 10;
+
+        //        return await _context.FashionItems
+        //            .Where(x => x.PartnerId == partnerId)
+        //            .Skip((pageIndex - 1) * sizeIndex)
+        //            .Take(sizeIndex)
+        //            .ToListAsync();
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
 
         public async Task<List<FashionItem>> GetRecommendationFashionItemForCustomer(int customerId, int? page, int? size)
         {
@@ -105,7 +118,7 @@ namespace Repositories.FashionItemsRepos
                     .FirstOrDefaultAsync();
 
                 var fashionItemQuery = await _context.FashionItems
-                    .Include(x => x.Partner).AsQueryable().ToListAsync();
+                    .AsQueryable().ToListAsync();
 
                 var allCriteriaMatchItems = fashionItemQuery.AsEnumerable();  // For items matching all criteria
                 var atLeastOneMatchItems = new List<FashionItem>();
@@ -210,6 +223,8 @@ namespace Repositories.FashionItemsRepos
 
                 }
 
+                finalItems = finalItems.OrderBy(x => Guid.NewGuid()).ToList();
+
                 return finalItems.Skip((pageIndex - 1) * sizeIndex).Take(sizeIndex).ToList();
 
 
@@ -233,7 +248,7 @@ namespace Repositories.FashionItemsRepos
                     .FirstOrDefaultAsync();
 
                 var fashionItemQuery = await _context.FashionItems
-                    .Include(x => x.Partner).AsQueryable().ToListAsync();
+                    .AsQueryable().ToListAsync();
 
                 var allCriteriaMatchItems = fashionItemQuery.AsEnumerable();  // For items matching all criteria
                 var atLeastOneMatchItems = new List<FashionItem>();
@@ -359,7 +374,7 @@ namespace Repositories.FashionItemsRepos
                     .FirstOrDefaultAsync();
 
                 var fashionItemQuery = await _context.FashionItems
-                    .Include(x => x.Partner).AsQueryable().ToListAsync();
+                    .AsQueryable().ToListAsync();
 
                 var fashionItemList = new List<FashionItem>();
 

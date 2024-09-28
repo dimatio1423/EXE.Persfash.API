@@ -20,19 +20,16 @@ namespace PersFashApplicationAPI.Controllers
         private readonly ICustomerService _customerService;
         private readonly ISubscriptionService _subscriptionService;
         private readonly IFashionItemService _fashionItemService;
-        private readonly IPartnerService _partnerService;
         private readonly ICourseService _courseService;
 
         public CustomerController(ICustomerService customerService, 
             IFashionItemService fashionItemService,
-            IPartnerService partnerService,
             ISubscriptionService subscriptionService,
             ICourseService courseService)
         {
             _customerService = customerService;
             _subscriptionService = subscriptionService;
             _fashionItemService = fashionItemService;
-            _partnerService = partnerService;
             _courseService = courseService;
         }
 
@@ -332,20 +329,66 @@ namespace PersFashApplicationAPI.Controllers
         /// <summary>
         /// Get recommendation store for customer base on the profile setup
         /// </summary>
+        //[HttpGet]
+        //[Route("recommendation/store")]
+        //[Authorize]
+        //public async Task<IActionResult> GetCustomerRecommendationStores(int? page = 1, int? size = 10)
+        //{
+        //    var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+        //    var result = await _partnerService.RecommendPartnerForCustomer(token, page, size);
+
+        //    ResultModel response = new ResultModel
+        //    {
+        //        IsSuccess = true,
+        //        Code = (int)HttpStatusCode.OK,
+        //        Message = "Get recommended stores for customer successfully",
+        //        Data = result,
+        //    };
+
+        //    return StatusCode(response.Code, response);
+        //}
+
+        /// <summary>
+        /// Get customer list for ADMIN
+        /// </summary>
         [HttpGet]
-        [Route("recommendation/store")]
+        [Route("view")]
         [Authorize]
-        public async Task<IActionResult> GetCustomerRecommendationStores(int? page = 1, int? size = 10)
+        public async Task<IActionResult> GetCustomerForAmin(int? page = 1, int? size = 10)
         {
             var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
 
-            var result = await _partnerService.RecommendPartnerForCustomer(token, page, size);
+            var result = await _customerService.GetCustomerListForAdmin(page, size);
 
             ResultModel response = new ResultModel
             {
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.OK,
-                Message = "Get recommended stores for customer successfully",
+                Message = "Get customer list successfully",
+                Data = result,
+            };
+
+            return StatusCode(response.Code, response);
+        }
+
+        /// <summary>
+        /// Activate-deactivate customer for ADMIN
+        /// </summary>
+        [HttpPut]
+        [Route("activate-deactivate/{customerId}")]
+        [Authorize]
+        public async Task<IActionResult> ActivateDeactivateUser(int customerId)
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+            var result = await _customerService.ActivateDeactivateCustomerForAdmin(token, customerId);
+
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = result ? "Activate customer successfully" : "Deactivate customer successfully",
                 Data = result,
             };
 

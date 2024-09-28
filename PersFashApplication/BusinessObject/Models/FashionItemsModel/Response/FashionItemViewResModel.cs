@@ -33,6 +33,6 @@ namespace BusinessObject.Models.FashionItemsModel.Response
 
         public List<string> ItemImages { get; set; }
 
-        public PartnerViewModel Partner { get; set; }
+        //public PartnerViewModel Partner { get; set; }
     }
 }

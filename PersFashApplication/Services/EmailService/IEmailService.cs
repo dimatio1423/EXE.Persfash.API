@@ -10,7 +10,7 @@ namespace Services.EmailService
     {
         Task SendRegistrationEmail(string fullName, string userEmail);
         Task SendUserResetPassword(string fullName, string userEmail,string OTP);
-        Task SendPartnerRegistrationEmail(string parteName, string partnerEmail);
+        //Task SendPartnerRegistrationEmail(string parteName, string partnerEmail);
         Task SendUpgradeToPremiumEmail(string fullName, string userEmail, string subscriptionName);
         Task SendInfluencerRegistrationEmail(string fullName, string userEmail);
         Task SendCoursePaymentSuccessEmail(string fullName, string courseName, string userEmail);

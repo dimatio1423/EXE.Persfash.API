@@ -23,6 +23,8 @@ namespace Repositories.OutfitCombinationRepos
         {
             try
             {
+                var isFemale = customer.Gender == GenderEnums.Female.ToString();
+
                 var customerOutfit = await _context.OutfitCombinations.Where(x => x.CustomerId == customer.CustomerId).ToListAsync();
 
                 foreach (var item in customerOutfit)
@@ -32,35 +34,42 @@ namespace Repositories.OutfitCombinationRepos
 
                 List<OutfitCombination> outfitCombinations = new List<OutfitCombination>();
 
+                int dressOutfitCount = 0;
+
                 for (int i = 0; i < numberOfOutfit; i++)
                 {
                     var topItem = recommendedFashionItem
-                        .Where(f => f.Category.Equals(CategoryEnums.Tops.ToString()))
+                        .Where(f => f.Category.Equals(CategoryEnums.Tops.ToString()) &&
+                         f.GenderTarget == GenderTargertEnums.Unisex.ToString() || f.GenderTarget == (isFemale ? GenderTargertEnums.Women.ToString() : GenderTargertEnums.Men.ToString()))
                         .OrderBy(f => Guid.NewGuid())
                         .FirstOrDefault();
 
                     var bottomItem = recommendedFashionItem
-                        .Where(f => f.Category.Equals(CategoryEnums.Bottoms.ToString()))
+                        .Where(f => f.Category.Equals(CategoryEnums.Bottoms.ToString()) &&
+                         f.GenderTarget == GenderTargertEnums.Unisex.ToString() || f.GenderTarget == (isFemale ? GenderTargertEnums.Women.ToString() : GenderTargertEnums.Men.ToString()))
                         .OrderBy(f => Guid.NewGuid())
                         .FirstOrDefault();
 
                     var shoesItem = recommendedFashionItem
-                        .Where(f => f.Category.Equals(CategoryEnums.Shoes.ToString()))
+                        .Where(f => f.Category.Equals(CategoryEnums.Shoes.ToString()) &&
+                        f.GenderTarget == GenderTargertEnums.Unisex.ToString() || f.GenderTarget == (isFemale ? GenderTargertEnums.Women.ToString() : GenderTargertEnums.Men.ToString()))
                         .OrderBy(f => Guid.NewGuid())
                         .FirstOrDefault();
 
                     var accessoriesItem = recommendedFashionItem
-                        .Where(f => f.Category.Equals(CategoryEnums.Accessories.ToString()))
+                        .Where(f => f.Category.Equals(CategoryEnums.Accessories.ToString()) &&
+                        f.GenderTarget == GenderTargertEnums.Unisex.ToString() || f.GenderTarget == (isFemale ? GenderTargertEnums.Women.ToString() : GenderTargertEnums.Men.ToString()))
                         .OrderBy(f => Guid.NewGuid())
                         .FirstOrDefault();
 
                     var dressesItem = recommendedFashionItem
-                        .Where(f => f.Category.Equals(CategoryEnums.Dresses.ToString()))
+                        .Where(f => f.Category.Equals(CategoryEnums.Dresses.ToString()) &&
+                         f.GenderTarget == GenderTargertEnums.Unisex.ToString() || f.GenderTarget == (isFemale ? GenderTargertEnums.Women.ToString() : GenderTargertEnums.Men.ToString()))
                         .OrderBy(f => Guid.NewGuid())
                         .FirstOrDefault();
 
 
-                    if (dressesItem != null)
+                    if (isFemale && dressesItem != null && dressOutfitCount < 2)
                     {
                         var outfitCombination = new OutfitCombination
                         {
@@ -72,7 +81,7 @@ namespace Repositories.OutfitCombinationRepos
                         if (!outfitCombinations.Contains(outfitCombination))
                         {
                             outfitCombinations.Add(outfitCombination);
-
+                            dressOutfitCount++;
                         }
                     }
                     else if (topItem != null && bottomItem != null)
@@ -110,11 +119,11 @@ namespace Repositories.OutfitCombinationRepos
             try
             {
                 return await _context.OutfitCombinations
-                    .Include(x => x.TopItem).ThenInclude(x => x.Partner)
-                    .Include(x => x.BottomItem).ThenInclude(x => x.Partner)
-                    .Include(x => x.AccessoriesItem).ThenInclude(x => x.Partner)
-                    .Include(x => x.ShoesItem).ThenInclude(x => x.Partner)
-                    .Include(x => x.DressItem).ThenInclude(x => x.Partner)
+                    .Include(x => x.TopItem)
+                    .Include(x => x.BottomItem)
+                    .Include(x => x.AccessoriesItem)
+                    .Include(x => x.ShoesItem)
+                    .Include(x => x.DressItem)
                     .Include(x => x.Customer)
                     .Where(x => x.OutfitId == outfitCombinationId).FirstOrDefaultAsync();
             }
@@ -129,11 +138,11 @@ namespace Repositories.OutfitCombinationRepos
             try
             {
                 return await _context.OutfitCombinations
-                    .Include(x => x.TopItem).ThenInclude(x => x.Partner)
-                    .Include(x => x.BottomItem).ThenInclude(x => x.Partner)
-                    .Include(x => x.AccessoriesItem).ThenInclude(x => x.Partner)
-                    .Include(x => x.ShoesItem).ThenInclude(x => x.Partner)
-                    .Include(x => x.DressItem).ThenInclude(x => x.Partner)
+                    .Include(x => x.TopItem)
+                    .Include(x => x.BottomItem)
+                    .Include(x => x.AccessoriesItem)
+                    .Include(x => x.ShoesItem)
+                    .Include(x => x.DressItem)
                     .Include(x => x.Customer)
                     .Where(x => x.CustomerId == customer.CustomerId).ToListAsync();
             }
