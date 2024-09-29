@@ -27,85 +27,121 @@ namespace Repositories.OutfitCombinationRepos
 
                 var customerOutfit = await _context.OutfitCombinations.Where(x => x.CustomerId == customer.CustomerId).ToListAsync();
 
-                foreach (var item in customerOutfit)
-                {
-                    _context.OutfitCombinations.Remove(item);
-                }
+                //foreach (var item in customerOutfit)
+                //{
+                //    _context.OutfitCombinations.Remove(item);
+                //}
+
 
                 List<OutfitCombination> outfitCombinations = new List<OutfitCombination>();
 
-                int dressOutfitCount = 0;
+                int updatedOutfitCount = 0;
+
+                int dressOutfitCount = customerOutfit.Count(x => x.DressItemId != null);
 
                 for (int i = 0; i < numberOfOutfit; i++)
                 {
                     var topItem = recommendedFashionItem
                         .Where(f => f.Category.Equals(CategoryEnums.Tops.ToString()) &&
-                         f.GenderTarget == GenderTargertEnums.Unisex.ToString() || f.GenderTarget == (isFemale ? GenderTargertEnums.Women.ToString() : GenderTargertEnums.Men.ToString()))
+                         (f.GenderTarget == GenderTargertEnums.Unisex.ToString() || f.GenderTarget == (isFemale ? GenderTargertEnums.Women.ToString() : GenderTargertEnums.Men.ToString())))
                         .OrderBy(f => Guid.NewGuid())
                         .FirstOrDefault();
 
                     var bottomItem = recommendedFashionItem
                         .Where(f => f.Category.Equals(CategoryEnums.Bottoms.ToString()) &&
-                         f.GenderTarget == GenderTargertEnums.Unisex.ToString() || f.GenderTarget == (isFemale ? GenderTargertEnums.Women.ToString() : GenderTargertEnums.Men.ToString()))
+                         (f.GenderTarget == GenderTargertEnums.Unisex.ToString() || f.GenderTarget == (isFemale ? GenderTargertEnums.Women.ToString() : GenderTargertEnums.Men.ToString())))
                         .OrderBy(f => Guid.NewGuid())
                         .FirstOrDefault();
 
                     var shoesItem = recommendedFashionItem
                         .Where(f => f.Category.Equals(CategoryEnums.Shoes.ToString()) &&
-                        f.GenderTarget == GenderTargertEnums.Unisex.ToString() || f.GenderTarget == (isFemale ? GenderTargertEnums.Women.ToString() : GenderTargertEnums.Men.ToString()))
+                        (f.GenderTarget == GenderTargertEnums.Unisex.ToString() || f.GenderTarget == (isFemale ? GenderTargertEnums.Women.ToString() : GenderTargertEnums.Men.ToString())))
                         .OrderBy(f => Guid.NewGuid())
                         .FirstOrDefault();
 
                     var accessoriesItem = recommendedFashionItem
                         .Where(f => f.Category.Equals(CategoryEnums.Accessories.ToString()) &&
-                        f.GenderTarget == GenderTargertEnums.Unisex.ToString() || f.GenderTarget == (isFemale ? GenderTargertEnums.Women.ToString() : GenderTargertEnums.Men.ToString()))
+                        (f.GenderTarget == GenderTargertEnums.Unisex.ToString() || f.GenderTarget == (isFemale ? GenderTargertEnums.Women.ToString() : GenderTargertEnums.Men.ToString())))
                         .OrderBy(f => Guid.NewGuid())
                         .FirstOrDefault();
 
                     var dressesItem = recommendedFashionItem
                         .Where(f => f.Category.Equals(CategoryEnums.Dresses.ToString()) &&
-                         f.GenderTarget == GenderTargertEnums.Unisex.ToString() || f.GenderTarget == (isFemale ? GenderTargertEnums.Women.ToString() : GenderTargertEnums.Men.ToString()))
+                         (f.GenderTarget == GenderTargertEnums.Unisex.ToString() || f.GenderTarget == (isFemale ? GenderTargertEnums.Women.ToString() : GenderTargertEnums.Men.ToString())))
                         .OrderBy(f => Guid.NewGuid())
                         .FirstOrDefault();
 
 
                     if (isFemale && dressesItem != null && dressOutfitCount < 2)
                     {
-                        var outfitCombination = new OutfitCombination
+
+                        var existingDressOutfit = customerOutfit.FirstOrDefault(x => x.DressItemId != null);
+
+                        if (existingDressOutfit != null)
                         {
-                            CustomerId = customer.CustomerId,
-                            DressItemId = dressesItem.ItemId,  // Only the dress
-                            ShoesItemId = shoesItem != null ? shoesItem.ItemId : null,
-                            AccessoriesItemId = accessoriesItem != null ? accessoriesItem.ItemId : null
-                        };
-                        if (!outfitCombinations.Contains(outfitCombination))
-                        {
-                            outfitCombinations.Add(outfitCombination);
-                            dressOutfitCount++;
+                            // Update existing outfit
+                            existingDressOutfit.DressItemId = dressesItem.ItemId;
+                            existingDressOutfit.ShoesItemId = shoesItem != null ? shoesItem.ItemId : null;
+                            existingDressOutfit.AccessoriesItemId = accessoriesItem != null ? accessoriesItem.ItemId : null;
+                            updatedOutfitCount++;
                         }
+                        else
+                        {
+                            var outfitCombination = new OutfitCombination
+                            {
+                                CustomerId = customer.CustomerId,
+                                DressItemId = dressesItem.ItemId,  // Only the dress
+                                ShoesItemId = shoesItem != null ? shoesItem.ItemId : null,
+                                AccessoriesItemId = accessoriesItem != null ? accessoriesItem.ItemId : null
+                            };
+                            if (!outfitCombinations.Contains(outfitCombination))
+                            {
+                                outfitCombinations.Add(outfitCombination);
+                                dressOutfitCount++;
+                            }
+                        }
+                        
                     }
                     else if (topItem != null && bottomItem != null)
                     {
-                        var outfitCombination = new OutfitCombination
+
+                        var existingOutfit = customerOutfit.FirstOrDefault(x => x.TopItemId != null && x.BottomItemId != null);
+
+                        if (existingOutfit != null)
                         {
-                            CustomerId = customer.CustomerId,
-                            TopItemId = topItem.ItemId,
-                            BottomItemId = bottomItem.ItemId,
-                            ShoesItemId = shoesItem != null ? shoesItem.ItemId : null,
-                            AccessoriesItemId = accessoriesItem != null ? accessoriesItem.ItemId : null
-                        };
-                        if (!outfitCombinations.Any(o =>
-                         o.TopItemId == outfitCombination.TopItemId &&
-                         o.BottomItemId == outfitCombination.BottomItemId &&
-                         o.ShoesItemId == outfitCombination.ShoesItemId &&
-                         o.AccessoriesItemId == outfitCombination.AccessoriesItemId))
+                            // Update existing outfit
+                            existingOutfit.TopItemId = topItem.ItemId;
+                            existingOutfit.BottomItemId = bottomItem.ItemId;
+                            existingOutfit.ShoesItemId = shoesItem != null ? shoesItem.ItemId : null;
+                            existingOutfit.AccessoriesItemId = accessoriesItem != null ? accessoriesItem.ItemId : null;
+                            updatedOutfitCount++;
+                        }
+                        else
                         {
-                            outfitCombinations.Add(outfitCombination);
+                            var outfitCombination = new OutfitCombination
+                            {
+                                CustomerId = customer.CustomerId,
+                                TopItemId = topItem.ItemId,
+                                BottomItemId = bottomItem.ItemId,
+                                ShoesItemId = shoesItem != null ? shoesItem.ItemId : null,
+                                AccessoriesItemId = accessoriesItem != null ? accessoriesItem.ItemId : null
+                            };
+                            if (!outfitCombinations.Any(o =>
+                             o.TopItemId == outfitCombination.TopItemId &&
+                             o.BottomItemId == outfitCombination.BottomItemId &&
+                             o.ShoesItemId == outfitCombination.ShoesItemId &&
+                             o.AccessoriesItemId == outfitCombination.AccessoriesItemId))
+                            {
+                                outfitCombinations.Add(outfitCombination);
+                            }
                         }
                     }
                 }
 
-                await _context.OutfitCombinations.AddRangeAsync(outfitCombinations);
+                if (outfitCombinations.Any())
+                {
+                    await _context.OutfitCombinations.AddRangeAsync(outfitCombinations);
+                }
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)

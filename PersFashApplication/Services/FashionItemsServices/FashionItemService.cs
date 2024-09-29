@@ -165,7 +165,7 @@ namespace Services.FashionItemsServices
 
         public async Task<Pagination<FashionItemViewListRes>> SearchFashionItems(int? page, int? size, FashionItemFilterReqModel? fashionItemFilterReqModel, string? sortBy, string? searchValue)
         {
-            var allItems = await _fashionItemRepository.GetFashionItems(page, size);
+            var allItems = await _fashionItemRepository.GetAll();
 
             var fashionItems = allItems;
 

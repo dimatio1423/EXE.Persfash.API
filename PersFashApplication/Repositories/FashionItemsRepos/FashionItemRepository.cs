@@ -509,7 +509,7 @@ namespace Repositories.FashionItemsRepos
                         }
                         break;
 
-                    case "Occaion":
+                    case "Occasion":
                         if (!string.IsNullOrEmpty(customerProfile.Occasion))
                         {
                             var preferredOccasion = customerProfile.Occasion.Split(new[] { ", " }, StringSplitOptions.None).ToList();
