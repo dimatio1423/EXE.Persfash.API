@@ -89,6 +89,13 @@ namespace Repositories.PaymentRepos
         {
             DateOnly start = (startDate.HasValue) ? startDate.Value : DateOnly.FromDateTime(DateTime.Now);
             DateOnly end = (endDate.HasValue) ? endDate.Value : start.AddDays(6);
+
+            if (start < end)
+            {
+                DateOnly tmp = start;
+                start = end;
+                end = tmp;
+            }
             
             return await _context.Payments.Where(x => (DateOnly.FromDateTime(x.PaymentDate) >= startDate && DateOnly.FromDateTime(x.PaymentDate) <= endDate) && x.Status.Equals(PaymentStatusEnums.Paid.ToString())).SumAsync(x => x.Price);
         }
