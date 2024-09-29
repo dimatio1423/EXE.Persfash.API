@@ -1,0 +1,14 @@
+﻿using BusinessObject.Models.DashboardModel.Response;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Services.AdminServices
+{
+    public interface IAdminService
+    {
+        Task<DashboardViewResModel> ViewDashboard(DateOnly? startDate, DateOnly? endDate);
+    }
+}

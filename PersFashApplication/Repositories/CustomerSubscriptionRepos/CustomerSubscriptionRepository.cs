@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Entities;
+using BusinessObject.Enums;
 using Microsoft.EntityFrameworkCore;
 using Repositories.GenericRepos;
 using System;
@@ -87,6 +88,15 @@ namespace Repositories.UserSubscriptionRepos
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        public async Task<int> GetTotalPremiumCustomer()
+        {
+            var total =  await _context.CustomerSubscriptions
+                .Include(x => x.Subscription)
+                .Where(x => x.Subscription.SubscriptionTitle.Equals(SubscriptionTypeEnums.Premium.ToString()) && x.IsActive == true).ToListAsync();
+
+            return total.Count;
         }
     }
 }
