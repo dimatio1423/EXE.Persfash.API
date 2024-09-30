@@ -17,6 +17,7 @@ using Services.Helper.CustomExceptions;
 using Services.Helpers.Handler.DecodeTokenHandler;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -582,6 +583,24 @@ namespace Services.FashionItemsServices
             var items = await _fashionItemRepository.GetRecommendationFashionItemForCustomerFilter(currCustomer.CustomerId, page, size, filter);
 
             return _mapper.Map<List<FashionItemViewListRes>>(items);
+        }
+
+        public async Task<Pagination<FashionItemViewListResModel>> ViewFashionItemsForAdmin(int? page, int? size)
+        {
+            var allFashionItems = await _fashionItemRepository.GetFashionItems();
+
+            var fashionItems = allFashionItems;
+
+            var pagedItems = fashionItems.Skip(((page ?? 1) - 1) * (size ?? 10))
+                    .Take(size ?? 10).ToList();
+
+            return new Pagination<FashionItemViewListResModel>
+            {
+                TotalItems = fashionItems.Count,
+                PageSize = size ?? 10,
+                CurrentPage = page ?? 1,
+                Data = _mapper.Map<List<FashionItemViewListResModel>>(pagedItems)
+            };
         }
     }
 }

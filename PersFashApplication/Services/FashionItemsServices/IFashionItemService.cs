@@ -13,6 +13,7 @@ namespace Services.FashionItemsServices
     public interface IFashionItemService
     {
         Task<Pagination<FashionItemViewListRes>> ViewFashionItems(int? page, int? size, FashionItemFilterReqModel? fashionItemFilterReqModel, string? sortBy);
+        Task<Pagination<FashionItemViewListResModel>> ViewFashionItemsForAdmin(int? page, int? size);
         //Task<List<FashionItemViewListRes>> ViewFashionItemsOfCurrentPartner(string token, int? page, int? size);
         //Task<List<FashionItemViewListRes>> ViewFashionItemsByPartnerId(int partnerId, int? page, int? size);
         Task<FashionItemViewResModel> ViewDetailsFashionItem(int fashionItemId);
