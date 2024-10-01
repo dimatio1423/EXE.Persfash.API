@@ -13,6 +13,5 @@ namespace BusinessObject.Models.DashboardModel.Response
         public decimal RevenueThisWeek { get; set; }
         public decimal RevenueThisMonth { get; set; }
         public decimal TotalPremiumSubscription { get; set; }
-        public decimal RevenueInDayRange { get; set; }
     }
 }

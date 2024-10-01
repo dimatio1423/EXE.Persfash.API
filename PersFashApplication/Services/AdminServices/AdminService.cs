@@ -31,7 +31,7 @@ namespace Services.AdminService
             _customerSubscriptionRepository = customerSubscriptionRepository;
             _decodeToken = decodeToken;
         }
-        public async Task<DashboardViewResModel> ViewDashboard(string token, DateOnly? startDate, DateOnly? endDate)
+        public async Task<DashboardViewResModel> ViewDashboard(string token)
         {
 
             var decodeToken = _decodeToken.decode(token);
@@ -51,8 +51,6 @@ namespace Services.AdminService
 
             var revenueMonth = await _paymentRepository.GetTotalRevenueForMonth(DateTime.Now);
 
-            var revenueInDateRange = await _paymentRepository.GetTotalRevenueForDayRange(startDate, endDate);
-
 
             return new DashboardViewResModel
             {
@@ -61,8 +59,42 @@ namespace Services.AdminService
                 RevenueToday = revenueToday,
                 RevenueThisWeek = revenueWeek,
                 RevenueThisMonth = revenueMonth,
-                RevenueInDayRange = revenueInDateRange
             };
+        }
+
+        public async Task<DashboardViewDateRange> ViewTotalRevenueByDateRange(string token, DateOnly? startDate, DateOnly? endDate)
+        {
+            DateOnly start = (startDate.HasValue) ? startDate.Value : DateOnly.FromDateTime(DateTime.Now);
+            DateOnly end = (endDate.HasValue) ? endDate.Value : start.AddDays(6);
+
+            if (start > end)
+            {
+                DateOnly tmp = start;
+                start = end;
+                end = tmp;
+            }
+
+            var revenueDateRange = await _paymentRepository.GetTotalRevenueForDayRange(startDate, endDate);
+
+            Dictionary<DateOnly, decimal> revenueDateRangeList = new Dictionary<DateOnly, decimal>();
+
+            DateOnly currDate = start;
+
+            while (currDate <= end)
+            {
+                var totalRevenueByDate = await _paymentRepository.GetTotalRevenueToday(currDate);
+
+                revenueDateRangeList.Add(currDate, totalRevenueByDate);
+
+                currDate = currDate.AddDays(1);
+            }
+
+            return new DashboardViewDateRange
+            {
+                TotalRevenueDateRange = revenueDateRange,
+                RevenueDateRange = revenueDateRangeList
+            };
+
         }
     }
 }

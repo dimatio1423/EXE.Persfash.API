@@ -9,6 +9,7 @@ namespace Services.AdminServices
 {
     public interface IAdminService
     {
-        Task<DashboardViewResModel> ViewDashboard(string token, DateOnly? startDate, DateOnly? endDate);
+        Task<DashboardViewResModel> ViewDashboard(string token);
+        Task<DashboardViewDateRange> ViewTotalRevenueByDateRange(string token, DateOnly? startDate, DateOnly? endDate);
     }
 }

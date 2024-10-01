@@ -90,7 +90,7 @@ namespace Repositories.PaymentRepos
             DateOnly start = (startDate.HasValue) ? startDate.Value : DateOnly.FromDateTime(DateTime.Now);
             DateOnly end = (endDate.HasValue) ? endDate.Value : start.AddDays(6);
 
-            if (start < end)
+            if (start > end)
             {
                 DateOnly tmp = start;
                 start = end;
