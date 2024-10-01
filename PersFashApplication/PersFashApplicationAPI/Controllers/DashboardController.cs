@@ -1,5 +1,6 @@
 ﻿using BusinessObject.Models.DashboardModel.Request;
 using BusinessObject.Models.ResultModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.AdminServices;
@@ -19,9 +20,12 @@ namespace PersFashApplicationAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> ViewDashboard([FromQuery] DashboardReqModel dashboardReqModel)
         {
-            var result = await _adminService.ViewDashboard(dashboardReqModel.startDate, dashboardReqModel.endDate);
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+            var result = await _adminService.ViewDashboard(token, dashboardReqModel.startDate, dashboardReqModel.endDate);
 
             ResultModel response = new ResultModel
             {

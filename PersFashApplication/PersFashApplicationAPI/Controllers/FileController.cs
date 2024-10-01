@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.AWSService;
+using Services.CloudinaryService;
 using System.Net;
 
 namespace PersFashApplicationAPI.Controllers
@@ -11,10 +12,12 @@ namespace PersFashApplicationAPI.Controllers
     public class FileController : ControllerBase
     {
         private readonly IAWSService _aWSService;
+        private readonly ICloudinaryService _cloudinaryService;
 
-        public FileController(IAWSService aWSService)
+        public FileController(IAWSService aWSService, ICloudinaryService cloudinaryService)
         {
             _aWSService = aWSService;
+            _cloudinaryService = cloudinaryService;
         }
 
         /// <summary>
@@ -25,6 +28,23 @@ namespace PersFashApplicationAPI.Controllers
         public async Task<IActionResult> UploadFileImages(List<IFormFile> images)
         {
             var result = await _aWSService.UploadFilesImages(images, "persfash-application", null);
+
+            var response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "Upload images successfully",
+                Data = result
+            };
+
+            return StatusCode(response.Code, response);
+        }
+
+        [HttpPost]
+        [Route("cloudinary/image")]
+        public async Task<IActionResult> UploadFileImagesCloudinary(List<IFormFile> images)
+        {
+            var result = await _cloudinaryService.AddPhotos(images);
 
             var response = new ResultModel
             {

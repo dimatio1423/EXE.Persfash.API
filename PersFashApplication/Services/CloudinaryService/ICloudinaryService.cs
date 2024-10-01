@@ -12,6 +12,7 @@ namespace Services.CloudinaryService
     {
         Task<RawUploadResult> AddAudio(IFormFile file);
         Task<ImageUploadResult> AddPhoto(IFormFile file);
+        Task<List<string>> AddPhotos(List<IFormFile> file);
         Task<DeletionResult> DeleteFile(string publicId);
     }
 }
