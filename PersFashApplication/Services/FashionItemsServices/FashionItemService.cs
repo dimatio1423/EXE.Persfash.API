@@ -17,6 +17,7 @@ using Services.Helper.CustomExceptions;
 using Services.Helpers.Handler.DecodeTokenHandler;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -165,7 +166,7 @@ namespace Services.FashionItemsServices
 
         public async Task<Pagination<FashionItemViewListRes>> SearchFashionItems(int? page, int? size, FashionItemFilterReqModel? fashionItemFilterReqModel, string? sortBy, string? searchValue)
         {
-            var allItems = await _fashionItemRepository.GetFashionItems(page, size);
+            var allItems = await _fashionItemRepository.GetAll();
 
             var fashionItems = allItems;
 
@@ -288,14 +289,14 @@ namespace Services.FashionItemsServices
             currItem.Material = (fashionItemUpdateReqModel.Material != null && fashionItemUpdateReqModel.Material.Count > 0) ? string.Join(", ", fashionItemUpdateReqModel.Material) : currItem.Material;
             currItem.Occasion = (fashionItemUpdateReqModel.Occasion != null && fashionItemUpdateReqModel.Occasion.Count > 0) ? string.Join(", ", fashionItemUpdateReqModel.Occasion) : currItem.Occasion;
             
-            if (!string.IsNullOrEmpty(fashionItemUpdateReqModel.Thumbnail))
-            {
-                var s3key = _aWSService.ExtractS3Key(currItem.ThumbnailUrl);
-                if (!string.IsNullOrEmpty(s3key))
-                {
-                    await _aWSService.DeleteFile("persfash-application", s3key);
-                }
-            }
+            //if (!string.IsNullOrEmpty(fashionItemUpdateReqModel.Thumbnail))
+            //{
+            //    var s3key = _aWSService.ExtractS3Key(currItem.ThumbnailUrl);
+            //    if (!string.IsNullOrEmpty(s3key))
+            //    {
+            //        await _aWSService.DeleteFile("persfash-application", s3key);
+            //    }
+            //}
             
             currItem.ThumbnailUrl = !string.IsNullOrEmpty(fashionItemUpdateReqModel.Thumbnail) ? fashionItemUpdateReqModel.Thumbnail : currItem.ThumbnailUrl;
             currItem.ProductUrl = !string.IsNullOrEmpty(fashionItemUpdateReqModel.ProductUrl) ? fashionItemUpdateReqModel.ProductUrl : currItem.ProductUrl;
@@ -308,13 +309,13 @@ namespace Services.FashionItemsServices
 
                 foreach (var item in currItemImages)
                 {
-                    var s3Key = _aWSService.ExtractS3Key(item.ImageUrl);
+                    //var s3Key = _aWSService.ExtractS3Key(item.ImageUrl);
 
-                    if (!string.IsNullOrEmpty(s3Key))
-                    {
-                        await _aWSService.DeleteFile("persfash-application", s3Key);
-                    }
-                    
+                    //if (!string.IsNullOrEmpty(s3Key))
+                    //{
+                    //    await _aWSService.DeleteFile("persfash-application", s3Key);
+                    //}
+
                     await _fashionItemImageRepository.Remove(item);
                 }
 
@@ -582,6 +583,24 @@ namespace Services.FashionItemsServices
             var items = await _fashionItemRepository.GetRecommendationFashionItemForCustomerFilter(currCustomer.CustomerId, page, size, filter);
 
             return _mapper.Map<List<FashionItemViewListRes>>(items);
+        }
+
+        public async Task<Pagination<FashionItemViewListResModel>> ViewFashionItemsForAdmin(int? page, int? size)
+        {
+            var allFashionItems = await _fashionItemRepository.GetFashionItems();
+
+            var fashionItems = allFashionItems;
+
+            var pagedItems = fashionItems.Skip(((page ?? 1) - 1) * (size ?? 10))
+                    .Take(size ?? 10).ToList();
+
+            return new Pagination<FashionItemViewListResModel>
+            {
+                TotalItems = fashionItems.Count,
+                PageSize = size ?? 10,
+                CurrentPage = page ?? 1,
+                Data = _mapper.Map<List<FashionItemViewListResModel>>(pagedItems)
+            };
         }
     }
 }

@@ -55,6 +55,22 @@ namespace Repositories.FashionItemsRepos
             }
         }
 
+        public async Task<List<FashionItem>> GetFashionItems()
+        {
+            try
+            {
+
+                return await _context.FashionItems
+                    .Include(x => x.FashionItemImages)
+                    .ToListAsync();
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<FashionItem> GetFashionItemsById(int itemId)
         {
             try
@@ -509,7 +525,7 @@ namespace Repositories.FashionItemsRepos
                         }
                         break;
 
-                    case "Occaion":
+                    case "Occasion":
                         if (!string.IsNullOrEmpty(customerProfile.Occasion))
                         {
                             var preferredOccasion = customerProfile.Occasion.Split(new[] { ", " }, StringSplitOptions.None).ToList();

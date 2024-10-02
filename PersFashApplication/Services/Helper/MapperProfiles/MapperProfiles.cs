@@ -34,6 +34,15 @@ namespace Services.Helper.MapperProfiles
 
             CreateMap<FashionItem, FashionItemViewListRes>().ReverseMap();
 
+            CreateMap<FashionItem, FashionItemViewListResModel>()
+                .ForMember(dest => dest.FashionTrend, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.FashionTrend) ? new List<string>(src.FashionTrend.Split(new[] { ", " }, StringSplitOptions.None)) : null))
+                .ForMember(dest => dest.Size, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Size) ? new List<string>(src.Size.Split(new[] { ", " }, StringSplitOptions.None)) : null))
+                .ForMember(dest => dest.Material, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Material) ? new List<string>(src.Material.Split(new[] { ", " }, StringSplitOptions.None)) : null))
+                .ForMember(dest => dest.Color, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Color) ? new List<string>(src.Color.Split(new[] { ", " }, StringSplitOptions.None)) : null))
+                .ForMember(dest => dest.Occasion, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Occasion) ? new List<string>(src.Occasion.Split(new[] { ", " }, StringSplitOptions.None)) : null))
+                .ForMember(dest => dest.ItemImages, opt => opt.MapFrom(src => src.FashionItemImages != null ? src.FashionItemImages.Select(x => x.ImageUrl).ToList() : null))
+                .ReverseMap();
+
             //Subscription
             CreateMap<Subscription, SubscriptionViewDetailsResModel>()
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Description) ? new List<string>(src.Description.Split(new[] {", "}, StringSplitOptions.None)) : null))
