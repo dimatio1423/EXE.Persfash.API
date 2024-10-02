@@ -37,7 +37,7 @@ namespace Repositories.OutfitCombinationRepos
 
                 int updatedOutfitCount = 0;
 
-                int dressOutfitCount = customerOutfit.Count(x => x.DressItemId != null);
+                int dressOutfitCount = 0;
 
                 for (int i = 0; i < numberOfOutfit; i++)
                 {
@@ -75,15 +75,16 @@ namespace Repositories.OutfitCombinationRepos
                     if (isFemale && dressesItem != null && dressOutfitCount < 2)
                     {
 
-                        var existingDressOutfit = customerOutfit.FirstOrDefault(x => x.DressItemId != null);
-
+                        var existingDressOutfit = (i < customerOutfit.Count)
+                                       ? customerOutfit.FirstOrDefault(x => x.DressItemId != null && x.OutfitId == customerOutfit[i].OutfitId)
+                                       : null;
                         if (existingDressOutfit != null)
                         {
                             // Update existing outfit
                             existingDressOutfit.DressItemId = dressesItem.ItemId;
                             existingDressOutfit.ShoesItemId = shoesItem != null ? shoesItem.ItemId : null;
                             existingDressOutfit.AccessoriesItemId = accessoriesItem != null ? accessoriesItem.ItemId : null;
-                            updatedOutfitCount++;
+                            dressOutfitCount++;
                         }
                         else
                         {
@@ -105,7 +106,7 @@ namespace Repositories.OutfitCombinationRepos
                     else if (topItem != null && bottomItem != null)
                     {
 
-                        var existingOutfit = customerOutfit.FirstOrDefault(x => x.TopItemId != null && x.BottomItemId != null);
+                        var existingOutfit = (i < customerOutfit.Count) ? customerOutfit[i] : null;
 
                         if (existingOutfit != null)
                         {
@@ -114,7 +115,6 @@ namespace Repositories.OutfitCombinationRepos
                             existingOutfit.BottomItemId = bottomItem.ItemId;
                             existingOutfit.ShoesItemId = shoesItem != null ? shoesItem.ItemId : null;
                             existingOutfit.AccessoriesItemId = accessoriesItem != null ? accessoriesItem.ItemId : null;
-                            updatedOutfitCount++;
                         }
                         else
                         {

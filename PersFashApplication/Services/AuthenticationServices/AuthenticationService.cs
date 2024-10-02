@@ -434,7 +434,7 @@ private readonly ISubscriptionRepository _subscriptionRepository;
                             customer = new Customer
                             {
                                 Email = email,
-                                Username = email,
+                                Username = email.Split("@")[0],
                                 FullName = givenName,
                                 ProfilePicture = picture,
                                 Gender = GenderEnums.Male.ToString(), // Default value, this can be dynamic

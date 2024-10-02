@@ -29,7 +29,7 @@ namespace Services.PayOSService
             List<ItemData> items = new List<ItemData>();
             items.Add(item);
 
-            PaymentData paymentData = new PaymentData(payOSReqModel.OrderId, (int)payOSReqModel.Amount, "Thanh toan", items, payOSReqModel.CancelUrl, payOSReqModel.RedirectUrl);
+            PaymentData paymentData = new PaymentData(payOSReqModel.OrderId, (int)payOSReqModel.Amount, "Thanh toán subscription", items, payOSReqModel.CancelUrl, payOSReqModel.RedirectUrl);
 
             CreatePaymentResult createPayment = await payOS.createPaymentLink(paymentData);
 
