@@ -131,7 +131,7 @@ namespace Services.FashionItemsServices
             }
         }
 
-        public async Task DeleteFashionItem(string token, int fashionItemId)
+        public async Task<bool> ActivateDeactivateFashionItem(string token, int fashionItemId)
         {
             var decodedToken = _decodeToken.decode(token);
 
@@ -159,9 +159,11 @@ namespace Services.FashionItemsServices
             //    throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Can not delete other partners' fashion items");
             //}
 
-            currItem.Status = StatusEnums.Unavailable.ToString();
+            currItem.Status = currItem.Status.Equals(StatusEnums.Available.ToString()) ? StatusEnums.Unavailable.ToString() : StatusEnums.Available.ToString();
 
             await _fashionItemRepository.Update(currItem);
+
+            return currItem.Status.Equals(StatusEnums.Available.ToString()) ? true : false;
         }
 
         public async Task<Pagination<FashionItemViewListRes>> SearchFashionItems(int? page, int? size, FashionItemFilterReqModel? fashionItemFilterReqModel, string? sortBy, string? searchValue)

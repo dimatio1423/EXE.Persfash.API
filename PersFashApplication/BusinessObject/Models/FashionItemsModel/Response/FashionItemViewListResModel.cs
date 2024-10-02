@@ -37,5 +37,7 @@ namespace BusinessObject.Models.FashionItemsModel.Response
         public string ThumbnailURL { get; set; }
 
         public List<string> ItemImages { get; set; }
+
+        public string Status { get; set; }
     }
 }

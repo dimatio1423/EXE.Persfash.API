@@ -153,22 +153,23 @@ namespace PersFashApplicationAPI.Controllers
 
 
         /// <summary>
-        /// Remove fashion items for partner
+        /// Activate deactivate fashion items for partner
         /// </summary>
-        [HttpDelete]
+        [HttpPost]
         [Route("{itemId}")]
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> RemoveFashionItem(int itemId)
         {
             var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
 
-            await _fashionItemService.DeleteFashionItem(token, itemId);
+            var result = await _fashionItemService.ActivateDeactivateFashionItem(token, itemId);
 
             ResultModel response = new ResultModel
             {
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.OK,
-                Message = "Remove fashion item successfully",
+                Message = result ? "Activate fashion item successfully" : "Deactivate fashion item successfully",
+                Data = result, 
             };
 
             return StatusCode(response.Code, response);

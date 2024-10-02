@@ -134,7 +134,7 @@ namespace Repositories.FashionItemsRepos
                     .FirstOrDefaultAsync();
 
                 var fashionItemQuery = await _context.FashionItems
-                    .AsQueryable().ToListAsync();
+                    .AsQueryable().Where(x => x.Status.Equals(StatusEnums.Available.ToString())).ToListAsync();
 
                 var allCriteriaMatchItems = fashionItemQuery.AsEnumerable();  // For items matching all criteria
                 var atLeastOneMatchItems = new List<FashionItem>();
@@ -263,7 +263,7 @@ namespace Repositories.FashionItemsRepos
                     .Where(x => x.CustomerId == customerId)
                     .FirstOrDefaultAsync();
 
-                var fashionItemQuery = await _context.FashionItems
+                var fashionItemQuery = await _context.FashionItems.Where(x => x.Status.Equals(StatusEnums.Available.ToString()))
                     .AsQueryable().ToListAsync();
 
                 var allCriteriaMatchItems = fashionItemQuery.AsEnumerable();  // For items matching all criteria
@@ -389,7 +389,7 @@ namespace Repositories.FashionItemsRepos
                     .Where(x => x.CustomerId == customerId)
                     .FirstOrDefaultAsync();
 
-                var fashionItemQuery = await _context.FashionItems
+                var fashionItemQuery = await _context.FashionItems.Where(x => x.Status.Equals(StatusEnums.Available.ToString()))
                     .AsQueryable().ToListAsync();
 
                 var fashionItemList = new List<FashionItem>();

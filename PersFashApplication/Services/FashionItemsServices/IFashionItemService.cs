@@ -19,7 +19,7 @@ namespace Services.FashionItemsServices
         Task<FashionItemViewResModel> ViewDetailsFashionItem(int fashionItemId);
         Task CreateNewFashionItem(string token, FashionItemCreateReqModel fashionItemCreateReqModel);
         Task UpdateFashionItem(string token, FashionItemUpdateReqModel fashionItemUpdateReqModel);
-        Task DeleteFashionItem(string token, int fashionItemId);
+        Task<bool> ActivateDeactivateFashionItem(string token, int fashionItemId);
         Task<Pagination<FashionItemViewListRes>> SearchFashionItems(int? page, int? size, FashionItemFilterReqModel? fashionItemFilterReqModel, string? sortBy, string? searchValue);
         Task<List<FashionItemViewListRes>> RecommendFashionItemForCustomer(string token, int? page, int? size);
         Task<List<FashionItemViewListRes>> RecommendFashionItemForCustomerFilter(string token, int? page, int? size, string filter);
