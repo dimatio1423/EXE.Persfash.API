@@ -63,7 +63,7 @@ CREATE TABLE FashionItems (
     Material NVARCHAR(MAX),
 	ThumbnailURL NVARCHAR(255),
     Occasion NVARCHAR(MAX),
-    ProductURL NVARCHAR(255),
+    ProductURL TEXT,
     DateAdded DATETIME DEFAULT GETDATE(),
 	Status VARCHAR(50),
 );
