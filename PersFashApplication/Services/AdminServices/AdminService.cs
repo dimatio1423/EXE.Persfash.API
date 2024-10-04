@@ -54,7 +54,7 @@ namespace Services.AdminService
 
             return new DashboardViewResModel
             {
-                TotalUser = totalCustomer.Count,
+                TotalUser = totalCustomer.Where(x => x.Status.Equals(StatusEnums.Active.ToString())).ToList().Count,
                 TotalPremiumSubscription = totalPremiumCustomer,
                 RevenueToday = revenueToday,
                 RevenueThisWeek = revenueWeek,
