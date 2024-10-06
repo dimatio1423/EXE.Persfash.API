@@ -13,12 +13,13 @@ namespace Services.FashionItemsServices
     public interface IFashionItemService
     {
         Task<Pagination<FashionItemViewListRes>> ViewFashionItems(int? page, int? size, FashionItemFilterReqModel? fashionItemFilterReqModel, string? sortBy);
+        Task<Pagination<FashionItemViewListResModel>> ViewFashionItemsForAdmin(int? page, int? size);
         //Task<List<FashionItemViewListRes>> ViewFashionItemsOfCurrentPartner(string token, int? page, int? size);
         //Task<List<FashionItemViewListRes>> ViewFashionItemsByPartnerId(int partnerId, int? page, int? size);
         Task<FashionItemViewResModel> ViewDetailsFashionItem(int fashionItemId);
         Task CreateNewFashionItem(string token, FashionItemCreateReqModel fashionItemCreateReqModel);
         Task UpdateFashionItem(string token, FashionItemUpdateReqModel fashionItemUpdateReqModel);
-        Task DeleteFashionItem(string token, int fashionItemId);
+        Task<bool> ActivateDeactivateFashionItem(string token, int fashionItemId);
         Task<Pagination<FashionItemViewListRes>> SearchFashionItems(int? page, int? size, FashionItemFilterReqModel? fashionItemFilterReqModel, string? sortBy, string? searchValue);
         Task<List<FashionItemViewListRes>> RecommendFashionItemForCustomer(string token, int? page, int? size);
         Task<List<FashionItemViewListRes>> RecommendFashionItemForCustomerFilter(string token, int? page, int? size, string filter);

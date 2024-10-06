@@ -32,6 +32,8 @@ using Repositories.UserRepos;
 using Repositories.UserSubscriptionRepos;
 using Repositories.WardrobeItemRepos;
 using Repositories.WardrobeRepos;
+using Services.AdminService;
+using Services.AdminServices;
 using Services.AuthenticationServices;
 using Services.AWSService;
 using Services.AWSServices;
@@ -145,6 +147,7 @@ builder.Services.AddScoped<IOutfitService, OutfitService>();
 builder.Services.AddScoped<ISupportQuestionService, SupportQuestionService>();
 builder.Services.AddScoped<ISupportMessageService, SupportMessageService>();
 builder.Services.AddScoped<IPayOSService, PayOSService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 
 //-----------------------------------------VerificationCodeCache-----------------------------------------
 
@@ -237,11 +240,14 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 

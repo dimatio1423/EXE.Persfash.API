@@ -44,6 +44,82 @@ VALUES
 ('Leather Crossbody Bag', 'Accessories', 'Coach', 250.00, 'Regular', 'Women', 'Luxury', 'L', 'Black', 'Leather', 'Formal', 'crossbody_bag.jpg', 'www.coach.com/crossbodybag', 'Available'),
 ('Baseball Cap', 'Accessories', 'Nike', 30.00, 'Regular', 'Unisex', 'Sporty', 'One Size', 'Red', 'Cotton', 'Sport', 'baseball_cap.jpg', 'www.nike.com/baseballcap', 'Available');
 
+INSERT INTO FashionItems (ItemName, Category, Brand, Price, FitType, GenderTarget, FashionTrend, Size, Color, Material, Occasion, ThumbnailURL, ProductURL, Status)
+VALUES
+('Crew Neck T-Shirt', 'Tops', 'Uniqlo', 25.00, 'Regular', 'Men', 'Casual', 'L', 'Navy', 'Cotton', 'Casual', 'crew_neck_tshirt.jpg', 'www.uniqlo.com/crewnecktshirt', 'Available'),
+('Polo Shirt', 'Tops', 'Lacoste', 80.00, 'Slim', 'Men', 'Classic', 'M', 'White', 'Cotton', 'Formal', 'polo_shirt.jpg', 'www.lacoste.com/poloshirt', 'Available'),
+('Denim Jacket', 'Tops', 'Levis', 110.00, 'Regular', 'Men', 'Classic', 'L', 'Blue', 'Denim', 'Casual', 'denim_jacket.jpg', 'www.levis.com/denimjacket', 'Available'),
+('Formal Shirt', 'Tops', 'Tommy Hilfiger', 65.00, 'Slim', 'Men', 'Business', 'L', 'Blue', 'Cotton', 'Business', 'formal_shirt.jpg', 'www.tommy.com/formalshirt', 'Available'),
+('Graphic Hoodie', 'Tops', 'Nike', 60.00, 'Regular', 'Men', 'Casual', 'XL', 'Black', 'Polyester', 'Casual', 'graphic_hoodie.jpg', 'www.nike.com/graphichoodie', 'Available'),
+-- Tops for Women
+('Crop Top', 'Tops', 'Forever 21', 20.00, 'Slim', 'Women', 'Sporty', 'S', 'Pink', 'Cotton', 'Casual', 'crop_top.jpg', 'www.forever21.com/croptop', 'Available'),
+('Peplum Blouse', 'Tops', 'H&M', 40.00, 'Regular', 'Women', 'Luxury', 'M', 'White', 'Silk', 'Formal', 'peplum_blouse.jpg', 'www.hm.com/peplumblouse', 'Available'),
+('Off-Shoulder Top', 'Tops', 'Zara', 35.00, 'Slim', 'Women', 'Luxury', 'S', 'Yellow', 'Linen', 'Casual', 'off_shoulder_top.jpg', 'www.zara.com/offshouldertop', 'Available'),
+('Turtleneck Sweater', 'Tops', 'Mango', 50.00, 'Regular', 'Women', 'Minimalist', 'M', 'White', 'Wool', 'Casual', 'turtleneck_sweater.jpg', 'www.mango.com/turtlenecksweater', 'Available'),
+('Sequin Blouse', 'Tops', 'H&M', 55.00, 'Regular', 'Women', 'Casual', 'M', 'Yellow', 'Polyester', 'Party', 'sequin_blouse.jpg', 'www.hm.com/sequinblouse', 'Available'),
+
+-- Tops for Unisex
+('Henley Shirt', 'Tops', 'Uniqlo', 30.00, 'Regular', 'Unisex', 'Casual', 'M', 'Gray', 'Cotton', 'Casual', 'henley_shirt.jpg', 'www.uniqlo.com/henleyshirt', 'Available'),
+('Bomber Jacket', 'Tops', 'Adidas', 100.00, 'Regular', 'Unisex', 'Streetwear', 'L', 'Black', 'Nylon', 'Casual', 'bomber_jacket.jpg', 'www.adidas.com/bomberjacket', 'Available'),
+('Zip-Up Hoodie', 'Tops', 'Nike', 70.00, 'Regular', 'Unisex', 'Streetwear', 'M', 'Gray', 'Polyester', 'Casual', 'zipup_hoodie.jpg', 'www.nike.com/zipuphoodie', 'Available'),
+('Flannel Shirt', 'Tops', 'Urban Outfitters', 45.00, 'Regular', 'Unisex', 'Streetwear', 'L', 'Red', 'Cotton', 'Casual', 'flannel_shirt.jpg', 'www.urbanoutfitters.com/flannelshirt', 'Available'),
+('Tech Fleece Hoodie', 'Tops', 'Nike', 120.00, 'Slim', 'Unisex', 'Sporty', 'L', 'Black', 'Polyester', 'Sport', 'tech_fleece_hoodie.jpg', 'www.nike.com/techfleecehoodie', 'Available'),
+
+-- Bottoms for Men
+('Chino Pants', 'Bottoms', 'Gap', 60.00, 'Slim', 'Men', 'Classic', 'M', 'Black', 'Cotton', 'Business Casual', 'chino_pants.jpg', 'www.gap.com/chinopants', 'Available'),
+('Cargo Pants', 'Bottoms', 'Uniqlo', 55.00, 'Regular', 'Men', 'Sporty', 'L', 'Green', 'Cotton', 'Casual', 'cargo_pants.jpg', 'www.uniqlo.com/cargopants', 'Available'),
+('Tailored Trousers', 'Bottoms', 'Hugo Boss', 150.00, 'Slim', 'Men', 'Business', 'L', 'Black', 'Wool', 'Formal', 'tailored_trousers.jpg', 'www.hugoboss.com/trousers', 'Available'),
+('Joggers', 'Bottoms', 'Adidas', 50.00, 'Regular', 'Men', 'Sporty', 'M', 'Gray', 'Polyester', 'Sport', 'joggers.jpg', 'www.adidas.com/joggers', 'Available'),
+('Corduroy Pants', 'Bottoms', 'Levis', 80.00, 'Slim', 'Men', 'Vintage', 'L', 'Brown', 'Corduroy', 'Casual', 'corduroy_pants.jpg', 'www.levis.com/corduroypants', 'Available'),
+
+-- Bottoms for Women
+('Skinny Jeans', 'Bottoms', 'Zara', 70.00, 'Slim', 'Women', 'Bohemian', 'S', 'Black', 'Denim', 'Casual', 'skinny_jeans.jpg', 'www.zara.com/skinnyjeans', 'Available'),
+('Palazzo Pants', 'Bottoms', 'Mango', 80.00, 'Regular', 'Women', 'Bohemian', 'M', 'White', 'Linen', 'Casual', 'palazzo_pants.jpg', 'www.mango.com/palazzopants', 'Available'),
+('High-Waisted Shorts', 'Bottoms', 'H&M', 35.00, 'Slim', 'Women', 'Bohemian', 'S', 'Blue', 'Denim', 'Casual', 'highwaisted_shorts.jpg', 'www.hm.com/highwaistedshorts', 'Available'),
+('Tapered Trousers', 'Bottoms', 'Uniqlo', 90.00, 'Regular', 'Women', 'Streetwear', 'M', 'Black', 'Cotton', 'Business', 'tapered_trousers.jpg', 'www.uniqlo.com/taperedtrousers', 'Available'),
+('Leather Skirt', 'Bottoms', 'H&M', 120.00, 'Slim', 'Women', 'Streetwear', 'M', 'Black', 'Leather', 'Party', 'leather_skirt.jpg', 'www.hm.com/leatherskirt', 'Available'),
+
+
+('Oxford Shoes', 'Shoes', 'Clarks', 140.00, 'Regular', 'Men', 'Business', '9', 'Black', 'Leather', 'Formal', 'oxford_shoes.jpg', 'www.clarks.com/oxfordshoes', 'Available'),
+('Sneakers', 'Shoes', 'Nike', 100.00, 'Regular', 'Men', 'Sporty', '10', 'White', 'Mesh', 'Casual', 'sneakers.jpg', 'www.nike.com/sneakers', 'Available'),
+('Boots', 'Shoes', 'Timberland', 180.00, 'Regular', 'Men', 'Business', '11', 'Brown', 'Leather', 'Casual', 'boots.jpg', 'www.timberland.com/boots', 'Available'),
+('Loafers', 'Shoes', 'Gucci', 600.00, 'Slim', 'Men', 'Classic', '9', 'Black', 'Leather', 'Formal', 'loafers.jpg', 'www.gucci.com/loafers', 'Available'),
+('Running Shoes', 'Shoes', 'Adidas', 120.00, 'Regular', 'Men', 'Sporty', '10', 'Blue', 'Mesh', 'Sport', 'running_shoes.jpg', 'www.adidas.com/runningshoes', 'Available'),
+
+-- Shoes for Women
+('Heeled Sandals', 'Shoes', 'Steve Madden', 95.00, 'Slim', 'Women', 'Classic', '7', 'Black', 'Leather', 'Casual', 'heeled_sandals.jpg', 'www.stevemadden.com/heeledsandals', 'Available'),
+('Ankle Boots', 'Shoes', 'Zara', 150.00, 'Regular', 'Women', 'Classic', '8', 'Black', 'Leather', 'Casual', 'ankle_boots.jpg', 'www.zara.com/ankleboots', 'Available'),
+('Ballet Flats', 'Shoes', 'Tory Burch', 200.00, 'Regular', 'Women', 'Classic', '7', 'Black', 'Leather', 'Formal', 'ballet_flats.jpg', 'www.toryburch.com/balletflats', 'Available'),
+('Wedges', 'Shoes', 'Aldo', 85.00, 'Slim', 'Women', 'Trendy', '7', 'Brown', 'Leather', 'Casual', 'wedges.jpg', 'www.aldo.com/wedges', 'Available'),
+('Running Shoes', 'Shoes', 'Nike', 110.00, 'Regular', 'Women', 'Sporty', '7', 'Pink', 'Mesh', 'Sport', 'womens_running_shoes.jpg', 'www.nike.com/runningshoes', 'Available'),
+
+-- Shoes for Unisex
+('Flip Flops', 'Shoes', 'Havaianas', 30.00, 'Regular', 'Unisex', 'Casual', '8', 'White', 'Rubber', 'Casual', 'flip_flops.jpg', 'www.havaianas.com/flipflops', 'Available'),
+('Sneakers', 'Shoes', 'Converse', 60.00, 'Regular', 'Unisex', 'Casual', '9', 'White', 'Canvas', 'Casual', 'converse_sneakers.jpg', 'www.converse.com/sneakers', 'Available'),
+('Running Shoes', 'Shoes', 'Asics', 130.00, 'Regular', 'Unisex', 'Sporty', '10', 'Black', 'Mesh', 'Sport', 'asics_running_shoes.jpg', 'www.asics.com/runningshoes', 'Available'),
+('Clogs', 'Shoes', 'Crocs', 40.00, 'Regular', 'Unisex', 'Casual', '10', 'Blue', 'Rubber', 'Casual', 'crocs_clogs.jpg', 'www.crocs.com/clogs', 'Available'),
+('Slides', 'Shoes', 'Adidas', 45.00, 'Regular', 'Unisex', 'Sporty', '9', 'Black', 'Rubber', 'Casual', 'adidas_slides.jpg', 'www.adidas.com/slides', 'Available'),
+
+
+-- Accessories for Men
+('Leather Belt', 'Accessories', 'Hugo Boss', 75.00, 'Regular', 'Men', 'Classic', 'M', 'Black', 'Leather', 'Formal', 'belt.jpg', 'www.hugoboss.com/leatherbelt', 'Available'),
+('Sunglasses', 'Accessories', 'Ray-Ban', 150.00, 'Regular', 'Men', 'Sporty', 'One Size', 'Black', 'Plastic', 'Casual', 'sunglasses.jpg', 'www.ray-ban.com/sunglasses', 'Available'),
+('Watch', 'Accessories', 'Fossil', 200.00, 'Regular', 'Men', 'Classic', 'One Size', 'Silver', 'Stainless Steel', 'Formal', 'watch.jpg', 'www.fossil.com/watch', 'Available'),
+('Cufflinks', 'Accessories', 'Montblanc', 350.00, 'Regular', 'Men', 'Classic', 'One Size', 'Gray', 'Metal', 'Formal', 'cufflinks.jpg', 'www.montblanc.com/cufflinks', 'Available'),
+('Baseball Cap', 'Accessories', 'Nike', 30.00, 'Regular', 'Men', 'Sporty', 'One Size', 'White', 'Cotton', 'Casual', 'cap.jpg', 'www.nike.com/baseballcap', 'Available'),
+
+-- Accessories for Women
+('Handbag', 'Accessories', 'Chanel', 3500.00, 'Regular', 'Women', 'Trendy', 'One Size', 'Black', 'Leather', 'Formal', 'handbag.jpg', 'www.chanel.com/handbag', 'Available'),
+('Scarf', 'Accessories', 'Hermes', 400.00, 'Slim', 'Women', 'Trendy', 'One Size', 'Red', 'Silk', 'Casual', 'scarf.jpg', 'www.hermes.com/scarf', 'Available'),
+('Earrings', 'Accessories', 'Tiffany & Co.', 500.00, 'Regular', 'Women', 'Trendy', 'One Size', 'Gray', 'Sterling Silver', 'Formal', 'earrings.jpg', 'www.tiffany.com/earrings', 'Available'),
+('Sunglasses', 'Accessories', 'Gucci', 300.00, 'Regular', 'Women', 'Trendy', 'One Size', 'Black', 'Plastic', 'Casual', 'womens_sunglasses.jpg', 'www.gucci.com/sunglasses', 'Available'),
+('Bracelet', 'Accessories', 'Pandora', 120.00, 'Slim', 'Women', 'Trendy', 'One Size', 'White', 'Metal', 'Casual', 'bracelet.jpg', 'www.pandora.com/bracelet', 'Available'),
+
+-- Accessories for Unisex
+('Backpack', 'Accessories', 'Herschel', 80.00, 'Regular', 'Unisex', 'Casual', 'One Size', 'Grey', 'Canvas', 'Casual', 'backpack.jpg', 'www.herschel.com/backpack', 'Available'),
+('Beanie', 'Accessories', 'Adidas', 25.00, 'Regular', 'Unisex', 'Sporty', 'One Size', 'Black', 'Wool', 'Casual', 'beanie.jpg', 'www.adidas.com/beanie', 'Available'),
+('Wallet', 'Accessories', 'Louis Vuitton', 700.00, 'Regular', 'Unisex', 'Classic', 'One Size', 'Brown', 'Leather', 'Formal', 'wallet.jpg', 'www.louisvuitton.com/wallet', 'Available');
+
 /*
 INSERT INTO Recommendations (CustomerID, ItemID, RecommendationType)
 VALUES

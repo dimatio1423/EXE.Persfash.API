@@ -77,6 +77,18 @@ namespace Services.OutfitServices
                 throw new ApiException(HttpStatusCode.NotFound, "Outfit does not exist");
             }
 
+            var currCustomerFavoriteOutfit = await _outfitFavoriteRepository.GetOutfitFavoriteForCustomer(currCustomer.CustomerId);
+
+            if (currCustomerFavoriteOutfit.Any(x =>
+            AreIdsEqual(x.TopItemId, currOutfitRecommendation.TopItemId) &&
+            AreIdsEqual(x.BottomItemId, currOutfitRecommendation.BottomItemId) &&
+            AreIdsEqual(x.ShoesItemId, currOutfitRecommendation.ShoesItemId) &&
+            AreIdsEqual(x.AccessoriesItemId, currOutfitRecommendation.AccessoriesItemId) &&
+            AreIdsEqual(x.DressItemId, currOutfitRecommendation.DressItemId)))
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Outfit already exist in the favorite list");
+            }
+
             OutfitFavorite outfitFavorite = new OutfitFavorite
             {
                 CustomerId = currOutfitRecommendation.CustomerId,
@@ -88,6 +100,11 @@ namespace Services.OutfitServices
             };
 
             await _outfitFavoriteRepository.Add(outfitFavorite);
+        }
+
+        private bool AreIdsEqual(int? id1, int? id2)
+        {
+            return id1 == id2; // Handles null values
         }
 
         public async Task GenerateOutfitForCustomer(string token)

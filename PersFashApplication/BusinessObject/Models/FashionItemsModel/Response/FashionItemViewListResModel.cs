@@ -1,5 +1,4 @@
-﻿using BusinessObject.Models.PartnerModel.Response;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BusinessObject.Models.FashionItemsModel.Response
 {
-    public class FashionItemViewResModel
+    public class FashionItemViewListResModel
     {
         public int ItemId { get; set; }
 
@@ -23,15 +22,15 @@ namespace BusinessObject.Models.FashionItemsModel.Response
 
         public string? GenderTarget { get; set; }
 
-        public string? FashionTrend { get; set; }
+        public List<string>? FashionTrend { get; set; }
 
-        public string Size { get; set; }
+        public List<string> Size { get; set; }
 
-        public string Color { get; set; }
+        public List<string> Color { get; set; }
 
-        public string Material { get; set; }
+        public List<string> Material { get; set; }
 
-        public string Occasion { get; set; }
+        public List<string> Occasion { get; set; }
 
         public string ProductUrl { get; set; }
 
@@ -39,6 +38,6 @@ namespace BusinessObject.Models.FashionItemsModel.Response
 
         public List<string> ItemImages { get; set; }
 
-        //public PartnerViewModel Partner { get; set; }
+        public string Status { get; set; }
     }
 }

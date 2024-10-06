@@ -25,7 +25,7 @@ namespace PersFashApplicationAPI.Controllers
 
 
         /// <summary>
-        /// View all fashion items for CUSTOMER, ADMIN
+        /// View all fashion items for CUSTOMER
         /// </summary>
         [HttpGet]
         [Route("view")]
@@ -34,6 +34,27 @@ namespace PersFashApplicationAPI.Controllers
         {
 
             var result = await _fashionItemService.ViewFashionItems(pageIndex, sizeIndex, fashionItemFilterReqModel, sortBy);
+
+            ResultModel response = new ResultModel
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "View fashion items successfully",
+                Data = result,
+            };
+
+            return StatusCode(response.Code, response);
+        }
+
+        /// <summary>
+        /// View all fashion items for CUSTOMER
+        /// </summary>
+        [HttpGet]
+        [Route("view/admin")]
+        public async Task<IActionResult> ViewFashionItems(int? pageIndex = 1, int? sizeIndex = 10)
+        {
+
+            var result = await _fashionItemService.ViewFashionItemsForAdmin(pageIndex, sizeIndex);
 
             ResultModel response = new ResultModel
             {
@@ -132,22 +153,23 @@ namespace PersFashApplicationAPI.Controllers
 
 
         /// <summary>
-        /// Remove fashion items for partner
+        /// Activate deactivate fashion items for partner
         /// </summary>
-        [HttpDelete]
+        [HttpPost]
         [Route("{itemId}")]
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> RemoveFashionItem(int itemId)
         {
             var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
 
-            await _fashionItemService.DeleteFashionItem(token, itemId);
+            var result = await _fashionItemService.ActivateDeactivateFashionItem(token, itemId);
 
             ResultModel response = new ResultModel
             {
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.OK,
-                Message = "Remove fashion item successfully",
+                Message = result ? "Activate fashion item successfully" : "Deactivate fashion item successfully",
+                Data = result, 
             };
 
             return StatusCode(response.Code, response);
