@@ -14,5 +14,6 @@ namespace Services.EmailService
         Task SendUpgradeToPremiumEmail(string fullName, string userEmail, string subscriptionName);
         Task SendInfluencerRegistrationEmail(string fullName, string userEmail);
         Task SendCoursePaymentSuccessEmail(string fullName, string courseName, string userEmail);
+        Task SendEmailForExpireSubscription(string fullName, string userEmail);
     }
 }

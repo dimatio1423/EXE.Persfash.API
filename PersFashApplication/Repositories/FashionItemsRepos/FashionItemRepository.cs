@@ -416,6 +416,7 @@ namespace Repositories.FashionItemsRepos
                                 || x.GenderTarget.Equals(GenderTargertEnums.Unisex.ToString())).ToList();
 
                             }
+                            fitMatches = fitMatches.OrderBy(x => Guid.NewGuid()).ToList();
 
                             fashionItemList =  fitMatches.Skip((pageIndex - 1) * sizeIndex).Take(sizeIndex).ToList();
                         }
@@ -441,6 +442,8 @@ namespace Repositories.FashionItemsRepos
                                 || x.GenderTarget.Equals(GenderTargertEnums.Unisex.ToString())).ToList();
 
                             }
+
+                            fashionMatches = fashionMatches.OrderBy(x => Guid.NewGuid()).ToList();
 
                             fashionItemList = fashionMatches.Skip((pageIndex - 1) * sizeIndex).Take(sizeIndex).ToList();
 
@@ -469,6 +472,8 @@ namespace Repositories.FashionItemsRepos
 
                             }
 
+                            sizeMatches = sizeMatches.OrderBy(x => Guid.NewGuid()).ToList();
+
                             fashionItemList = sizeMatches.Skip((pageIndex - 1) * sizeIndex).Take(sizeIndex).ToList();
                         }
 
@@ -495,6 +500,8 @@ namespace Repositories.FashionItemsRepos
 
                             }
 
+                            colorMatches = colorMatches.OrderBy(x => Guid.NewGuid()).ToList();
+
                             fashionItemList = colorMatches.Skip((pageIndex - 1) * sizeIndex).Take(sizeIndex).ToList();
                         }
                         break;
@@ -519,6 +526,9 @@ namespace Repositories.FashionItemsRepos
                                 || x.GenderTarget.Equals(GenderTargertEnums.Unisex.ToString())).ToList();
 
                             }
+
+                            materialMatches = materialMatches.OrderBy(x => Guid.NewGuid()).ToList();
+
 
                             fashionItemList = materialMatches.Skip((pageIndex - 1) * sizeIndex).Take(sizeIndex).ToList();
 
@@ -545,6 +555,9 @@ namespace Repositories.FashionItemsRepos
                                 || x.GenderTarget.Equals(GenderTargertEnums.Unisex.ToString())).ToList();
 
                             }
+
+                            occasionMatches = occasionMatches.OrderBy(x => Guid.NewGuid()).ToList();
+
 
                             fashionItemList = occasionMatches.Skip((pageIndex - 1) * sizeIndex).Take(sizeIndex).ToList();
 
