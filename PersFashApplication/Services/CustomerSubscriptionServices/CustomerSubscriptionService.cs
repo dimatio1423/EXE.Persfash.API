@@ -2,7 +2,9 @@
 using BusinessObject.Enums;
 using Repositories.SubscriptionRepos;
 using Repositories.UserCourseRepos;
+using Repositories.UserRepos;
 using Repositories.UserSubscriptionRepos;
+using Services.EmailService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +17,18 @@ namespace Services.UserSubscriptionServices
     {
         private readonly ICustomerSubscriptionRepository _customerSubscriptionRepository;
         private readonly ISubscriptionRepository _subscriptionRepository;
+        private readonly ICustomerRepository _customerRepository;
+        private readonly IEmailService _emailService;
 
         public CustomerSubscriptionService(ICustomerSubscriptionRepository customerSubscriptionRepository,
-            ISubscriptionRepository subscriptionRepository)
+            ISubscriptionRepository subscriptionRepository, 
+            ICustomerRepository customerRepository,
+            IEmailService emailService)
         {
             _customerSubscriptionRepository = customerSubscriptionRepository;
             _subscriptionRepository = subscriptionRepository;
+            _customerRepository = customerRepository;
+            _emailService = emailService;
         }
         public async Task<string> AutoUpdatingCustomerSubscriptionStatus()
         {
@@ -40,6 +48,8 @@ namespace Services.UserSubscriptionServices
 
                     var freeSubscription = await _subscriptionRepository.GetSubscriptionsByName(SubscriptionTypeEnums.Free.ToString());
 
+                    var currCustomer = await _customerRepository.Get(item.CustomerId);
+
                     var currCustomerFreeSubscription = await _customerSubscriptionRepository.GetCustomerSubscriptionByCustomerIdAndSubscriptionId(item.CustomerId, freeSubscription.SubscriptionId);
 
                     if (currCustomerFreeSubscription == null) continue;
@@ -47,6 +57,8 @@ namespace Services.UserSubscriptionServices
                     currCustomerFreeSubscription.IsActive = true;
 
                     updatedCustomerFreeSubscription.Add(currCustomerFreeSubscription);
+
+                    await _emailService.SendEmailForExpireSubscription(currCustomer.FullName, currCustomer.Email);
                 }
             }
 

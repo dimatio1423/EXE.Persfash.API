@@ -58,6 +58,44 @@ namespace Services.EmailService
             await smtp.DisconnectAsync(true);
         }
 
+        public async Task SendEmailForExpireSubscription(string fullName, string userEmail)
+        {
+            var email = new MimeMessage();
+            email.From.Add(MailboxAddress.Parse(_config.GetSection("SmtpSettings:Username").Value));
+            email.To.Add(MailboxAddress.Parse(userEmail));
+            email.Subject = "[PersFash Application] - Your Subscription Has Expired";
+
+            email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+            {
+                Text = $@"
+                <!DOCTYPE html>
+                <html lang='en'>
+                <head>
+                    <meta charset='UTF-8'>
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                    <title>Subscription Expired</title>
+                </head>
+                <body style='font-family: Arial, sans-serif; background-color: #dcf343; color: #ffffff;'>
+                    <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #4949e9;'>
+                        <h1 style='color: #ffffff;'>Your Subscription Has Expired</h1>
+                        <p style='color: #ffffff;'>Hi {fullName},</p>
+                        <p style='color: #ffffff;'>We wanted to inform you that your subscription to PersFash has expired. Unfortunately, you no longer have access to the exclusive content, features, and perks available to our subscribers.</p>
+                        <p style='color: #ffffff;'>To regain access and continue enjoying premium benefits, you can renew your subscription at any time.</p>
+                        <p style='color: #ffffff;'>If you have any questions or need assistance with renewing, please don't hesitate to contact us.</p>
+                        <p style='color: #ffffff;'>Thank you for being a part of the PersFash community, and we hope to see you back soon!</p>
+                        <p style='color: #ffffff;'>The PersFash Team</p>
+                    </div>
+                </body>
+                </html>"
+            };
+
+            using var smtp = new SmtpClient();
+            await smtp.ConnectAsync(_config.GetSection("SmtpSettings:Host").Value, 587, MailKit.Security.SecureSocketOptions.StartTls);
+            await smtp.AuthenticateAsync(_config.GetSection("SmtpSettings:Username").Value, _config.GetSection("SmtpSettings:Password").Value);
+            await smtp.SendAsync(email);
+            await smtp.DisconnectAsync(true);
+        }
+
         public async Task SendInfluencerRegistrationEmail(string fullName, string userEmail)
         {
             var email = new MimeMessage();
@@ -153,9 +191,7 @@ namespace Services.EmailService
                          <div style='max-width: 650px; margin: 0 auto; padding: 20px; background-color: #4949e9; '>
                              <h1 style='color: #ffffff;'>Welcome to PersFash!</h1>
                              <p style='color: #ffffff;'>Hi {fullName},</p>
-                             <p style='color: #ffffff;'>Thank you for registering with PersFash. We're excited to have you on board! Explore our platform for the latest in fashion, style advice, and personalized 
-
-.</p>
+                             <p style='color: #ffffff;'>Thank you for registering with PersFash. We're excited to have you on board! Explore our platform for the latest in fashion, style advice, and personalized.</p>
                              <p style='color: #ffffff;'>We hope you enjoy the experience!</p>
                              <p style='color: #ffffff;'>Thank you,</p>
                              <p style='color: #ffffff;'>The PersFash Team</p>
