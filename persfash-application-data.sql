@@ -165,7 +165,7 @@ VALUES
 INSERT INTO Subscriptions (SubscriptionTitle, Price, DurationInDays, Description, Status)
 VALUES
 ('Free', null, null, 'Suggest fashion items, Sugges fashion outfits, 24-hour support response time', 'Active'),
-('Premium', 49000.00, 60, 'Suggest fashion items, Suggest fashion outfits, Support 24/7, Manage your wardrobe, Save your favorite outfits', 'Active');
+('Premium', 49000.00, 30, 'Suggest fashion items, Suggest fashion outfits, Support 24/7, Manage your wardrobe, Save your favorite outfits', 'Active');
 
 
 INSERT INTO SystemAdmin (Username, Password, Status)

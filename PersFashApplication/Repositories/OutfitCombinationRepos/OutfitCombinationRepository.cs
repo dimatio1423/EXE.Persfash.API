@@ -155,11 +155,11 @@ namespace Repositories.OutfitCombinationRepos
             try
             {
                 return await _context.OutfitCombinations
-                    .Include(x => x.TopItem).ThenInclude(x => x.FashionItemImages)
-                    .Include(x => x.BottomItem).ThenInclude(x => x.FashionItemImages)
-                    .Include(x => x.AccessoriesItem).ThenInclude(x => x.FashionItemImages)
-                    .Include(x => x.ShoesItem).ThenInclude(x => x.FashionItemImages)
-                    .Include(x => x.DressItem).ThenInclude(x => x.FashionItemImages)
+                    .Include(x => x.TopItem)
+                    .Include(x => x.BottomItem)
+                    .Include(x => x.AccessoriesItem)
+                    .Include(x => x.ShoesItem)
+                    .Include(x => x.DressItem)
                     .Include(x => x.Customer)
                     .Where(x => x.OutfitId == outfitCombinationId).FirstOrDefaultAsync();
             }
