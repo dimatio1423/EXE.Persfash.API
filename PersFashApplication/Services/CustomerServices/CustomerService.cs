@@ -6,12 +6,16 @@ using BusinessObject.Models.CustomerModels.Response;
 using BusinessObject.Models.FashionItemsModel.Request;
 using BusinessObject.Models.Pagination;
 using Repositories.FashionInfluencerRepos;
+using Repositories.OutfitCombinationRepos;
+using Repositories.OutfitFavoriteRepos;
 using Repositories.PartnerRepos;
 using Repositories.SubscriptionRepos;
 using Repositories.SystemAdminRepos;
 using Repositories.UserProfilesRepos;
 using Repositories.UserRepos;
 using Repositories.UserSubscriptionRepos;
+using Repositories.WardrobeItemRepos;
+using Repositories.WardrobeRepos;
 using Services.EmailService;
 using Services.Helper.CustomExceptions;
 using Services.Helpers.Handler.DecodeTokenHandler;
@@ -35,6 +39,10 @@ namespace Services.UserServices
         private readonly IDecodeTokenHandler _decodeTokenHandler;
         private readonly ISystemAdminRepository _systemAdminRepository;
         private readonly ISubscriptionRepository _subscriptionRepository;
+        private readonly IOutfitCombinationRepository _outfitCombinationRepository;
+        private readonly IOutfitFavoriteRepository _outfitFavoriteRepository;
+        private readonly IWardrobeRepository _wardrobeRepository;
+        private readonly IWardrobeItemRepository _wardrobeItemRepository;
         private readonly IEmailService _emailService;
 
         public CustomerService(ICustomerRepository customerRepository, 
@@ -45,6 +53,10 @@ namespace Services.UserServices
             ISystemAdminRepository systemAdminRepository,
             ISubscriptionRepository subscriptionRepository,
             ICustomerSubscriptionRepository customerSubscriptionRepository,
+            IOutfitCombinationRepository outfitCombinationRepository,
+            IOutfitFavoriteRepository outfitFavoriteRepository,
+            IWardrobeRepository wardrobeRepository,
+            IWardrobeItemRepository wardrobeItemRepository,
             IEmailService emailService) 
         {
             _customerRepository = customerRepository;
@@ -55,6 +67,10 @@ namespace Services.UserServices
             _decodeTokenHandler = decodeTokenHandler;
             _systemAdminRepository = systemAdminRepository;
             _subscriptionRepository = subscriptionRepository;
+            _outfitCombinationRepository = outfitCombinationRepository;
+            _outfitFavoriteRepository = outfitFavoriteRepository;
+            _wardrobeRepository = wardrobeRepository;
+            _wardrobeItemRepository = wardrobeItemRepository;
             _emailService = emailService;
         }
         public async Task CustomerProfileSetup(string token, CustomerProfileSetupReqModel customerProfileSetupReqModel)
@@ -280,6 +296,35 @@ namespace Services.UserServices
                 && await checkEmailExisted(customerInformationUpdateReqModel.Email))
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "Email has already been used by another user");
+            }
+
+            if (!currCustomer.Gender.Equals(customerInformationUpdateReqModel.Gender))
+            {
+                var outfitCombinationOfCustomer = await _outfitCombinationRepository.GetRecommendationOutfitForCustomer(currCustomer);
+
+                var outfitFavoriteOfCustomer = await _outfitFavoriteRepository.GetOutfitFavoriteForCustomer(currCustomer.CustomerId);
+
+                var wardrobeOfCustomer = await _wardrobeRepository.GetWardrobesByCustomerId(currCustomer.CustomerId);
+
+                foreach (var wardrobe in wardrobeOfCustomer)
+                {
+                    var itemOfWardrobe = await _wardrobeItemRepository.GetWardrobeItemsByWardrobeId(wardrobe.WardrobeId);
+
+                    foreach (var item in itemOfWardrobe)
+                    {
+                        await _wardrobeItemRepository.Remove(item);
+                    }
+                }
+
+                foreach (var item in outfitCombinationOfCustomer)
+                {
+                    await _outfitCombinationRepository.Remove(item);
+                }
+
+                foreach (var item in outfitFavoriteOfCustomer)
+                {
+                    await _outfitFavoriteRepository.Remove(item);
+                }
             }
 
             currCustomer.ProfilePicture = !string.IsNullOrEmpty(customerInformationUpdateReqModel.ProfilePicture) ? customerInformationUpdateReqModel.ProfilePicture : currCustomer.ProfilePicture;
