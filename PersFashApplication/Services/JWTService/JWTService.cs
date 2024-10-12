@@ -75,7 +75,7 @@ namespace Services.JWTService
                issuer: _config["JwtSettings:Issuer"],
                audience: _config["JwtSettings:Audience"],
                claims: claims,
-               expires: DateTime.Now.AddMinutes(15),
+               expires: DateTime.Now.AddMonths(1),
                signingCredentials: credential
                );
 
