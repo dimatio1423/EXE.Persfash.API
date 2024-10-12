@@ -249,6 +249,11 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+if (app.Environment.IsProduction())
+{
+    app.Urls.Add("http://*:6969");
+}
+
 app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
