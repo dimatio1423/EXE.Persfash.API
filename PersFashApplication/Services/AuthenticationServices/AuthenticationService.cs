@@ -410,7 +410,7 @@ private readonly ISubscriptionRepository _subscriptionRepository;
                 {
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                    HttpResponseMessage response = client.GetAsync("https://www.googleapis.com/oauth2/v3/userinfo").Result;
+                    HttpResponseMessage response = await client.GetAsync("https://www.googleapis.com/oauth2/v3/userinfo");
 
                     if (response.IsSuccessStatusCode)
                     {
