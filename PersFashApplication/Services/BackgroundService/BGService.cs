@@ -26,7 +26,7 @@ namespace Services.BackgroundServices
                 {
                     var customerSubscriptionService = scope.ServiceProvider.GetRequiredService<ICustomerSubscriptionService>();
 
-                    var message = customerSubscriptionService.AutoUpdatingCustomerSubscriptionStatus().GetAwaiter().GetResult();
+                    var message = await customerSubscriptionService.AutoUpdatingCustomerSubscriptionStatus();
 
                     Console.WriteLine($"Message: {message}");
                 }
