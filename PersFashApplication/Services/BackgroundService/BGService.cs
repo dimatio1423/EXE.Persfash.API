@@ -22,16 +22,23 @@ namespace Services.BackgroundServices
         {
             while(!stoppingToken.IsCancellationRequested)
             {
-                using (var scope = _serviceProvider.CreateScope())
+               try
                 {
-                    var customerSubscriptionService = scope.ServiceProvider.GetRequiredService<ICustomerSubscriptionService>();
+                    using (var scope = _serviceProvider.CreateScope())
+                    {
+                        var customerSubscriptionService = scope.ServiceProvider.GetRequiredService<ICustomerSubscriptionService>();
 
-                    var message = await customerSubscriptionService.AutoUpdatingCustomerSubscriptionStatus();
+                        var message = await customerSubscriptionService.AutoUpdatingCustomerSubscriptionStatus();
 
-                    Console.WriteLine($"Message: {message}");
+                        Console.WriteLine($"Message: {message}");
+                    }
+
+                    await Task.Delay(TimeSpan.FromHours(1), stoppingToken);
                 }
-
-                await Task.Delay(TimeSpan.FromHours(1), stoppingToken);
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
     }
