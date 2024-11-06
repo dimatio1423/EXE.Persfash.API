@@ -18,7 +18,7 @@ namespace BusinessObject.Models.PaymentModel.Response
 
         public CustomerViewModel Customer { get; set; }
 
-        public SubscriptionViewDetailsResModel? Subsription { get; set; }
+        public SubscriptionViewDetailsResModel? Subscription { get; set; }
 
         public string? Status { get; set; }
     }

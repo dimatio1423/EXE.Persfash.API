@@ -22,10 +22,10 @@ namespace PersFashApplicationAPI.Controllers
         /// Get payments CUSTOMER, ADMIN
         /// </summary>
         [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> GetPayments(int? page = 1, int? size = 10)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetPayments(int? pageIndex = 1, int? sizeIndex = 10)
         {
-            var result = await _paymentService.ViewPaymentForAdmin(page, size);
+            var result = await _paymentService.ViewPaymentForAdmin(pageIndex, sizeIndex);
 
             ResultModel response = new ResultModel
             {

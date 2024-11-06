@@ -70,6 +70,21 @@ namespace Repositories.PaymentRepos
             }
         }
 
+        public async Task<List<Payment>> GetPaymentsForAdmin()
+        {
+            try
+            {
+                return await _context.Payments
+                    .Include(x => x.Customer)
+                    .Include(x => x.Subscription)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<decimal> GetTotalRenenueForWeek(DateTime dateTime)
         {
             int diff = (7 + (dateTime.DayOfWeek - DayOfWeek.Monday)) % 7;
