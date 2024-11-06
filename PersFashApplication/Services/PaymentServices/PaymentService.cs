@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BusinessObject.Entities;
 using BusinessObject.Models.Pagination;
 using BusinessObject.Models.PaymentModel.Response;
 using Repositories.PaymentRepos;
@@ -22,16 +23,19 @@ namespace Services.PaymentServices
         }
         public async Task<Pagination<PaymentViewListResModel>> ViewPaymentForAdmin(int? page, int? size)
         {
-            var payments = await _paymentRepository.GetPayments(page, size);
+            var totalPayment = await _paymentRepository.GetPaymentsForAdmin();
 
-            var totalPayment = await _paymentRepository.GetAll();
+            var payments = totalPayment;
+
+            var pagedItems = payments.Skip(((page ?? 1) - 1) * (size ?? 10))
+                    .Take(size ?? 10).ToList();
 
             return new Pagination<PaymentViewListResModel>
             {
-                TotalItems = totalPayment.Count,
+                TotalItems = payments.Count,
                 PageSize = size ?? 10,
                 CurrentPage = page ?? 1,
-                Data = _mapper.Map<List<PaymentViewListResModel>>(payments)
+                Data = _mapper.Map<List<PaymentViewListResModel>>(pagedItems)
             };
         }
     }
